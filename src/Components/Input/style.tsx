@@ -15,13 +15,12 @@ export const Container = styled.View`
 
 export const InputText = styled.TextInput`
   flex: 1;
-  color: #1ABD33;
+  color: #1abd33;
   width: 100%;
   font-size: 16px;
   font-family: 'Exo-SemiBold';
 `;
 
-
 export const IconText = styled(Icon)`
-   margin-right: 16px;
+  margin-right: 16px;
 `;

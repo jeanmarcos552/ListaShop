@@ -19,7 +19,7 @@ export const Title = styled.Text`
 
 export const Image = styled.Image`
   width: 100%;
-  height: 125px;
+  height: 75px;
 `;
 
 export const ForgetPassword = styled.TouchableOpacity`
@@ -40,8 +40,8 @@ export const CreatAccount = styled.TouchableOpacity`
   padding: 16px 0 ${16 + getBottomSpace()}px;
 
   border-top-width: 1px;
-  border-color: #3987ee;
-  background: #3987ee;
+  border-color: #fff;
+  background: #1abd33;
   align-items: center;
   flex-direction: row;
   justify-content: center;
