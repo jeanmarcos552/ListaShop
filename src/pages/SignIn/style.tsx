@@ -12,7 +12,7 @@ export const Container = styled.View`
 
 export const Title = styled.Text`
   font-family: 'Exo-Regular';
-  color: #f4ede8;
+  color: #fff;
   font-size: 24px;
   margin: 60px 0 20px;
 `;
