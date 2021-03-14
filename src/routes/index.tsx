@@ -4,6 +4,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 
 import SignIn from '../pages/SignIn';
 import SignUp from '../pages/SignUp';
+import ForgetPass from '../pages/ForgetPass';
 
 const Auth = createStackNavigator();
 
@@ -17,6 +18,7 @@ const Routes: React.FC = () => {
       initialRouteName="SignIn">
       <Auth.Screen name="SignIn" component={SignIn} />
       <Auth.Screen name="SignUp" component={SignUp} />
+      <Auth.Screen name="ForgetPass" component={ForgetPass} />
     </Auth.Navigator>
   );
 };

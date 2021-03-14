@@ -15,10 +15,13 @@ import {
   ForgetPasswordText,
   CreatAccount,
   CreatAccountText,
+  IconText,
 } from './style';
 
 import Input from '../../Components/Input';
 import Button from '../../Components/Button';
+
+import IconBack from 'react-native-vector-icons/Feather';
 
 const SignIn: React.FC = () => {
   const navigation = useNavigation();
@@ -52,7 +55,7 @@ const SignIn: React.FC = () => {
               </Button>
             </Form>
 
-            <ForgetPassword>
+            <ForgetPassword onPress={() => navigation.navigate('ForgetPass')}>
               <ForgetPasswordText>Esqueci a senha</ForgetPasswordText>
             </ForgetPassword>
           </Container>
@@ -60,6 +63,7 @@ const SignIn: React.FC = () => {
       </KeyboardAvoidingView>
 
       <CreatAccount onPress={() => navigation.navigate('SignUp')}>
+        <IconText name="user-plus" color="#fff" size={20} />
         <CreatAccountText>Criar conta</CreatAccountText>
       </CreatAccount>
     </>
