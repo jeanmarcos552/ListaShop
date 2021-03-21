@@ -4,10 +4,17 @@ import Icon from 'react-native-vector-icons/Feather';
 interface PropsInput {
   isFocus: boolean;
   isErrored: boolean;
+  size: number;
 }
 
 export const Container = styled.View<PropsInput>`
-  width: 100%;
+  ${(props) =>
+    props.size &&
+    css`
+      width: ${props.size}%;
+      margin-right: 5px;
+    `};
+
   height: 60px;
   padding: 0 16px;
   background: #fff;

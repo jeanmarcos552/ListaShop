@@ -5,7 +5,8 @@ import {createStackNavigator} from '@react-navigation/stack';
 import SignIn from '../pages/SignIn';
 import SignUp from '../pages/SignUp';
 import ForgetPass from '../pages/ForgetPass';
-import Home from '../pages/Home';
+import Tabs from '../pages/Tabs';
+import Lista from '../pages/Lista';
 
 const Auth = createStackNavigator();
 
@@ -16,11 +17,12 @@ const Routes: React.FC = () => {
         headerShown: false,
         cardStyle: {backgroundColor: '#1ABD33'},
       }}
-      initialRouteName="SignIn">
+      initialRouteName="Lista">
       <Auth.Screen name="SignIn" component={SignIn} />
       <Auth.Screen name="SignUp" component={SignUp} />
       <Auth.Screen name="ForgetPass" component={ForgetPass} />
-      <Auth.Screen name="Home" component={Home} />
+      <Auth.Screen name="Tabs" component={Tabs} />
+      <Auth.Screen name="Lista" component={Lista} />
     </Auth.Navigator>
   );
 };

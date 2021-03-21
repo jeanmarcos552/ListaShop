@@ -1,7 +1,6 @@
-import React, {useCallback, useRef, useState} from 'react';
+import React, {useCallback, useRef} from 'react';
 
 import * as yup from 'yup';
-import {ValidationError} from 'yup';
 
 import {
   KeyboardAvoidingView,
@@ -9,7 +8,6 @@ import {
   ScrollView,
   View,
   TextInput,
-  Text,
   Alert,
 } from 'react-native';
 
@@ -62,7 +60,7 @@ const SignIn: React.FC = () => {
           abortEarly: false,
         });
         if (data.email === 'jean@admin.com' && data.password === 'secret') {
-          navigation.navigate('Home');
+          navigation.navigate('Tabs');
         } else {
           throw 'Ocorreu um erro na Authenticação!';
         }

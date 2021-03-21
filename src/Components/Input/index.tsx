@@ -15,6 +15,7 @@ import {Container, InputText, IconText} from './style';
 interface InputProps extends TextInputProps {
   name: string;
   icon: string;
+  size?: number;
 }
 
 interface InputRef {
@@ -26,7 +27,7 @@ interface inputRef {
 }
 
 const Input: React.ForwardRefRenderFunction<inputRef, InputProps> = (
-  {name, icon, ...rest},
+  {name, icon, size, ...rest},
   ref,
 ) => {
   const inputElementRef = useRef<any>(null);
@@ -70,7 +71,7 @@ const Input: React.ForwardRefRenderFunction<inputRef, InputProps> = (
   }, [fieldName, registerField]);
 
   return (
-    <Container isFocus={isFocus} isErrored={!!error}>
+    <Container isFocus={isFocus} isErrored={!!error} size={size ? size : 100}>
       <IconText
         name={icon}
         size={20}
