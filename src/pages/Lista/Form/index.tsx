@@ -1,22 +1,20 @@
 import {Form} from '@unform/mobile';
 import {FormHandles} from '@unform/core';
 import React, {useCallback, useRef, useState} from 'react';
-import {
-  Alert,
-  KeyboardAvoidingView,
-  Platform,
-  Pressable,
-  ScrollView,
-  Text,
-  View,
-} from 'react-native';
+import {Alert, KeyboardAvoidingView, Platform, ScrollView} from 'react-native';
 
 import Icon from 'react-native-vector-icons/Feather';
 
-import LinearGradient from 'react-native-linear-gradient';
 import Button from '../../../Components/Button';
 import Input from '../../../Components/Input';
-import {Title, Container, FabButtom, Modal} from './style';
+import {
+  Title,
+  Container,
+  FabButtom,
+  Modal,
+  PressableButton,
+  PressableButtonText,
+} from './style';
 
 const FormLista = () => {
   const formRef = useRef<FormHandles>(null);
@@ -47,17 +45,19 @@ const FormLista = () => {
             <Title>Adicionar uma Lista de compras?</Title>
 
             <Form onSubmit={handleCreateLista} ref={formRef}>
-              <Input name="description" placeholder="Descrição" icon="list" />
-              <Input name="qty" placeholder="Quantidade" icon="plus" />
+              <Input name="name" placeholder="Nome da lista" icon="list" />
 
               <Button onPress={() => formRef.current?.submitForm()}>
                 Criar
               </Button>
-
-              <Pressable onPress={() => setModalVisible(!modalVisible)}>
-                <Text>Hide Modal</Text>
-              </Pressable>
             </Form>
+            <PressableButton onPress={() => setModalVisible(!modalVisible)}>
+              <PressableButtonText
+                size={50}
+                name="md-close-outline"
+                color="red"
+              />
+            </PressableButton>
           </Container>
         </Modal>
       </ScrollView>

@@ -1,19 +1,23 @@
 import {Platform, FlatList} from 'react-native';
-import styled from 'styled-components/native';
+import styled, {css} from 'styled-components/native';
 import {getStatusBarHeight} from 'react-native-iphone-x-helper';
 import {Provider} from './index';
+import LinearGradient from 'react-native-linear-gradient';
+
+interface PropsProgress {
+  width: number;
+}
 
 export const Container = styled.View`
   flex: 1;
   padding: ${Platform.OS === 'android' ? 150 : 40}px 10px;
 `;
 
-export const Header = styled.View`
+export const Header = styled(LinearGradient)`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  background-color: #1abd33;
-  padding: ${24 + getStatusBarHeight()}px 10px 0px;
+  padding: ${24 + getStatusBarHeight()}px 10px 10px;
 `;
 export const HeaderText = styled.Text`
   font-size: 22px;
@@ -25,6 +29,7 @@ export const Username = styled.Text`
   color: #fff;
   font-family: 'Exo-SemiBold';
   font-size: 22px;
+  align-items: center;
 `;
 
 export const Image = styled.Image`
@@ -34,10 +39,8 @@ export const Image = styled.Image`
   align-items: center;
 `;
 
-export const Avatar = styled.Image`
-  border-radius: 100px;
-  width: 80px;
-  height: 80px;
+export const ContainerList = styled.TouchableOpacity`
+  margin-bottom: 15px;
 `;
 
 export const ShoppingList = styled(
@@ -49,3 +52,13 @@ export const ShoppingList = styled(
     paddingHorizontal: 11,
   },
 })``;
+
+export const ItemList = styled.Text`
+  background-color: #fff;
+  margin-bottom: 0px;
+  padding: 20px 10px;
+  border-radius: 18px;
+  font-family: 'Exo-Regular';
+  font-size: 22px;
+  color: #353434;
+`;

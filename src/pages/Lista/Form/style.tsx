@@ -1,4 +1,5 @@
-import {Platform} from 'react-native';
+import {Platform, Pressable} from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
 import styled, {css} from 'styled-components/native';
 
 interface PropsGrid {
@@ -18,7 +19,7 @@ export const Container = styled.View`
   margin-top: 50px;
   justify-content: center;
   align-items: center;
-  background-color: #1abd33;
+  background-color: #01ac73;
 
   padding: 0 30px ${Platform.OS === 'android' ? 150 : 40}px;
 `;
@@ -39,13 +40,13 @@ export const Row = styled.View`
 
 export const FabButtom = styled.TouchableOpacity`
   position: absolute;
-  bottom: 10px;
-  right: 10px;
+  bottom: 40px;
+  right: 20px;
   background-color: #ff9000;
   border-radius: 100px;
 
-  width: 80px;
-  height: 80px;
+  width: 60px;
+  height: 60px;
   align-items: center;
   align-content: center;
   justify-content: center;
@@ -56,3 +57,17 @@ export const Modal = styled.Modal`
   padding: 35px;
   align-items: center;
 `;
+
+export const PressableButton = styled(Pressable)`
+  width: 80px;
+  height: 80px;
+  background-color: #eee8e8;
+  border-radius: 100px;
+
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  bottom: 40px;
+`;
+
+export const PressableButtonText = styled(Icon)``;

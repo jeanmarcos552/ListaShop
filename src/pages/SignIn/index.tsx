@@ -59,6 +59,8 @@ const SignIn: React.FC = () => {
         await schema.validate(data, {
           abortEarly: false,
         });
+        navigation.navigate('Tabs');
+
         if (data.email === 'jean@admin.com' && data.password === 'secret') {
           navigation.navigate('Tabs');
         } else {

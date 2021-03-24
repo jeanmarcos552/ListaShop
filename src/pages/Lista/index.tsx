@@ -2,9 +2,18 @@ import React from 'react';
 
 import FormLista from './Form';
 import Foto from '../../assets/img/foto.jpg';
-import {ScrollView, StyleSheet, Text} from 'react-native';
+import {ScrollView} from 'react-native';
 
-import {Avatar, Header, HeaderText, Username, ShoppingList} from './style';
+import {ProgressBar, Colors, Avatar} from 'react-native-paper';
+
+import {
+  ContainerList,
+  Header,
+  HeaderText,
+  ItemList,
+  ShoppingList,
+  Username,
+} from './style';
 
 export interface Provider {
   id: string;
@@ -28,18 +37,25 @@ const Lista = () => {
   ];
   return (
     <>
-      <Header>
+      <Header
+        colors={['#01ac73', '#03faa8']}
+        start={{x: 0, y: 0}}
+        end={{x: 1, y: 0}}>
         <HeaderText>
-          Bem Vindo {'\n'}
-          <Username>Jean Marcos</Username>
+          <Username>Minhas listas</Username>
         </HeaderText>
-        <Avatar source={Foto} />
+        <Avatar.Image size={54} source={Foto} />
       </Header>
 
       <ScrollView>
         <ShoppingList
           data={DATA}
-          renderItem={({item: provider}) => <Text>{provider.title}</Text>}
+          renderItem={({item: provider}) => (
+            <ContainerList>
+              <ItemList>{provider.title}</ItemList>
+              <ProgressBar progress={0.5} color={Colors.teal800} />
+            </ContainerList>
+          )}
           keyExtractor={(provider) => provider.id}
         />
       </ScrollView>
@@ -48,11 +64,5 @@ const Lista = () => {
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});
 
 export default Lista;
