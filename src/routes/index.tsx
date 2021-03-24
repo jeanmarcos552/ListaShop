@@ -17,7 +17,7 @@ const Routes: React.FC = () => {
         headerShown: false,
         cardStyle: {backgroundColor: '#1ABD33'},
       }}
-      initialRouteName="Lista">
+      initialRouteName="SignIn">
       <Auth.Screen name="SignIn" component={SignIn} />
       <Auth.Screen name="SignUp" component={SignUp} />
       <Auth.Screen name="ForgetPass" component={ForgetPass} />

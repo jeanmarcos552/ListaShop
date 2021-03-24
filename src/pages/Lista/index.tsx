@@ -1,71 +1,58 @@
-import {Form} from '@unform/mobile';
-import {FormHandles} from '@unform/core';
-import React, {useCallback, useRef, useState} from 'react';
-import {
-  Alert,
-  KeyboardAvoidingView,
-  Platform,
-  Pressable,
-  ScrollView,
-  Text,
-  View,
-} from 'react-native';
+import React from 'react';
 
-import Icon from 'react-native-vector-icons/Feather';
+import FormLista from './Form';
+import Foto from '../../assets/img/foto.jpg';
+import {ScrollView, StyleSheet, Text} from 'react-native';
 
-import LinearGradient from 'react-native-linear-gradient';
-import Button from '../../Components/Button';
-import Input from '../../Components/Input';
-import {Title, Container, FabButtom, Modal} from './style';
+import {Avatar, Header, HeaderText, Username, ShoppingList} from './style';
+
+export interface Provider {
+  id: string;
+  title: string;
+}
 
 const Lista = () => {
-  const formRef = useRef<FormHandles>(null);
-
-  const handleCreateLista = useCallback((data) => {
-    console.log(data);
-  }, []);
-
-  const [modalVisible, setModalVisible] = useState(false);
-
+  const DATA = [
+    {
+      id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
+      title: 'First Item',
+    },
+    {
+      id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
+      title: 'Second Item',
+    },
+    {
+      id: '58694a0f-3da1-471f-bd96-145571e29d72',
+      title: 'Third Item',
+    },
+  ];
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'android' ? 'height' : 'padding'}
-      style={{flex: 1}}
-      enabled>
-      <ScrollView
-        contentContainerStyle={{flex: 1}}
-        keyboardShouldPersistTaps="handled">
-        <Modal
-          presentationStyle="fullScreen"
-          animationType="slide"
-          visible={modalVisible}
-          onRequestClose={() => {
-            Alert.alert('Modal has been closed.');
-            setModalVisible(!modalVisible);
-          }}>
-          <Container>
-            <Title>Adicionar uma Lista de compras?</Title>
+    <>
+      <Header>
+        <HeaderText>
+          Bem Vindo {'\n'}
+          <Username>Jean Marcos</Username>
+        </HeaderText>
+        <Avatar source={Foto} />
+      </Header>
 
-            <Form onSubmit={handleCreateLista} ref={formRef}>
-              <Input name="description" placeholder="Descrição" icon="list" />
-              <Input name="qty" placeholder="Quantidade" icon="plus" />
-
-              <Button onPress={() => formRef.current?.submitForm()}>
-                Criar
-              </Button>
-
-              <Pressable onPress={() => setModalVisible(!modalVisible)}>
-                <Text>Hide Modal</Text>
-              </Pressable>
-            </Form>
-          </Container>
-        </Modal>
+      <ScrollView>
+        <ShoppingList
+          data={DATA}
+          renderItem={({item: provider}) => <Text>{provider.title}</Text>}
+          keyExtractor={(provider) => provider.id}
+        />
       </ScrollView>
-      <FabButtom onPress={() => setModalVisible(!modalVisible)}>
-        <Icon name="plus" size={40} color="#fff" />
-      </FabButtom>
-    </KeyboardAvoidingView>
+
+      <FormLista />
+    </>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+});
 
 export default Lista;
