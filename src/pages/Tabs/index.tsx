@@ -9,7 +9,8 @@ import {useNavigation} from '@react-navigation/native';
 import Home from '../Home';
 import Icons from 'react-native-vector-icons/Ionicons';
 
-import Lista from '../Lista';
+import Lista from '../Lista/Listagem';
+import ItensToList from '../Lista/Listagem/ListItem';
 
 const Tab = createBottomTabNavigator();
 

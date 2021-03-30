@@ -1,8 +1,7 @@
-import React from 'react';
+import React, {useCallback} from 'react';
 
-import FormLista from './Form';
-import Foto from '../../assets/img/foto.jpg';
-import {ScrollView} from 'react-native';
+import FormLista from '../Add';
+import Foto from '../../../assets/img/foto.jpg';
 
 import {ProgressBar, Colors, Avatar} from 'react-native-paper';
 
@@ -14,6 +13,7 @@ import {
   ShoppingList,
   Username,
 } from './style';
+import {useNavigation} from '@react-navigation/native';
 
 export interface Provider {
   id: string;
@@ -21,6 +21,8 @@ export interface Provider {
 }
 
 const Lista = () => {
+  const navigate = useNavigation();
+
   const DATA = [
     {
       id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
@@ -55,6 +57,14 @@ const Lista = () => {
       title: 'Third Item',
     },
   ];
+
+  const handleSeeIten = useCallback(
+    (data: any) => {
+      navigate.navigate('ItensToList', {id: data});
+    },
+    [navigate],
+  );
+
   return (
     <>
       <Header
@@ -70,7 +80,7 @@ const Lista = () => {
       <ShoppingList
         data={DATA}
         renderItem={({item: provider}) => (
-          <ContainerList>
+          <ContainerList onPress={() => handleSeeIten()}>
             <ItemList>{provider.title}</ItemList>
             <ProgressBar progress={0.5} color={Colors.teal800} />
           </ContainerList>
