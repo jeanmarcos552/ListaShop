@@ -17,7 +17,7 @@ export const Header = styled(LinearGradient)`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  padding: ${24 + getStatusBarHeight()}px 10px 10px;
+  padding: ${24 + getStatusBarHeight()}px 10px 20px;
 `;
 export const HeaderText = styled.Text`
   font-size: 22px;
@@ -40,18 +40,13 @@ export const Image = styled.Image`
 `;
 
 export const ContainerList = styled.TouchableOpacity`
-  margin-bottom: 15px;
+  margin: 0px 5px 10px;
 `;
 
-export const ShoppingList = styled(
-  FlatList as new () => FlatList<Provider>,
-).attrs({
-  contentContainerStyle: {
-    paddingTop: 32,
-    paddingBottom: 16,
-    paddingHorizontal: 11,
-  },
-})``;
+export const ShoppingList = styled(FlatList as new () => FlatList<Provider>)`
+  padding-top: 32px;
+  padding-bottom: 26px;
+`;
 
 export const ItemList = styled.Text`
   background-color: #fff;

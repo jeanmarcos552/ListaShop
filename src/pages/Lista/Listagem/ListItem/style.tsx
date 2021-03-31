@@ -1,6 +1,7 @@
 import {getStatusBarHeight} from 'react-native-iphone-x-helper';
 import LinearGradient from 'react-native-linear-gradient';
 import styled from 'styled-components/native';
+import {Form} from '@unform/mobile';
 
 export const Header = styled(LinearGradient)`
   flex-direction: row;
@@ -9,7 +10,9 @@ export const Header = styled(LinearGradient)`
   align-items: center;
 `;
 
-export const Container = styled.View``;
+export const Container = styled.View`
+  padding: 5px;
+`;
 
 export const HeaderText = styled.Text`
   margin-right: auto;
@@ -20,3 +23,5 @@ export const HeaderText = styled.Text`
 `;
 
 export const Username = styled.Text``;
+
+export const FormContainer = styled(Form)``;

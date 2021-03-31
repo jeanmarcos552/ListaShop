@@ -14,6 +14,7 @@ import {
   Username,
 } from './style';
 import {useNavigation} from '@react-navigation/native';
+import {Text} from 'react-native';
 
 export interface Provider {
   id: string;
@@ -60,7 +61,7 @@ const Lista = () => {
 
   const handleSeeIten = useCallback(
     (data: any) => {
-      navigate.navigate('ItensToList', {id: data});
+      navigate.navigate('ItensToList', {item: data});
     },
     [navigate],
   );
@@ -80,14 +81,13 @@ const Lista = () => {
       <ShoppingList
         data={DATA}
         renderItem={({item: provider}) => (
-          <ContainerList onPress={() => handleSeeIten()}>
+          <ContainerList onPress={() => handleSeeIten(provider)}>
             <ItemList>{provider.title}</ItemList>
             <ProgressBar progress={0.5} color={Colors.teal800} />
           </ContainerList>
         )}
         keyExtractor={(provider) => provider.id}
       />
-
       <FormLista />
     </>
   );
