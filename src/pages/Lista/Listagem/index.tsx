@@ -11,19 +11,32 @@ import {
   HeaderText,
   ItemList,
   ShoppingList,
-  Username,
   ValueText,
   ItemListText,
   ContainerText,
   IconText,
 } from './style';
 import {useNavigation} from '@react-navigation/native';
-import {View} from 'react-native';
+import {Text, View} from 'react-native';
 
 export interface Provider {
   id: string;
   title: string;
   icon: string;
+  itens?: [
+    {
+      name: string;
+      status: boolean;
+      value: number;
+    },
+  ];
+  total: number;
+}
+
+export interface ProviderItens {
+  name: string;
+  status: boolean;
+  value: number;
 }
 
 const Lista = () => {
@@ -34,21 +47,42 @@ const Lista = () => {
       id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
       title: 'Compras. Bretas',
       icon: 'x-circle',
+      itens: [
+        {key: 1, name: 'item 1', value: 23.9, status: false},
+        {key: 2, name: 'item 2', value: 23.9, status: true},
+        {key: 2, name: 'item 2', value: 23.9, status: true},
+      ],
+      total: 3,
     },
     {
       id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
       title: 'Tatico Garavelo',
       icon: 'check-circle',
+      itens: [
+        {key: 1, name: 'item 1', value: 23.9, status: true},
+        {key: 2, name: 'item 2', value: 23.9, status: false},
+      ],
+      total: 2,
     },
     {
       id: '58694a0de-3da1-471f-bd96-145571e29d72',
       title: 'Mateus supermecado.',
       icon: 'check-circle',
+      itens: [
+        {key: 1, name: 'item 1', value: 23.9, status: false},
+        {key: 2, name: 'item 2', value: 23.9, status: false},
+      ],
+      total: 2,
     },
     {
       id: '68694a0f-3da1-471f-bd96-145571e29d72',
       title: 'Hugão',
       icon: 'check-circle',
+      itens: [
+        {key: 1, name: 'item 1', value: 23.9, status: false},
+        {key: 2, name: 'item 2', value: 23.9, status: false},
+      ],
+      total: 2,
     },
     {
       id: '58690f-3da1-471f-bd96-145571e29d72',
@@ -59,11 +93,21 @@ const Lista = () => {
       id: '5869rr4a0f-3da1-471f-bd96-145571e29d72',
       title: 'Aveninda',
       icon: 'check-circle',
+      itens: [
+        {key: 1, name: 'item 1', value: 23.9, status: false},
+        {key: 2, name: 'item 2', value: 23.9, status: false},
+      ],
+      total: 2,
     },
     {
       id: '58de694a0f-3da1-471f-bd96-145571e29d72',
       title: 'Third Item',
       icon: 'check-circle',
+      itens: [
+        {key: 1, name: 'item 1', value: 23.9, status: false},
+        {key: 2, name: 'item 2', value: 23.9, status: false},
+      ],
+      total: 2,
     },
   ];
 
@@ -74,6 +118,17 @@ const Lista = () => {
     [navigate],
   );
 
+  function calcItensCheckt(provider: Provider) {
+    let itensChected = 0;
+    provider.itens?.map((item) => {
+      if (item.status) {
+        itensChected++;
+      }
+    });
+
+    return itensChected / provider.total;
+  }
+
   return (
     <>
       <Header
@@ -81,7 +136,7 @@ const Lista = () => {
         start={{x: 0, y: 0}}
         end={{x: 1, y: 0}}>
         <HeaderText>
-          <Username>Minhas listas</Username>
+          <HeaderText>Minhas listas</HeaderText>
         </HeaderText>
         <Avatar.Image size={54} source={Foto} />
       </Header>
@@ -103,10 +158,13 @@ const Lista = () => {
               </ContainerText>
               <ValueText>R$ 299,90</ValueText>
             </ItemList>
-
-            <View>
-              <ProgressBar progress={0.5} color={Colors.teal800} />
+            <View style={{padding: 5}}>
+              <ProgressBar
+                progress={calcItensCheckt(provider)}
+                color={'#01ac73'}
+              />
             </View>
+            <Text />
           </ContainerList>
         )}
         keyExtractor={(provider) => provider.id}

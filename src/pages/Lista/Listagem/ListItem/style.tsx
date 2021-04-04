@@ -7,7 +7,7 @@ import BouncyCheckbox from 'react-native-bouncy-checkbox';
 export const Header = styled(LinearGradient)`
   flex-direction: row;
   justify-content: space-between;
-  padding: ${24 + getStatusBarHeight()}px 10px 10px;
+  padding: ${10 + getStatusBarHeight()}px 10px 10px;
   align-items: center;
 `;
 
@@ -19,8 +19,8 @@ export const Container = styled.View`
 
 export const HeaderText = styled.Text`
   margin-right: auto;
-  font-size: 22px;
-  padding: 10px 10px;
+  font-size: 18px;
+  padding: 5px 10px;
   font-family: 'Exo-SemiBold';
   color: #fff;
 `;
@@ -35,13 +35,13 @@ export const FormContainer = styled(Form)`
 
 export const FabButtom = styled.TouchableOpacity`
   position: absolute;
-  bottom: ${getBottomSpace() + 80}px;
+  bottom: ${getBottomSpace() + 30}px;
   right: 20px;
   background-color: #ff9000;
   border-radius: 100px;
 
-  width: 60px;
-  height: 60px;
+  width: 55px;
+  height: 55px;
   align-items: center;
   align-content: center;
   justify-content: center;
@@ -50,16 +50,16 @@ export const FabButtom = styled.TouchableOpacity`
 
 export const TitleContainer = styled.View`
   flex-direction: row;
-  margin: 10px 0 30px;
+  margin: 5px 0 15px;
   justify-content: center;
 `;
 export const Title = styled.Text`
-  font-size: 25px;
+  font-size: 20px;
   color: #5a5959;
   font-family: 'Exo-SemiBold';
 `;
 export const DisplayItensChecked = styled.Text`
-  font-size: 25px;
+  font-size: 20px;
   color: #01ac73;
   font-family: 'Exo-Regular';
 `;

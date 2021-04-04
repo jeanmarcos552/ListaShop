@@ -1,4 +1,5 @@
-import {Platform, Pressable} from 'react-native';
+import {Platform, Pressable, Text} from 'react-native';
+import {RectButton} from 'react-native-gesture-handler';
 import {getBottomSpace} from 'react-native-iphone-x-helper';
 import Icon from 'react-native-vector-icons/Ionicons';
 import styled, {css} from 'styled-components/native';
@@ -41,13 +42,13 @@ export const Row = styled.View`
 
 export const FabButtom = styled.TouchableOpacity`
   position: absolute;
-  bottom: ${getBottomSpace()}px;
+  bottom: ${getBottomSpace() + 22}px;
   right: 20px;
   background-color: #ff9000;
   border-radius: 100px;
 
-  width: 60px;
-  height: 60px;
+  width: 55px;
+  height: 55px;
   align-items: center;
   align-content: center;
   justify-content: center;
@@ -59,16 +60,43 @@ export const Modal = styled.Modal`
   align-items: center;
 `;
 
-export const PressableButton = styled(Pressable)`
-  width: 80px;
-  height: 80px;
-  background-color: #eee8e8;
-  border-radius: 100px;
+export const ButtonCreate = styled(RectButton)`
+  border-width: 2px;
+  border-style: solid;
+  border-color: #ff9000;
+  background-color: #ff9000;
 
-  justify-content: center;
+  border-radius: 20px;
+  flex: 1;
+  height: 50px;
   align-items: center;
-  position: absolute;
-  bottom: ${getBottomSpace() + 40}px;
+  justify-content: center;
+  margin-right: 15px;
 `;
 
-export const PressableButtonText = styled(Icon)``;
+export const ButtonCreateText = styled.Text`
+  color: #fff;
+  font-size: 18px;
+`;
+
+export const FooterButtons = styled.View`
+  flex-direction: row;
+  justify-content: space-evenly;
+`;
+
+export const PressableButton = styled(Pressable)`
+  border-radius: 20px;
+  border-width: 2px;
+  border-style: solid;
+  border-color: #fff;
+
+  flex: 1;
+  height: 48px;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const PressableButtonText = styled.Text`
+  color: #fff;
+  font-size: 18px;
+`;

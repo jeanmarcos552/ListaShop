@@ -846,7 +846,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.shoplist;
+				PRODUCT_BUNDLE_IDENTIFIER = br.com.shoplist;
 				PRODUCT_NAME = shoplist;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;

@@ -70,7 +70,7 @@ const ItensToList: React.FC = ({route, navigation}) => {
           data={ITENSBD.data}
           renderItem={({item: provider}) => (
             <InputCheckbox
-              size={25}
+              size={18}
               fillColor="#01ac73"
               unfillColor="#FFFFFF"
               text={provider.name}

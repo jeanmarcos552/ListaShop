@@ -1,6 +1,6 @@
 import {Platform, FlatList} from 'react-native';
 import styled from 'styled-components/native';
-import {getStatusBarHeight} from 'react-native-iphone-x-helper';
+import {getStatusBarHeight, getBottomSpace} from 'react-native-iphone-x-helper';
 import {Provider} from './index';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/Feather';
@@ -14,39 +14,26 @@ export const Header = styled(LinearGradient)`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  padding: ${24 + getStatusBarHeight()}px 10px 20px;
+  padding: ${10 + getStatusBarHeight()}px 10px 10px;
 `;
 export const HeaderText = styled.Text`
-  font-size: 22px;
-  padding: 10px 0;
-  font-family: 'Exo-Regular';
-  color: #fff;
-`;
-export const Username = styled.Text`
-  color: #fff;
+  font-size: 18px;
   font-family: 'Exo-SemiBold';
-  font-size: 22px;
-  align-items: center;
-`;
-
-export const Image = styled.Image`
-  width: 50px;
-  height: 60px;
-  justify-content: center;
-  align-items: center;
+  color: #fff;
 `;
 
 export const ContainerList = styled.TouchableOpacity`
-  margin: 0px 5px 10px;
+  margin: 10px 5px 10px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0px 2px 10px #e4e4e4;
 `;
 
 export const ShoppingList = styled(FlatList as new () => FlatList<Provider>)`
-  padding-top: 32px;
-  padding-bottom: 26px;
+  padding-bottom: 16px;
 `;
 
 export const ItemList = styled.View`
-  background-color: #fff;
   justify-content: space-between;
   flex: 1;
   flex-direction: row;
@@ -62,16 +49,16 @@ export const ContainerText = styled.View`
 export const ItemListText = styled.Text`
   margin-bottom: 0px;
   padding: 20px 10px;
-  border-radius: 18px;
+  border-radius: 16px;
   font-family: 'Exo-Regular';
-  font-size: 22px;
+  font-size: 18px;
   color: #353434;
 `;
 
 export const ValueText = styled.Text`
   font-family: 'Exo-SemiBold';
   justify-content: center;
-  font-size: 18px;
+  font-size: 15px;
   color: #5a5858;
 `;
 

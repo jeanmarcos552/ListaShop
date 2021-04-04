@@ -1,11 +1,10 @@
 import {Form} from '@unform/mobile';
 import {FormHandles} from '@unform/core';
 import React, {useCallback, useRef, useState} from 'react';
-import {Alert, KeyboardAvoidingView, Platform, ScrollView} from 'react-native';
+import {KeyboardAvoidingView, Platform, ScrollView} from 'react-native';
 
 import Icon from 'react-native-vector-icons/Feather';
 
-import Button from '../../../Components/Button';
 import Input from '../../../Components/Input';
 import {
   Title,
@@ -14,6 +13,9 @@ import {
   Modal,
   PressableButton,
   PressableButtonText,
+  FooterButtons,
+  ButtonCreate,
+  ButtonCreateText,
 } from './style';
 
 const FormLista = () => {
@@ -26,45 +28,46 @@ const FormLista = () => {
   const [modalVisible, setModalVisible] = useState(false);
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'android' ? 'height' : 'padding'}
-      style={{flex: 1}}
-      enabled>
-      <ScrollView
-        contentContainerStyle={{flex: 1}}
-        keyboardShouldPersistTaps="handled">
-        <Modal
-          presentationStyle="fullScreen"
-          animationType="slide"
-          visible={modalVisible}
-          onRequestClose={() => {
-            Alert.alert('Modal has been closed.');
-            setModalVisible(!modalVisible);
-          }}>
-          <Container>
-            <Title>Adicionar uma Lista de compras?</Title>
+    <>
+      <Modal
+        presentationStyle="fullScreen"
+        animationType="slide"
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'android' ? 'height' : 'padding'}
+          style={{flex: 1}}
+          enabled>
+          <ScrollView
+            contentContainerStyle={{flex: 1}}
+            keyboardShouldPersistTaps="handled">
+            <Container>
+              <Title>Adicionar uma Lista de compras?</Title>
 
-            <Form onSubmit={handleCreateLista} ref={formRef}>
-              <Input name="name" placeholder="Nome da lista" icon="list" />
+              <Form onSubmit={handleCreateLista} ref={formRef}>
+                <Input name="name" placeholder="Nome da lista" icon="list" />
 
-              <Button onPress={() => formRef.current?.submitForm()}>
-                Criar
-              </Button>
-            </Form>
-            <PressableButton onPress={() => setModalVisible(!modalVisible)}>
-              <PressableButtonText
-                size={50}
-                name="md-close-outline"
-                color="red"
-              />
-            </PressableButton>
-          </Container>
-        </Modal>
-      </ScrollView>
+                <FooterButtons>
+                  <ButtonCreate onPress={() => formRef.current?.submitForm()}>
+                    <ButtonCreateText>Criar</ButtonCreateText>
+                  </ButtonCreate>
+                  <PressableButton
+                    onPress={() => setModalVisible(!modalVisible)}>
+                    <PressableButtonText>Cancelar</PressableButtonText>
+                  </PressableButton>
+                </FooterButtons>
+              </Form>
+            </Container>
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </Modal>
+
       <FabButtom onPress={() => setModalVisible(!modalVisible)}>
         <Icon name="plus" size={40} color="#fff" />
       </FabButtom>
-    </KeyboardAvoidingView>
+    </>
   );
 };
 
