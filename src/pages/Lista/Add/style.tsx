@@ -41,7 +41,7 @@ export const Row = styled.View`
 
 export const FabButtom = styled.TouchableOpacity`
   position: absolute;
-  bottom: 40px;
+  bottom: ${getBottomSpace()}px;
   right: 20px;
   background-color: #ff9000;
   border-radius: 100px;
