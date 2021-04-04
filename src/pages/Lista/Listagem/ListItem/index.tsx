@@ -67,7 +67,7 @@ const ItensToList: React.FC = ({route, navigation}) => {
 
       <Container>
         <FlatList
-          data={ITENSBD.data}
+          data={item.itens}
           renderItem={({item: provider}) => (
             <InputCheckbox
               size={18}

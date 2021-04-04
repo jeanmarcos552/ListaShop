@@ -1,9 +1,9 @@
-import React, {useCallback} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 
 import FormLista from '../Add';
 import Foto from '../../../assets/img/foto.jpg';
 
-import {ProgressBar, Colors, Avatar} from 'react-native-paper';
+import {ProgressBar, Avatar} from 'react-native-paper';
 
 import {
   ContainerList,
@@ -44,18 +44,18 @@ const Lista = () => {
 
   const DATA = [
     {
-      id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
+      id: '1',
       title: 'Compras. Bretas',
-      icon: 'x-circle',
+      icon: 'clock',
       itens: [
-        {key: 1, name: 'item 1', value: 23.9, status: false},
+        {key: 1, name: 'item 1', value: 23.9, status: true},
         {key: 2, name: 'item 2', value: 23.9, status: true},
-        {key: 2, name: 'item 2', value: 23.9, status: true},
+        {key: 3, name: 'item 2', value: 23.9, status: true},
       ],
       total: 3,
     },
     {
-      id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
+      id: '2',
       title: 'Tatico Garavelo',
       icon: 'check-circle',
       itens: [
@@ -65,17 +65,20 @@ const Lista = () => {
       total: 2,
     },
     {
-      id: '58694a0de-3da1-471f-bd96-145571e29d72',
+      id: '3',
       title: 'Mateus supermecado.',
       icon: 'check-circle',
       itens: [
-        {key: 1, name: 'item 1', value: 23.9, status: false},
-        {key: 2, name: 'item 2', value: 23.9, status: false},
+        {key: 1, name: 'item 1', value: 23.9, status: true},
+        {key: 2, name: 'item 2', value: 23.9, status: true},
+        {key: 3, name: 'item 2', value: 23.9, status: true},
+        {key: 4, name: 'item 2', value: 23.9, status: true},
+        {key: 5, name: 'item 2', value: 23.9, status: true},
       ],
-      total: 2,
+      total: 5,
     },
     {
-      id: '68694a0f-3da1-471f-bd96-145571e29d72',
+      id: '4',
       title: 'Hugão',
       icon: 'check-circle',
       itens: [
@@ -85,12 +88,7 @@ const Lista = () => {
       total: 2,
     },
     {
-      id: '58690f-3da1-471f-bd96-145571e29d72',
-      title: 'Store',
-      icon: 'x-circle',
-    },
-    {
-      id: '5869rr4a0f-3da1-471f-bd96-145571e29d72',
+      id: '5',
       title: 'Aveninda',
       icon: 'check-circle',
       itens: [
@@ -100,7 +98,7 @@ const Lista = () => {
       total: 2,
     },
     {
-      id: '58de694a0f-3da1-471f-bd96-145571e29d72',
+      id: '6',
       title: 'Third Item',
       icon: 'check-circle',
       itens: [
@@ -119,14 +117,13 @@ const Lista = () => {
   );
 
   function calcItensCheckt(provider: Provider) {
-    let itensChected = 0;
-    provider.itens?.map((item) => {
+    let itensChecked = 0;
+    provider.itens?.forEach((item) => {
       if (item.status) {
-        itensChected++;
+        itensChecked++;
       }
     });
-
-    return itensChected / provider.total;
+    return itensChecked / provider.total;
   }
 
   return (
@@ -149,9 +146,11 @@ const Lista = () => {
               <ContainerText>
                 <ItemListText>{provider.title}</ItemListText>
                 <IconText
-                  name={provider.icon}
+                  name={
+                    calcItensCheckt(provider) === 1 ? 'check-circle' : 'clock'
+                  }
                   color={
-                    provider.icon !== 'check-circle' ? '#e3134a' : '#01ac73'
+                    calcItensCheckt(provider) !== 1 ? '#f0ac1b' : '#01ac73'
                   }
                   size={20}
                 />
