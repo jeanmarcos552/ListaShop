@@ -21,28 +21,59 @@ import {
 export interface Provider {
   total: number;
   data: [{key: string; name: string; value: number}];
+  itens: Array<any>;
+  totalChecked?: number;
+}
+interface ItensLista {
+  key?: string;
+  itens: Array<any[]>;
+  status: boolean;
 }
 
 const ItensToList: React.FC = ({route, navigation}) => {
-  let ITENSBD = {
-    total: 2,
-    data: [
-      {key: 1, name: 'item 1', value: 23.9, status: false},
-      {key: 2, name: 'item 2', value: 23.9, status: true},
-    ],
-  };
-  const {item} = route.params;
-  let [itensChecked, SetItensChecked] = useState<Provider>();
+  let {item} = route.params;
 
-  const handleCheckItem = useCallback((provider) => {
-    console.log(provider);
-  }, []);
+  let [itensChecked, SetItensChecked] = useState<Provider>();
+  let [checked, SetChecked] = useState(0);
+
+  useEffect(() => {
+    SetItensChecked(item);
+    let newChecked = 0;
+
+    item.itens?.forEach((lista: ItensLista) => {
+      if (lista.status) {
+        newChecked++;
+      }
+    });
+
+    SetChecked(newChecked);
+  }, [item, itensChecked, checked]);
+
+  const handleCheckItem = (provider: ItensLista) => {
+    let newProvider = {...itensChecked};
+    let {itens} = newProvider;
+    let totalChecked = 0;
+    itens?.forEach((lista: ItensLista) => {
+      if (lista.key === provider.key) {
+        provider.status = provider.status ? false : true;
+        // newProvider.itens[key] = provider;
+      }
+
+      if (lista.status) {
+        totalChecked++;
+      }
+    });
+    SetChecked(totalChecked);
+    // SetItensChecked(newProvider);
+  };
 
   const renderHeader = () => {
     return (
       <TitleContainer>
         <Title>Itens concluídos: </Title>
-        <DisplayItensChecked>1/{ITENSBD.total}</DisplayItensChecked>
+        <DisplayItensChecked>
+          {checked ? checked : 0}/{itensChecked?.total}
+        </DisplayItensChecked>
       </TitleContainer>
     );
   };
@@ -67,7 +98,7 @@ const ItensToList: React.FC = ({route, navigation}) => {
 
       <Container>
         <FlatList
-          data={item.itens}
+          data={itensChecked?.itens}
           renderItem={({item: provider}) => (
             <InputCheckbox
               size={18}
