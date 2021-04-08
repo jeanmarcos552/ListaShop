@@ -38,15 +38,9 @@ const ItensToList: React.FC = ({route, navigation}) => {
 
   useEffect(() => {
     SetItensChecked(item);
-    let newChecked = 0;
-
-    item.itens?.forEach((lista: ItensLista) => {
-      if (lista.status) {
-        newChecked++;
-      }
-    });
-
-    SetChecked(newChecked);
+    SetChecked(
+      item.itens?.filter((lista: ItensLista) => lista.status === true).length,
+    );
   }, [item, itensChecked, checked]);
 
   const handleCheckItem = (provider: ItensLista) => {
