@@ -18,20 +18,24 @@ export const Title = styled.Text`
 
 export const BackToLogin = styled.TouchableOpacity`
   position: absolute;
-  bottom: 0;
-  color: #1abd33;
   left: 0;
   right: 0;
+  bottom: 0;
   padding: 16px 0 ${16 + getBottomSpace()}px;
 
+  align-items: center;
+  justify-content: center;
   border-top-width: 1px;
   border-color: #fff;
-  justify-content: center;
-  align-items: center;
 `;
 
 export const BackToLoginText = styled.Text`
   color: #fff;
-  font-family: 'Exo-SemiBold';
+  font-family: 'Exo-semiBold';
   font-size: 20px;
+`;
+
+export const Image = styled.Image`
+  width: 100%;
+  height: 75px;
 `;

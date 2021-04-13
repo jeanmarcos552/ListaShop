@@ -1,0 +1,97 @@
+import {getBottomSpace, getStatusBarHeight} from 'react-native-iphone-x-helper';
+import LinearGradient from 'react-native-linear-gradient';
+import styled from 'styled-components/native';
+import {Form} from '@unform/mobile';
+import BouncyCheckbox from 'react-native-bouncy-checkbox';
+import {FlatList} from 'react-native-gesture-handler';
+
+export const Header = styled(LinearGradient)`
+  flex-direction: row;
+  justify-content: space-between;
+  padding: ${10 + getStatusBarHeight()}px 10px 10px;
+  align-items: center;
+`;
+
+export const Container = styled.View`
+  padding: 20px;
+  background-color: #fff;
+  flex: 1;
+`;
+
+export const HeaderText = styled.Text`
+  margin-right: auto;
+  font-size: 18px;
+  padding: 5px 10px;
+  font-family: 'Exo-SemiBold';
+  color: #fff;
+`;
+
+export const Username = styled.Text``;
+
+export const FormContainer = styled(Form)`
+  flex-direction: row;
+  flex: 1;
+  justify-content: center;
+`;
+
+export const FabButtom = styled.TouchableOpacity`
+  position: absolute;
+  bottom: ${getBottomSpace() + 30}px;
+  right: 20px;
+  background-color: #ff9000;
+  border-radius: 100px;
+
+  width: 55px;
+  height: 55px;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+  box-shadow: 0px 0px 15px #5a5959;
+`;
+
+export const TitleContainer = styled.View`
+  flex-direction: row;
+  margin: 5px 0 15px;
+  justify-content: center;
+`;
+export const Title = styled.Text`
+  font-size: 20px;
+  color: #5a5959;
+  font-family: 'Exo-SemiBold';
+`;
+export const DisplayItensChecked = styled.Text`
+  font-size: 20px;
+  color: #01ac73;
+  font-family: 'Exo-Regular';
+`;
+
+export const InputCheckbox = styled(BouncyCheckbox)`
+  margin-bottom: 10px;
+  padding: 2px;
+`;
+
+export const TotalFooter = styled.Text`
+  font-size: 20px;
+  color: #01ac73;
+  font-family: 'Exo-SemiBold';
+  align-items: flex-start;
+`;
+
+export const ListItens = styled(FlatList)`
+  padding-bottom: 16px;
+`;
+
+export const GridItens = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+export const TextValues = styled.TextInput`
+  border-width: 1px;
+  border-style: solid;
+  border-color: #f19000;
+  padding: 5px;
+  margin: 5px 0;
+  border-radius: 8px;
+`;
