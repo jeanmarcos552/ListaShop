@@ -14,10 +14,10 @@ export const Header = styled(LinearGradient)`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  padding: ${10 + getStatusBarHeight()}px 10px 10px;
+  padding: ${20 + getStatusBarHeight()}px 10px 10px;
 `;
 export const HeaderText = styled.Text`
-  font-size: 18px;
+  font-size: 21px;
   font-family: 'Exo-SemiBold';
   color: #fff;
 `;

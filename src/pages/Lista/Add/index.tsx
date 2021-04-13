@@ -1,7 +1,12 @@
 import {Form} from '@unform/mobile';
 import {FormHandles} from '@unform/core';
 import React, {useCallback, useRef, useState} from 'react';
-import {KeyboardAvoidingView, Platform, ScrollView} from 'react-native';
+import {
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StatusBar,
+} from 'react-native';
 
 import Icon from 'react-native-vector-icons/Feather';
 
@@ -29,8 +34,9 @@ const FormLista = () => {
 
   return (
     <>
+
       <Modal
-        presentationStyle="fullScreen"
+        presentationStyle="pageSheet"
         animationType="slide"
         visible={modalVisible}
         onRequestClose={() => {

@@ -3,6 +3,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import styled from 'styled-components/native';
 import {Form} from '@unform/mobile';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
+import {FlatList} from 'react-native-gesture-handler';
 
 export const Header = styled(LinearGradient)`
   flex-direction: row;
@@ -67,4 +68,30 @@ export const DisplayItensChecked = styled.Text`
 export const InputCheckbox = styled(BouncyCheckbox)`
   margin-bottom: 10px;
   padding: 2px;
+`;
+
+export const TotalFooter = styled.Text`
+  font-size: 20px;
+  color: #01ac73;
+  font-family: 'Exo-SemiBold';
+  align-items: flex-start;
+`;
+
+export const ListItens = styled(FlatList)`
+  padding-bottom: 16px;
+`;
+
+export const GridItens = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+export const TextValues = styled.TextInput`
+  border-width: 1px;
+  border-style: solid;
+  border-color: #f19000;
+  padding: 5px;
+  margin: 5px 0;
+  border-radius: 8px;
 `;

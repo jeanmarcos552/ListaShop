@@ -48,9 +48,9 @@ const Lista = () => {
       title: 'Compras. Bretas',
       icon: 'clock',
       itens: [
-        {key: 1, name: 'item 1', value: 23.9, status: true},
-        {key: 2, name: 'item 2', value: 23.9, status: true},
-        {key: 3, name: 'item 2', value: 23.9, status: true},
+        {key: 1, name: 'item 1', value: 10.9, status: true},
+        {key: 2, name: 'item 2', value: 19.9, status: true},
+        {key: 3, name: 'item 2', value: 2.9, status: true},
       ],
       total: 3,
     },
@@ -133,9 +133,8 @@ const Lista = () => {
         start={{x: 0, y: 0}}
         end={{x: 1, y: 0}}>
         <HeaderText>
-          <HeaderText>Minhas listas</HeaderText>
+          <HeaderText>Olá, Jean</HeaderText>
         </HeaderText>
-        <Avatar.Image size={54} source={Foto} />
       </Header>
 
       <ShoppingList

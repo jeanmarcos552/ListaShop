@@ -1,8 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {FlatList} from 'react-native';
-import {Avatar} from 'react-native-paper';
-
-import Foto from '../../../../assets/img/foto.jpg';
+import {KeyboardAvoidingView, Platform} from 'react-native';
 
 import Icon from 'react-native-vector-icons/Feather';
 
@@ -16,6 +13,10 @@ import {
   Title,
   DisplayItensChecked,
   InputCheckbox,
+  TotalFooter,
+  ListItens,
+  GridItens,
+  TextValues,
 } from './style';
 
 export interface Provider {
@@ -28,9 +29,15 @@ interface ItensLista {
   key?: string;
   itens: Array<any[]>;
   status: boolean;
+  value: string;
 }
 
-const ItensToList: React.FC = ({route, navigation}) => {
+interface PropsComponente {
+  route: any;
+  navigation: any;
+}
+
+const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
   let {item} = route.params;
 
   let [itensChecked, SetItensChecked] = useState<Provider>();
@@ -50,15 +57,12 @@ const ItensToList: React.FC = ({route, navigation}) => {
     itens?.forEach((lista: ItensLista) => {
       if (lista.key === provider.key) {
         provider.status = provider.status ? false : true;
-        // newProvider.itens[key] = provider;
       }
-
       if (lista.status) {
         totalChecked++;
       }
     });
     SetChecked(totalChecked);
-    // SetItensChecked(newProvider);
   };
 
   const renderHeader = () => {
@@ -68,6 +72,21 @@ const ItensToList: React.FC = ({route, navigation}) => {
         <DisplayItensChecked>
           {checked ? checked : 0}/{itensChecked?.total}
         </DisplayItensChecked>
+      </TitleContainer>
+    );
+  };
+
+  const renderFooter = () => {
+    return (
+      <TitleContainer>
+        <TotalFooter>
+          R${' '}
+          {itensChecked?.itens
+            .map((item) => parseFloat(item.value))
+            .reduce((prev, current) => prev + current)
+            .toFixed(2)
+            .replace('.', ',')}
+        </TotalFooter>
       </TitleContainer>
     );
   };
@@ -87,28 +106,43 @@ const ItensToList: React.FC = ({route, navigation}) => {
         <HeaderText>
           <Username>{item.title}</Username>
         </HeaderText>
-        <Avatar.Image size={54} source={Foto} />
       </Header>
 
-      <Container>
-        <FlatList
-          data={itensChecked?.itens}
-          renderItem={({item: provider}) => (
-            <InputCheckbox
-              size={18}
-              fillColor="#01ac73"
-              unfillColor="#FFFFFF"
-              text={provider.name}
-              iconStyle={{borderColor: '#01ac73'}}
-              textStyle={{fontFamily: 'Exo-SemiBold'}}
-              isChecked={provider.status}
-              onPress={() => handleCheckItem(provider)}
-            />
-          )}
-          ListHeaderComponent={renderHeader()}
-          keyExtractor={(provider) => provider.key.toString()}
-        />
-      </Container>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'android' ? 'height' : 'padding'}
+        enabled
+        style={{flex: 1}}>
+        <Container>
+          <ListItens
+            data={itensChecked?.itens}
+            renderItem={({item: provider}) => {
+              return (
+                <GridItens>
+                  <InputCheckbox
+                    size={18}
+                    fillColor="#01ac73"
+                    unfillColor="#FFFFFF"
+                    text={provider.name}
+                    iconStyle={{borderColor: '#01ac73'}}
+                    textStyle={{fontFamily: 'Exo-SemiBold'}}
+                    isChecked={provider.status}
+                    onPress={() => handleCheckItem(provider)}
+                  />
+                  <TextValues
+                    key={provider.id}
+                    defaultValue={provider.value.toString()}
+                    keyboardType="numeric"
+                    placeholder="0,00"
+                  />
+                </GridItens>
+              );
+            }}
+            ListHeaderComponent={renderHeader()}
+            keyExtractor={(provider) => provider.key.toString()}
+          />
+          {renderFooter()}
+        </Container>
+      </KeyboardAvoidingView>
       <FabButtom onPress={() => console.log()}>
         <Icon name="plus" size={40} color="#fff" />
       </FabButtom>
