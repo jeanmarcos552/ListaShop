@@ -1,5 +1,5 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {FlatList, KeyboardAvoidingView, Platform, View} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {FlatList} from 'react-native';
 import {Avatar} from 'react-native-paper';
 
 import Foto from '../../../../assets/img/foto.jpg';
