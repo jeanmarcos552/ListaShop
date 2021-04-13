@@ -815,7 +815,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.shoplist;
+				PRODUCT_BUNDLE_IDENTIFIER = br.com.shoplist;
 				PRODUCT_NAME = shoplist;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -838,7 +838,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.shoplist;
+				PRODUCT_BUNDLE_IDENTIFIER = br.com.shoplist;
 				PRODUCT_NAME = shoplist;
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
