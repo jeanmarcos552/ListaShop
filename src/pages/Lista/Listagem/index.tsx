@@ -1,9 +1,8 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback} from 'react';
 
 import FormLista from '../Add';
-import Foto from '../../../assets/img/foto.jpg';
 
-import {ProgressBar, Avatar} from 'react-native-paper';
+import {ProgressBar} from 'react-native-paper';
 
 import {
   ContainerList,
@@ -42,7 +41,7 @@ export interface ProviderItens {
 const Lista = () => {
   const navigate = useNavigation();
 
-  const DATA = [
+  let DATA = [
     {
       id: '1',
       title: 'Compras. Bretas',
