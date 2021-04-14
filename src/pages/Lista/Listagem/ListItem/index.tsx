@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {createRef, useEffect, useState} from 'react';
 import {KeyboardAvoidingView, Platform} from 'react-native';
 
 import Icon from 'react-native-vector-icons/Feather';
@@ -30,6 +30,7 @@ interface ItensLista {
   itens: Array<any[]>;
   status: boolean;
   value: string;
+  current: any;
 }
 
 interface PropsComponente {
@@ -43,6 +44,10 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
   let [itensChecked, SetItensChecked] = useState<Provider>();
   let [checked, SetChecked] = useState(0);
 
+  const [elRefs, setElRefs] = useState<Array<any>>([]);
+  let arrLength: Array<any>[];
+  arrLength = item.itens?.length + 1;
+
   useEffect(() => {
     SetItensChecked(item);
     SetChecked(
@@ -50,7 +55,16 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
     );
   }, [item, itensChecked, checked]);
 
-  const handleCheckItem = (provider: ItensLista) => {
+  useEffect(() => {
+    setElRefs((el) =>
+      Array(arrLength)
+        .fill(arrLength)
+        .map((_, i) => el[i] || createRef()),
+    );
+  }, [arrLength]);
+
+  const handleCheckItem = (provider: ItensLista, index: number) => {
+    elRefs[index].current.focus();
     let newProvider = {...itensChecked};
     let {itens} = newProvider;
     let totalChecked = 0;
@@ -115,7 +129,8 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
         <Container>
           <ListItens
             data={itensChecked?.itens}
-            renderItem={({item: provider}) => {
+            keyExtractor={(provider) => provider.key.toString()}
+            renderItem={({item: provider, index}) => {
               return (
                 <GridItens>
                   <InputCheckbox
@@ -126,10 +141,11 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
                     iconStyle={{borderColor: '#01ac73'}}
                     textStyle={{fontFamily: 'Exo-SemiBold'}}
                     isChecked={provider.status}
-                    onPress={() => handleCheckItem(provider)}
+                    onPress={() => handleCheckItem(provider, index)}
                   />
                   <TextValues
-                    key={provider.id}
+                    ref={elRefs[index]}
+                    key={provider.key}
                     defaultValue={provider.value.toString()}
                     keyboardType="numeric"
                     placeholder="0,00"
@@ -138,7 +154,6 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
               );
             }}
             ListHeaderComponent={renderHeader()}
-            keyExtractor={(provider) => provider.key.toString()}
           />
           {renderFooter()}
         </Container>

@@ -49,7 +49,7 @@ const Lista = () => {
       itens: [
         {key: 1, name: 'item 1', value: 10.9, status: true},
         {key: 2, name: 'item 2', value: 19.9, status: true},
-        {key: 3, name: 'item 2', value: 2.9, status: true},
+        {key: 55, name: 'item 2', value: 2.9, status: true},
       ],
       total: 3,
     },
