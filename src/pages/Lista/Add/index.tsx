@@ -36,7 +36,7 @@ const FormLista = () => {
     <>
 
       <Modal
-        presentationStyle="pageSheet"
+        presentationStyle="fullScreen"
         animationType="slide"
         visible={modalVisible}
         onRequestClose={() => {

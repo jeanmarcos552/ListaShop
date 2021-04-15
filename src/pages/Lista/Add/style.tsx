@@ -18,7 +18,6 @@ export const Title = styled.Text`
 
 export const Container = styled.View`
   flex: 1;
-  margin-top: 50px;
   justify-content: center;
   align-items: center;
   background-color: #01ac73;

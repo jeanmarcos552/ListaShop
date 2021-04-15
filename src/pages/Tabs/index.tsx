@@ -10,7 +10,6 @@ import Home from '../Home';
 import Icons from 'react-native-vector-icons/Ionicons';
 
 import Lista from '../Lista/Listagem';
-import ItensToList from '../Lista/Listagem/ListItem';
 
 const Tab = createBottomTabNavigator();
 
@@ -52,7 +51,7 @@ const Tabs = () => {
           },
         })}
         tabBarOptions={{
-          activeTintColor: '#1abd33',
+          activeTintColor: '#01ac73',
           inactiveTintColor: 'gray',
           showLabel: false,
         }}>

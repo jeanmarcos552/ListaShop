@@ -6,8 +6,6 @@ import {ProgressBar} from 'react-native-paper';
 
 import {
   ContainerList,
-  Header,
-  HeaderText,
   ItemList,
   ShoppingList,
   ValueText,
@@ -17,22 +15,18 @@ import {
 } from './style';
 import {useNavigation} from '@react-navigation/native';
 import {Text, View} from 'react-native';
+import HeaderLayout from '../../../Layout/Header';
 
 export interface Provider {
   id: string;
   title: string;
   icon: string;
-  itens?: [
-    {
-      name: string;
-      status: boolean;
-      value: number;
-    },
-  ];
+  itens?: Array<ProviderItens>;
   total: number;
 }
 
 export interface ProviderItens {
+  key: number;
   name: string;
   status: boolean;
   value: number;
@@ -41,7 +35,7 @@ export interface ProviderItens {
 const Lista = () => {
   const navigate = useNavigation();
 
-  let DATA = [
+  const DATA: Array<Provider> = [
     {
       id: '1',
       title: 'Compras. Bretas',
@@ -127,14 +121,7 @@ const Lista = () => {
 
   return (
     <>
-      <Header
-        colors={['#01ac73', '#03faa8']}
-        start={{x: 0, y: 0}}
-        end={{x: 1, y: 0}}>
-        <HeaderText>
-          <HeaderText>Olá, Jean</HeaderText>
-        </HeaderText>
-      </Header>
+      <HeaderLayout name="Jean" />
 
       <ShoppingList
         data={DATA}

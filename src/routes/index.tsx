@@ -8,6 +8,7 @@ import ForgetPass from '../pages/ForgetPass';
 import Tabs from '../pages/Tabs';
 import Lista from '../pages/Lista/Listagem';
 import ItensToList from '../pages/Lista/Listagem/ListItem';
+import AddToList from '../pages/Lista/Listagem/ListItem/AddToList';
 
 const Auth = createStackNavigator();
 
@@ -25,6 +26,7 @@ const Routes: React.FC = () => {
       <Auth.Screen name="Tabs" component={Tabs} />
       <Auth.Screen name="Lista" component={Lista} />
       <Auth.Screen name="ItensToList" component={ItensToList} />
+      <Auth.Screen name="AddToList" component={AddToList} />
     </Auth.Navigator>
   );
 };

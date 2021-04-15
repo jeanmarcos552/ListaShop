@@ -20,6 +20,7 @@ import {
 } from './style';
 
 export interface Provider {
+  id: number;
   total: number;
   data: [{key: string; name: string; value: number}];
   itens: Array<any>;
@@ -65,6 +66,7 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
 
   const handleCheckItem = (provider: ItensLista, index: number) => {
     elRefs[index].current.focus();
+
     let newProvider = {...itensChecked};
     let {itens} = newProvider;
     let totalChecked = 0;
@@ -94,7 +96,7 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
     return (
       <TitleContainer>
         <TotalFooter>
-          R${' '}
+          R$
           {itensChecked?.itens
             .map((item) => parseFloat(item.value))
             .reduce((prev, current) => prev + current)
@@ -108,7 +110,7 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
   return (
     <>
       <Header
-        colors={['#01ac73', '#03faa8']}
+        colors={['#01ac73', '#02865a']}
         start={{x: 0, y: 0}}
         end={{x: 1, y: 0}}>
         <Icon
@@ -158,7 +160,11 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
           {renderFooter()}
         </Container>
       </KeyboardAvoidingView>
-      <FabButtom onPress={() => console.log()}>
+
+      <FabButtom
+        onPress={() =>
+          navigation.navigate('AddToList', {item: itensChecked?.id})
+        }>
         <Icon name="plus" size={40} color="#fff" />
       </FabButtom>
     </>

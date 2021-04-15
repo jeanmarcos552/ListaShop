@@ -68,6 +68,7 @@ export const DisplayItensChecked = styled.Text`
 export const InputCheckbox = styled(BouncyCheckbox)`
   margin-bottom: 10px;
   padding: 2px;
+  align-items: flex-end;
 `;
 
 export const TotalFooter = styled.Text`
@@ -78,13 +79,13 @@ export const TotalFooter = styled.Text`
 `;
 
 export const ListItens = styled(FlatList)`
-  padding-bottom: 16px;
+  padding: 16px 0px;
 `;
 
 export const GridItens = styled.View`
   flex-direction: row;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-end;
 `;
 
 export const TextValues = styled.TextInput`
