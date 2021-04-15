@@ -54,7 +54,8 @@ const Tabs = () => {
           activeTintColor: '#01ac73',
           inactiveTintColor: 'gray',
           showLabel: false,
-        }}>
+        }}
+        initialRouteName="Lista">
         <Tab.Screen name="Home" component={Home} />
         <Tab.Screen name="Lista" component={Lista} />
         <Tab.Screen name="Settings" component={Settings} />
