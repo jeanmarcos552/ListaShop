@@ -8,7 +8,7 @@ import ForgetPass from '../pages/ForgetPass';
 import Tabs from '../pages/Tabs';
 import Lista from '../pages/Lista/Listagem';
 import ItensToList from '../pages/Lista/Listagem/ListItem';
-import AddToList from '../pages/Lista/Listagem/ListItem/AddToList';
+import AddToList from '../pages/Lista/Listagem/AddToList';
 
 const Auth = createStackNavigator();
 

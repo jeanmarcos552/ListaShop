@@ -1,7 +1,7 @@
 import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
-import {StatusBar, Text, View} from 'react-native';
+import {Text, View} from 'react-native';
 import Button from '../../Components/Button';
 
 import {useNavigation} from '@react-navigation/native';
