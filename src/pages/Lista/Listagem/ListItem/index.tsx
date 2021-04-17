@@ -2,12 +2,10 @@ import React, {createRef, useEffect, useState} from 'react';
 import {KeyboardAvoidingView, Platform} from 'react-native';
 
 import Icon from 'react-native-vector-icons/Feather';
+import HeaderSingle from '../../../../Layout/HeaderSingle';
 
 import {
   Container,
-  Header,
-  HeaderText,
-  Username,
   FabButtom,
   TitleContainer,
   Title,
@@ -109,20 +107,7 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
 
   return (
     <>
-      <Header
-        colors={['#01ac73', '#02865a']}
-        start={{x: 0, y: 0}}
-        end={{x: 1, y: 0}}>
-        <Icon
-          name="arrow-left"
-          size={20}
-          color="#fff"
-          onPress={() => navigation.goBack()}
-        />
-        <HeaderText>
-          <Username>{item.title}</Username>
-        </HeaderText>
-      </Header>
+      <HeaderSingle title={item.title} navigation={navigation} />
 
       <KeyboardAvoidingView
         behavior={Platform.OS === 'android' ? 'height' : 'padding'}
@@ -162,9 +147,7 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
       </KeyboardAvoidingView>
 
       <FabButtom
-        onPress={() =>
-          navigation.navigate('AddToList', {item: itensChecked?.id})
-        }>
+        onPress={() => navigation.navigate('AddToList', {item: itensChecked})}>
         <Icon name="plus" size={40} color="#fff" />
       </FabButtom>
     </>

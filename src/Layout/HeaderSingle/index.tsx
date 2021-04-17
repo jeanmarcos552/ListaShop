@@ -21,7 +21,7 @@ const HeaderSingle: React.FC<PropsHeader> = ({title, navigation}) => {
         color="#fff"
         onPress={() => navigation.goBack()}
       />
-      <HeaderText>
+      <HeaderText onPress={() => navigation.goBack()}>
         <Username>{title}</Username>
       </HeaderText>
     </Header>

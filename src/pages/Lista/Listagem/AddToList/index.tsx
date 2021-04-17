@@ -13,12 +13,19 @@ import {
   ListResult,
   Item,
   ItemText,
+  HeaderList,
+  HeaderListTitle,
+  TitleBold,
+  TextButton,
 } from './style';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 
 interface PropsComponente {
   route: {
     params: {
-      item: object;
+      item: {
+        title: string;
+      };
     };
   };
   navigation: NavigationScreenProp<any, any>;
@@ -46,6 +53,10 @@ const DATA = [
     id: 3,
     title: 'Detergente',
   },
+  {
+    id: 4,
+    title: 'pera',
+  },
 ];
 
 const AddToList: React.FC<PropsComponente> = ({route, navigation}) => {
@@ -55,9 +66,19 @@ const AddToList: React.FC<PropsComponente> = ({route, navigation}) => {
   let [lista, setLista] = useState<Provider[]>();
   let [listaOfItens, setListaOfItens] = useState<Provider[]>([]);
 
+  const [isFocus, setIsFocus] = useState(true);
+
   useEffect(() => {
-    console.log(listaOfItens);
-  }, [listaOfItens]);
+    searchRef.current.focus();
+  }, [searchRef, item]);
+
+  const handleIsFocus = useCallback(() => {
+    setIsFocus(false);
+  }, []);
+
+  const handleIsFilled = useCallback(() => {
+    setIsFocus(true);
+  }, []);
 
   const handleSearchItens = useCallback(
     (text) => {
@@ -71,10 +92,7 @@ const AddToList: React.FC<PropsComponente> = ({route, navigation}) => {
   const handleAddItemToLista = useCallback(
     (data) => {
       let newLista = [...listaOfItens, {...data}];
-
       setListaOfItens(newLista);
-      // console.log(newLista);
-      // console.log(item);
     },
     [listaOfItens],
   );
@@ -82,16 +100,28 @@ const AddToList: React.FC<PropsComponente> = ({route, navigation}) => {
   return (
     <>
       <HeaderSearch>
-        <TextInputSugest>
-          <Icon name="search" size={15} color="#858484" />
+        <TextInputSugest isFocus={isFocus}>
+          <Icon
+            name="search"
+            size={15}
+            color={isFocus ? '#01ac73' : '#ff9000'}
+          />
           <InputText
+            isFocus={isFocus}
             ref={searchRef}
             placeholder="pesquisar..."
             value={value}
-            placeholderTextColor="#858484"
+            placeholderTextColor={isFocus ? '#01ac73' : '#ff9000'}
             onChangeText={(text) => handleSearchItens(text)}
             autoCapitalize="none"
+            onFocus={handleIsFocus}
+            onBlur={handleIsFilled}
           />
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <TextButton>
+              {listaOfItens.length > 0 ? 'Concluir' : 'Cancelar'}
+            </TextButton>
+          </TouchableOpacity>
         </TextInputSugest>
       </HeaderSearch>
 
@@ -103,11 +133,18 @@ const AddToList: React.FC<PropsComponente> = ({route, navigation}) => {
           <ListResult
             data={lista ?? []}
             keyExtractor={(provider) => provider.id.toString()}
+            ListHeaderComponent={() => (
+              <HeaderList>
+                <HeaderListTitle>
+                  Adicionar Itens a lista: <TitleBold>{item.title}</TitleBold>
+                </HeaderListTitle>
+              </HeaderList>
+            )}
             renderItem={({item: provider}) => (
               <Item onPress={() => handleAddItemToLista(provider)}>
                 <ItemText>{provider.title}</ItemText>
                 {listaOfItens.map((item) => {
-                  return item.title === provider.title ? (
+                  return item.id === provider.id ? (
                     <Icon
                       key={provider.id}
                       name="check"
