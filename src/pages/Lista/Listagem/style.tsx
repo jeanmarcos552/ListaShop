@@ -1,13 +1,15 @@
-import {Platform, FlatList} from 'react-native';
+import { Platform, FlatList } from 'react-native';
 import styled from 'styled-components/native';
-import {getStatusBarHeight, getBottomSpace} from 'react-native-iphone-x-helper';
-import {Provider} from './index';
+import { getStatusBarHeight, getBottomSpace } from 'react-native-iphone-x-helper';
+import { Provider } from './index';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/Feather';
+import { BaseButton } from 'react-native-gesture-handler';
+import { Colors } from 'react-native-paper';
 
-export const Container = styled.View`
+export const Container = styled.SafeAreaView`
   flex: 1;
-  padding: ${Platform.OS === 'android' ? 150 : 40}px 10px;
+  margin-top: ${Platform.OS === 'android' ? 150 : 20}px;
 `;
 
 export const Header = styled(LinearGradient)`
@@ -22,11 +24,11 @@ export const HeaderText = styled.Text`
   color: #fff;
 `;
 
-export const ContainerList = styled.TouchableOpacity`
-  margin: 10px 5px 10px;
+export const ContainerList = styled(BaseButton)`
+  margin: 0px 0px 10px;
   background-color: #fff;
-  border-radius: 10px;
-  box-shadow: 0px 2px 10px #e4e4e4;
+  /* box-shadow: 0px 2px 10px #e4e4e4; */
+  height:80px;
 `;
 
 export const ShoppingList = styled(FlatList as new () => FlatList<Provider>)`
@@ -65,4 +67,14 @@ export const ValueText = styled.Text`
 export const IconText = styled(Icon)`
   border-radius: 100px;
   padding: 3px;
+  align-items:center;
+  justify-content:center;
+`;
+
+export const ButtonDelete = styled.View`
+  background-color: ${Colors.red500};
+  justify-content: center;
+  align-items: center;
+  width: 100px;
+  height: 80px;
 `;
