@@ -1,5 +1,5 @@
-import React, {createRef, useEffect, useState} from 'react';
-import {KeyboardAvoidingView, Platform} from 'react-native';
+import React, { createRef, useEffect, useState } from 'react';
+import { KeyboardAvoidingView, Platform } from 'react-native';
 
 import Icon from 'react-native-vector-icons/Feather';
 import HeaderSingle from '../../../../Layout/HeaderSingle';
@@ -20,7 +20,7 @@ import {
 export interface Provider {
   id: number;
   total: number;
-  data: [{key: string; name: string; value: number}];
+  data: [{ key: string; name: string; value: number }];
   itens: Array<any>;
   totalChecked?: number;
 }
@@ -37,11 +37,12 @@ interface PropsComponente {
   navigation: any;
 }
 
-const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
-  let {item} = route.params;
+const ItensToList: React.FC<PropsComponente> = ({ route, navigation }) => {
+  let { item } = route.params;
 
   let [itensChecked, SetItensChecked] = useState<Provider>();
   let [checked, SetChecked] = useState(0);
+  let [valuesItens, SetValuesItens] = useState("");
 
   const [elRefs, setElRefs] = useState<Array<any>>([]);
   let arrLength: Array<any>[];
@@ -65,8 +66,8 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
   const handleCheckItem = (provider: ItensLista, index: number) => {
     elRefs[index].current.focus();
 
-    let newProvider = {...itensChecked};
-    let {itens} = newProvider;
+    let newProvider = { ...itensChecked };
+    let { itens } = newProvider;
     let totalChecked = 0;
     itens?.forEach((lista: ItensLista) => {
       if (lista.key === provider.key) {
@@ -112,12 +113,12 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
       <KeyboardAvoidingView
         behavior={Platform.OS === 'android' ? 'height' : 'padding'}
         enabled
-        style={{flex: 1}}>
+        style={{ flex: 1 }}>
         <Container>
           <ListItens
             data={itensChecked?.itens}
             keyExtractor={(provider) => provider.key.toString()}
-            renderItem={({item: provider, index}) => {
+            renderItem={({ item: provider, index }) => {
               return (
                 <GridItens>
                   <InputCheckbox
@@ -125,7 +126,7 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
                     fillColor="#01ac73"
                     unfillColor="#FFFFFF"
                     text={provider.name}
-                    iconStyle={{borderColor: '#01ac73'}}
+                    iconStyle={{ borderColor: '#01ac73' }}
                     textStyle={{
                       fontSize: 20,
                       fontFamily: 'Exo-Regular',
@@ -139,6 +140,7 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
                     defaultValue={provider.value.toString()}
                     keyboardType="numeric"
                     placeholder="0,00"
+                    onChangeText={text => console.log(text)}
                   />
                 </GridItens>
               );
@@ -150,7 +152,7 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
       </KeyboardAvoidingView>
 
       <FabButtom
-        onPress={() => navigation.navigate('AddToList', {item: itensChecked})}>
+        onPress={() => navigation.navigate('AddToList', { item: itensChecked })}>
         <Icon name="plus" size={40} color="#fff" />
       </FabButtom>
     </>
