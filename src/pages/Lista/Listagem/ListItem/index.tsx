@@ -2,6 +2,7 @@ import React, { createRef, useEffect, useState } from 'react';
 import { KeyboardAvoidingView, Platform } from 'react-native';
 
 import Icon from 'react-native-vector-icons/Feather';
+import { Money } from '../../../../../Utils/Mask';
 import HeaderSingle from '../../../../Layout/HeaderSingle';
 
 import {
@@ -140,7 +141,8 @@ const ItensToList: React.FC<PropsComponente> = ({ route, navigation }) => {
                     defaultValue={provider.value.toString()}
                     keyboardType="numeric"
                     placeholder="0,00"
-                    onChangeText={text => console.log(text)}
+                    value={valuesItens}
+                    onChangeText={text => SetValuesItens(Money(text))}
                   />
                 </GridItens>
               );
