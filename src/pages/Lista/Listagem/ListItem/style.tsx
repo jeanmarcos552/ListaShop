@@ -1,9 +1,9 @@
-import {getBottomSpace, getStatusBarHeight} from 'react-native-iphone-x-helper';
+import { getBottomSpace, getStatusBarHeight } from 'react-native-iphone-x-helper';
 import LinearGradient from 'react-native-linear-gradient';
 import styled from 'styled-components/native';
-import {Form} from '@unform/mobile';
+import { Form } from '@unform/mobile';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
-import {FlatList} from 'react-native-gesture-handler';
+import { FlatList } from 'react-native-gesture-handler';
 
 export const Header = styled(LinearGradient)`
   flex-direction: row;
@@ -85,14 +85,18 @@ export const ListItens = styled(FlatList)`
 export const GridItens = styled.View`
   flex-direction: row;
   justify-content: space-between;
-  align-items: flex-end;
+  align-items: center;
 `;
 
 export const TextValues = styled.TextInput`
-  border-width: 1px;
-  border-style: solid;
-  border-color: #f19000;
+  font-family: 'Exo-SemiBold';
+  height: 35px;
+  background-color: #f5f5f5;
   padding: 5px;
   margin: 5px 0;
-  border-radius: 8px;
+  border-radius: 3px;
+  width: 80px;
+  text-align: right;
+  color: #585858;
+  font-size: 15px;
 `;

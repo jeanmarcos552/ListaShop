@@ -121,12 +121,15 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
               return (
                 <GridItens>
                   <InputCheckbox
-                    size={18}
+                    size={25}
                     fillColor="#01ac73"
                     unfillColor="#FFFFFF"
                     text={provider.name}
                     iconStyle={{borderColor: '#01ac73'}}
-                    textStyle={{fontFamily: 'Exo-SemiBold'}}
+                    textStyle={{
+                      fontSize: 20,
+                      fontFamily: 'Exo-Regular',
+                    }}
                     isChecked={provider.status}
                     onPress={() => handleCheckItem(provider, index)}
                   />
