@@ -21,8 +21,8 @@ import {
 export interface Provider {
   id: number;
   total: number;
-  data: [{ key: string; name: string; value: number }];
-  itens: Array<any>;
+  data: Array<ItensLista>[];
+  itens: Array<ItensLista>;
   totalChecked?: number;
 }
 interface ItensLista {
@@ -43,7 +43,6 @@ const ItensToList: React.FC<PropsComponente> = ({ route, navigation }) => {
 
   let [itensChecked, SetItensChecked] = useState<Provider>();
   let [checked, SetChecked] = useState(0);
-  let [valuesItens, SetValuesItens] = useState("");
 
   const [elRefs, setElRefs] = useState<Array<any>>([]);
   let arrLength: Array<any>[];
@@ -81,6 +80,17 @@ const ItensToList: React.FC<PropsComponente> = ({ route, navigation }) => {
     SetChecked(totalChecked);
   };
 
+  const SetValuesItens = (text: string, { key }: any) => {
+    let itens = itensChecked?.itens.map(item => {
+      if (key === item.key) {
+        item.value = text.replace(",", ".");
+      }
+      return item;
+    });
+
+    SetItensChecked({ ...itensChecked, itens });
+  }
+
   const renderHeader = () => {
     return (
       <TitleContainer>
@@ -98,8 +108,9 @@ const ItensToList: React.FC<PropsComponente> = ({ route, navigation }) => {
         <TotalFooter>
           R$
           {itensChecked?.itens
-            .map((item) => parseFloat(item.value))
-            .reduce((prev, current) => prev + current)
+            .filter((item) => item.status === true)
+            .map((item) => isNaN(parseFloat(item.value)) ? 0 : parseFloat(item.value))
+            .reduce((prev, current) => prev + current, 0)
             .toFixed(2)
             .replace('.', ',')}
         </TotalFooter>
@@ -141,8 +152,8 @@ const ItensToList: React.FC<PropsComponente> = ({ route, navigation }) => {
                     defaultValue={provider.value.toString()}
                     keyboardType="numeric"
                     placeholder="0,00"
-                    value={valuesItens}
-                    onChangeText={text => SetValuesItens(Money(text))}
+                    value={provider.value.toString()}
+                    onChangeText={text => SetValuesItens(text, provider)}
                   />
                 </GridItens>
               );
