@@ -17,19 +17,13 @@ import {
   GridItens,
   TextValues,
 } from './style';
+import { ProviderItens } from '..';
 
 export interface Provider {
   id: number;
   total: number;
-  itens: Array<ItensLista>;
+  itens: Array<ProviderItens>;
   totalChecked?: number;
-}
-interface ItensLista {
-  key?: string;
-  name: string;
-  status: boolean;
-  value: string;
-  current: any;
 }
 
 interface PropsComponente {
@@ -50,7 +44,7 @@ const ItensToList: React.FC<PropsComponente> = ({ route, navigation }) => {
   useEffect(() => {
     SetItensChecked(item);
     SetChecked(
-      item.itens?.filter((lista: ItensLista) => lista.status === true).length,
+      item.itens?.filter((lista: ProviderItens) => lista.status === true).length,
     );
   }, [item, itensChecked, checked]);
 
@@ -61,7 +55,7 @@ const ItensToList: React.FC<PropsComponente> = ({ route, navigation }) => {
     );
   }, [arrLength]);
 
-  const handleCheckItem = (provider: ItensLista, index: number) => {
+  const handleCheckItem = (provider: ProviderItens, index: number) => {
     !provider.status ? elRefs[index].current.focus() : "";
 
     let newProvider = { ...itensChecked };
@@ -151,7 +145,7 @@ const ItensToList: React.FC<PropsComponente> = ({ route, navigation }) => {
                     defaultValue={provider.value.toString()}
                     keyboardType="numeric"
                     placeholder="0,00"
-                    value={provider.value.toString()}
+                    value={Money(provider.value.toString())}
                     onChangeText={text => SetValuesItens(text, provider)}
                   />
                 </GridItens>
