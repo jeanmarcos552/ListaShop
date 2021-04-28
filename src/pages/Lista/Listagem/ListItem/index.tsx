@@ -1,8 +1,8 @@
 import React, { createRef, useEffect, useState } from 'react';
 import { KeyboardAvoidingView, Platform } from 'react-native';
 
-import Icon from 'react-native-vector-icons/Feather';
 import { Money } from '../../../../../Utils/Mask';
+import Icon from 'react-native-vector-icons/Feather';
 import HeaderSingle from '../../../../Layout/HeaderSingle';
 
 import {
@@ -21,13 +21,12 @@ import {
 export interface Provider {
   id: number;
   total: number;
-  data: Array<ItensLista>[];
   itens: Array<ItensLista>;
   totalChecked?: number;
 }
 interface ItensLista {
   key?: string;
-  itens: Array<any[]>;
+  name: string;
   status: boolean;
   value: string;
   current: any;
@@ -56,15 +55,14 @@ const ItensToList: React.FC<PropsComponente> = ({ route, navigation }) => {
   }, [item, itensChecked, checked]);
 
   useEffect(() => {
-    setElRefs((el) =>
-      Array(arrLength)
-        .fill(arrLength)
-        .map((_, i) => el[i] || createRef()),
+    setElRefs((el) => Array(arrLength)
+      .fill(arrLength)
+      .map((_, i) => el[i] || createRef()),
     );
   }, [arrLength]);
 
   const handleCheckItem = (provider: ItensLista, index: number) => {
-    elRefs[index].current.focus();
+    !provider.status ? elRefs[index].current.focus() : "";
 
     let newProvider = { ...itensChecked };
     let { itens } = newProvider;
@@ -81,7 +79,7 @@ const ItensToList: React.FC<PropsComponente> = ({ route, navigation }) => {
   };
 
   const SetValuesItens = (text: string, { key }: any) => {
-    let itens = itensChecked?.itens.map(item => {
+    let itens = itensChecked?.itens.map((item) => {
       if (key === item.key) {
         item.value = text.replace(",", ".");
       }
@@ -143,6 +141,7 @@ const ItensToList: React.FC<PropsComponente> = ({ route, navigation }) => {
                       fontSize: 20,
                       fontFamily: 'Exo-Regular',
                     }}
+
                     isChecked={provider.status}
                     onPress={() => handleCheckItem(provider, index)}
                   />

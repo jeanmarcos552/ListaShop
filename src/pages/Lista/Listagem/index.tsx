@@ -41,9 +41,7 @@ let DATA: Array<Provider> = [
     title: 'Compras. Bretas',
     icon: 'clock',
     itens: [
-      {key: 1, name: 'Papel higiênico defumante 1', value: 10.9, status: true},
-      {key: 2, name: 'item 2', value: 19.9, status: true},
-      {key: 55, name: 'item 2', value: 2.9, status: true},
+      {key: 1, name: 'Papel', value: 10.9, status: true},
     ],
     total: 3,
   },
