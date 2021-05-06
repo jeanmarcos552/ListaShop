@@ -22,6 +22,14 @@ import {useNavigation} from '@react-navigation/native';
 
 import IconBack from 'react-native-vector-icons/Feather';
 import getValidationErrors from '../../../Utils/getValidation';
+import api from '../../services/axios';
+
+interface SignUpFormData {
+  name: string;
+  email: string;
+  password: string;
+  password_confirmation: string;
+}
 
 const SignUp: React.FC = () => {
   const navigate = useNavigation();
@@ -30,33 +38,39 @@ const SignUp: React.FC = () => {
   const emailInputRef = useRef<TextInput>(null);
   const passwordlInputRef = useRef<TextInput>(null);
 
-  const handleSignUp = useCallback(async (data) => {
-    try {
-      formRef.current?.setErrors({});
+  const handleSignUp = useCallback(
+    async (data: SignUpFormData) => {
+      try {
+        formRef.current?.setErrors({});
 
-      const schema = Yup.object({
-        nome: Yup.string().required('Nome obrigatório!'),
-        email: Yup.string()
-          .required('Email obrigatório!')
-          .email('Email inválido!'),
-        password: Yup.string().required('Senha é obrigatório!').min(6),
-      });
+        const schema = Yup.object().shape({
+          nome: Yup.string().required('Nome obrigatório!'),
+          email: Yup.string()
+            .required('Email obrigatório!')
+            .email('Email inválido!'),
+          password: Yup.string().min(2, 'No mínimo 6 digitos'),
+        });
+        await schema.validate(data, {
+          abortEarly: false,
+        });
+        console.log(data);
 
-      await schema.validate(data, {
-        abortEarly: false,
-      });
+        await api.post('/register', data);
 
-    } catch (err) {
-      if (err instanceof Yup.ValidationError) {
-        const erros = getValidationErrors(err);
-        formRef.current?.setErrors(erros);
+        return navigate.navigate('SignIn');
+      } catch (err) {
+        if (err instanceof Yup.ValidationError) {
+          const erros = getValidationErrors(err);
+          formRef.current?.setErrors(erros);
 
-        return;
+          return;
+        }
+
+        Alert.alert('Erro na validação', 'Ocorreu um erro no cadastro');
       }
-
-      Alert.alert('Erro na validação', 'Ocorreu um erro na Authenticação');
-    }
-  }, []);
+    },
+    [navigate],
+  );
 
   return (
     <KeyboardAvoidingView
@@ -73,7 +87,7 @@ const SignUp: React.FC = () => {
           </View>
           <Form ref={formRef} onSubmit={handleSignUp}>
             <Input
-              name="nome"
+              name="name"
               placeholder="Nome"
               icon="user"
               returnKeyType="next"
@@ -97,6 +111,14 @@ const SignUp: React.FC = () => {
               secureTextEntry
               name="password"
               placeholder="Senha"
+              icon="lock"
+              onSubmitEditing={() => formRef.current?.submitForm()}
+            />
+            <Input
+              ref={passwordlInputRef}
+              secureTextEntry
+              name="password_confirmation"
+              placeholder="Repetir senha"
               icon="lock"
               onSubmitEditing={() => formRef.current?.submitForm()}
             />

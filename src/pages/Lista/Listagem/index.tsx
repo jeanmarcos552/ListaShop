@@ -1,8 +1,8 @@
-import React, { useCallback, useState } from 'react';
+import React, {useCallback, useState} from 'react';
 
 import FormLista from '../Add';
 
-import { ProgressBar } from 'react-native-paper';
+import {ProgressBar} from 'react-native-paper';
 
 import {
   ContainerList,
@@ -15,10 +15,10 @@ import {
   ButtonDelete,
   Container,
 } from './style';
-import { useNavigation } from '@react-navigation/native';
-import { Animated, View } from 'react-native';
+import {useNavigation} from '@react-navigation/native';
+import {Animated, View} from 'react-native';
 import HeaderLayout from '../../../Layout/Header';
-import { Swipeable, TouchableOpacity } from 'react-native-gesture-handler';
+import {Swipeable, TouchableOpacity} from 'react-native-gesture-handler';
 
 export interface Provider {
   id: string;
@@ -41,8 +41,8 @@ let DATA: Array<Provider> = [
     title: 'Compras. Bretas',
     icon: 'clock',
     itens: [
-      { key: 1, name: 'Papel 1', value: 10,90, status: true },
-      { key: 2, name: 'Papel 1', value: 10,90, status: true },
+      {key: 1, name: 'Papel 1', value: 10.9, status: true},
+      {key: 2, name: 'Papel 1', value: 10.9, status: true},
     ],
     total: 3,
   },
@@ -51,8 +51,8 @@ let DATA: Array<Provider> = [
     title: 'Tatico Garavelo',
     icon: 'check-circle',
     itens: [
-      { key: 1, name: 'item 1', value: 23.9, status: true },
-      { key: 2, name: 'item 2', value: 23.9, status: false },
+      {key: 1, name: 'item 1', value: 23.9, status: true},
+      {key: 2, name: 'item 2', value: 23.9, status: false},
     ],
     total: 2,
   },
@@ -61,11 +61,11 @@ let DATA: Array<Provider> = [
     title: 'Mateus supermecado.',
     icon: 'check-circle',
     itens: [
-      { key: 1, name: 'item 1', value: 23.9, status: true },
-      { key: 2, name: 'item 2', value: 23.9, status: true },
-      { key: 3, name: 'item 2', value: 23.9, status: true },
-      { key: 4, name: 'item 2', value: 23.9, status: true },
-      { key: 5, name: 'item 2', value: 23.9, status: true },
+      {key: 1, name: 'item 1', value: 23.9, status: true},
+      {key: 2, name: 'item 2', value: 23.9, status: true},
+      {key: 3, name: 'item 2', value: 23.9, status: true},
+      {key: 4, name: 'item 2', value: 23.9, status: true},
+      {key: 5, name: 'item 2', value: 23.9, status: true},
     ],
     total: 5,
   },
@@ -74,8 +74,8 @@ let DATA: Array<Provider> = [
     title: 'Hugão',
     icon: 'check-circle',
     itens: [
-      { key: 1, name: 'item 1', value: 23.9, status: false },
-      { key: 2, name: 'item 2', value: 23.9, status: false },
+      {key: 1, name: 'item 1', value: 23.9, status: false},
+      {key: 2, name: 'item 2', value: 23.9, status: false},
     ],
     total: 2,
   },
@@ -84,8 +84,13 @@ let DATA: Array<Provider> = [
     title: 'Aveninda',
     icon: 'check-circle',
     itens: [
-      { key: 1, name: 'Papel higiênico todos os dias 1', value: 23.9, status: false },
-      { key: 2, name: 'item 2', value: 23.9, status: false },
+      {
+        key: 1,
+        name: 'Papel higiênico todos os dias 1',
+        value: 23.9,
+        status: false,
+      },
+      {key: 2, name: 'item 2', value: 23.9, status: false},
     ],
     total: 2,
   },
@@ -94,8 +99,8 @@ let DATA: Array<Provider> = [
     title: 'Third Item',
     icon: 'check-circle',
     itens: [
-      { key: 1, name: 'item 1', value: 23.9, status: false },
-      { key: 2, name: 'item 2', value: 23.9, status: false },
+      {key: 1, name: 'item 1', value: 23.9, status: false},
+      {key: 2, name: 'item 2', value: 23.9, status: false},
     ],
     total: 2,
   },
@@ -121,7 +126,7 @@ const Lista = () => {
         onPress={() => handleDelete(provider.id)}
         activeOpacity={0.6}>
         <ButtonDelete>
-          <Animated.Text style={{ color: '#fff', transform: [{ scale: scale }] }}>
+          <Animated.Text style={{color: '#fff', transform: [{scale: scale}]}}>
             Deletar
           </Animated.Text>
         </ButtonDelete>
@@ -131,7 +136,7 @@ const Lista = () => {
 
   const handleSeeIten = useCallback(
     (data: any) => {
-      navigate.navigate('ItensToList', { item: data });
+      navigate.navigate('ItensToList', {item: data});
     },
     [navigate],
   );
@@ -150,10 +155,10 @@ const Lista = () => {
     <>
       <HeaderLayout name="Jean" />
 
-      <Container style={{ flex: 1 }}>
+      <Container style={{flex: 1}}>
         <ShoppingList
           data={lista}
-          renderItem={({ item: provider }) => (
+          renderItem={({item: provider}) => (
             <Swipeable
               renderLeftActions={(progress, dragX) =>
                 leftSwipe(progress, dragX, provider)
@@ -177,7 +182,7 @@ const Lista = () => {
                   <ValueText>R$ 299,90</ValueText>
                 </ItemList>
                 <View
-                  style={{ paddingBottom: 10, paddingLeft: 4, paddingRight: 4 }}>
+                  style={{paddingBottom: 10, paddingLeft: 4, paddingRight: 4}}>
                   <ProgressBar
                     progress={calcItensCheckt(provider)}
                     color={'#01ac73'}

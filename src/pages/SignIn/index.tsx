@@ -32,6 +32,7 @@ import {
 
 import Input from '../../Components/Input';
 import Button from '../../Components/Button';
+import api from '../../services/axios';
 
 interface SignInFormData {
   email: string;
@@ -59,13 +60,9 @@ const SignIn: React.FC = () => {
         await schema.validate(data, {
           abortEarly: false,
         });
-        navigation.navigate('Tabs');
+        console.log(data);
+        await api.post('/login', data);
 
-        if (data.email === 'jean@admin.com' && data.password === 'secret') {
-          navigation.navigate('Tabs');
-        } else {
-          throw 'Ocorreu um erro na Authenticação!';
-        }
       } catch (err) {
         if (err instanceof yup.ValidationError) {
           const erros = getValidationErrors(err);
