@@ -1,6 +1,6 @@
-import React, {useCallback, useRef} from 'react';
+import React, { useCallback, useRef } from 'react';
 
-import * as yup from 'yup';
+import * as Yup from 'yup';
 
 import {
   KeyboardAvoidingView,
@@ -12,10 +12,10 @@ import {
 } from 'react-native';
 
 import Logo from '../../assets/img/logo.png';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 
-import {Form} from '@unform/mobile';
-import {FormHandles} from '@unform/core';
+import { Form } from '@unform/mobile';
+import { FormHandles } from '@unform/core';
 
 import getValidationErrors from '../../../Utils/getValidation';
 
@@ -40,7 +40,7 @@ interface SignInFormData {
 }
 
 const SignIn: React.FC = () => {
-  const navigation = useNavigation();
+  const navigate = useNavigation();
   const formRef = useRef<FormHandles>(null);
   const passwordRef = useRef<TextInput>(null);
 
@@ -49,40 +49,44 @@ const SignIn: React.FC = () => {
       try {
         formRef.current?.setErrors({});
 
-        const schema = yup.object().shape({
-          email: yup
+        const schema = Yup.object().shape({
+          email: Yup
             .string()
             .required('E-mail obrigatorio')
             .email('email inválido'),
-          password: yup.string().required('Password obrigatória!'),
+          password: Yup.string().required('Password obrigatória!'),
         });
 
         await schema.validate(data, {
           abortEarly: false,
         });
-        console.log(data);
+
         await api.post('/login', data);
+        return navigate.navigate('Home');
 
       } catch (err) {
-        if (err instanceof yup.ValidationError) {
+
+        if (err instanceof Yup.ValidationError) {
           const erros = getValidationErrors(err);
           formRef.current?.setErrors(erros);
+
           return;
         }
-        Alert.alert('Erro na validação', err);
+        Alert.alert('Erro na validação', "Erro ao efetuar o Login!");
+        
       }
     },
-    [navigation],
+    [navigate],
   );
 
   return (
     <>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'android' ? 'height' : 'padding'}
-        style={{flex: 1}}
+        style={{ flex: 1 }}
         enabled>
         <ScrollView
-          contentContainerStyle={{flex: 1}}
+          contentContainerStyle={{ flex: 1 }}
           keyboardShouldPersistTaps="handled">
           <Container>
             <Image source={Logo} />

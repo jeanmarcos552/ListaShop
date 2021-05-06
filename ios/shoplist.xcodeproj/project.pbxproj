@@ -254,7 +254,6 @@
 				00E356EA1AD99517003FC87E /* Sources */,
 				00E356EB1AD99517003FC87E /* Frameworks */,
 				00E356EC1AD99517003FC87E /* Resources */,
-				B187B06EB6259D17EA031D75 /* [CP] Embed Pods Frameworks */,
 				6B866A93225351BCD2251D11 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
@@ -277,7 +276,6 @@
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
-				A1F45C09375E7F727F20E1A9 /* [CP] Embed Pods Frameworks */,
 				A83B9D865FA47F9DF44F5E77 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
@@ -536,24 +534,6 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-shoplist-shoplistTests/Pods-shoplist-shoplistTests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		A1F45C09375E7F727F20E1A9 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-shoplist/Pods-shoplist-frameworks.sh",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/OpenSSL/OpenSSL.framework/OpenSSL",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OpenSSL.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-shoplist/Pods-shoplist-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		A83B9D865FA47F9DF44F5E77 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -602,24 +582,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-shoplist/Pods-shoplist-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		B187B06EB6259D17EA031D75 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-shoplist-shoplistTests/Pods-shoplist-shoplistTests-frameworks.sh",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/OpenSSL/OpenSSL.framework/OpenSSL",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OpenSSL.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-shoplist-shoplistTests/Pods-shoplist-shoplistTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		DA5FC8A718F500101A1D1B50 /* [CP] Check Pods Manifest.lock */ = {

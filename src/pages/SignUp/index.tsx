@@ -1,4 +1,4 @@
-import React, {useCallback, useRef} from 'react';
+import React, { useCallback, useRef } from 'react';
 import {
   KeyboardAvoidingView,
   Platform,
@@ -9,16 +9,16 @@ import {
 } from 'react-native';
 
 import * as Yup from 'yup';
-import {Form} from '@unform/mobile';
-import {FormHandles} from '@unform/core';
+import { Form } from '@unform/mobile';
+import { FormHandles } from '@unform/core';
 
 import Input from '../../Components/Input';
 import Button from '../../Components/Button';
 
-import {Title, Container, BackToLogin, BackToLoginText} from './style';
+import { Title, Container, BackToLogin, BackToLoginText } from './style';
 import Logo from '../../assets/img/logo.png';
-import {Image} from '../SignIn/style';
-import {useNavigation} from '@react-navigation/native';
+import { Image } from '../SignIn/style';
+import { useNavigation } from '@react-navigation/native';
 
 import IconBack from 'react-native-vector-icons/Feather';
 import getValidationErrors from '../../../Utils/getValidation';
@@ -44,16 +44,16 @@ const SignUp: React.FC = () => {
         formRef.current?.setErrors({});
 
         const schema = Yup.object().shape({
-          nome: Yup.string().required('Nome obrigatório!'),
+          name: Yup.string().required('Nome obrigatório!'),
           email: Yup.string()
             .required('Email obrigatório!')
             .email('Email inválido!'),
-          password: Yup.string().min(2, 'No mínimo 6 digitos'),
+          password: Yup.string().min(2, 'No mínimo 2 digitos'),
         });
+
         await schema.validate(data, {
           abortEarly: false,
         });
-        console.log(data);
 
         await api.post('/register', data);
 
@@ -66,7 +66,14 @@ const SignUp: React.FC = () => {
           return;
         }
 
-        Alert.alert('Erro na validação', 'Ocorreu um erro no cadastro');
+        if (err.response) {
+          let msg = "";
+          if(err.response.status === 422) {
+            msg = `Email: ${data.email} já existe!`;
+          }
+         
+          Alert.alert('Erro na validação', msg);
+        }
       }
     },
     [navigate],
@@ -75,10 +82,10 @@ const SignUp: React.FC = () => {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      style={{flex: 1}}
+      style={{ flex: 1 }}
       enabled>
       <ScrollView
-        contentContainerStyle={{flex: 1}}
+        contentContainerStyle={{ flex: 1 }}
         keyboardShouldPersistTaps="handled">
         <Container>
           <Image source={Logo} />
