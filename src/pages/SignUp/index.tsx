@@ -22,7 +22,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import IconBack from 'react-native-vector-icons/Feather';
 import getValidationErrors from '../../../Utils/getValidation';
-import api from '../../services/axios';
+import api from '../../services/api';
 
 interface SignUpFormData {
   name: string;

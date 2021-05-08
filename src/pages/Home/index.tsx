@@ -3,38 +3,22 @@ import {SafeAreaView, StyleSheet, View, StatusBar, Text} from 'react-native';
 import {TouchableHighlight} from 'react-native-gesture-handler';
 
 import {SwipeListView} from 'react-native-swipe-list-view';
+import {useAuth} from '../../hooks/auth';
 
 import Header from '../../Layout/Header';
-
+interface UserProps {
+  name: string;
+  email: string;
+}
 const Home = () => {
-  const openClick = useCallback((data) => {
-    console.log(data);
-  }, []);
+  const {user} = useAuth();
+
   return (
     <>
-      <Header name="Jean" />
+      <Header user={user} />
 
       <SafeAreaView>
-        <SwipeListView
-          data={Array(20)
-            .fill("")
-            .map((_, i) => ({ key: `${i}`, text: `item #${i}` }))}
-          renderItem={(data) => (
-            <TouchableHighlight onPress={openClick(data)} style={{backgroundColor: '#fff'}}>
-              <View>
-                <Text>I am {data.item.text} in a SwipeListView</Text>
-              </View>
-            </TouchableHighlight>
-          )}
-          renderHiddenItem={(data, rowMap) => (
-            <View>
-              <Text>Left</Text>
-              <Text>Right</Text>
-            </View>
-          )}
-          leftOpenValue={75}
-          rightOpenValue={-75}
-        />
+        <Text>Home</Text>
       </SafeAreaView>
     </>
   );

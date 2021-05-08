@@ -3,17 +3,17 @@ import React from 'react';
 import {Header, HeaderText} from './style';
 
 interface PropsHeader {
-  name: string;
+  user: {name: string};
 }
 
-const HeaderLayout: React.FC<PropsHeader> = ({name}) => {
+const HeaderLayout: React.FC<PropsHeader> = ({user}) => {
   return (
     <Header
       colors={['#01ac73', '#02865a']}
       start={{x: 0, y: 0}}
       end={{x: 1, y: 0}}>
       <HeaderText>
-        <HeaderText>Olá, {name}</HeaderText>
+        <HeaderText>Olá, {user.name}</HeaderText>
       </HeaderText>
     </Header>
   );

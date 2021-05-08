@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react';
+import React, {useCallback, useRef} from 'react';
 
 import * as Yup from 'yup';
 
@@ -12,10 +12,10 @@ import {
 } from 'react-native';
 
 import Logo from '../../assets/img/logo.png';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 
-import { Form } from '@unform/mobile';
-import { FormHandles } from '@unform/core';
+import {Form} from '@unform/mobile';
+import {FormHandles} from '@unform/core';
 
 import getValidationErrors from '../../../Utils/getValidation';
 
@@ -32,7 +32,8 @@ import {
 
 import Input from '../../Components/Input';
 import Button from '../../Components/Button';
-import api from '../../services/axios';
+
+import {useAuth} from '../../hooks/auth';
 
 interface SignInFormData {
   email: string;
@@ -44,14 +45,16 @@ const SignIn: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
   const passwordRef = useRef<TextInput>(null);
 
+  const {signIn} = useAuth();
+
+
   const handleSignIn = useCallback(
     async (data: SignInFormData) => {
       try {
         formRef.current?.setErrors({});
 
         const schema = Yup.object().shape({
-          email: Yup
-            .string()
+          email: Yup.string()
             .required('E-mail obrigatorio')
             .email('email inválido'),
           password: Yup.string().required('Password obrigatória!'),
@@ -61,32 +64,28 @@ const SignIn: React.FC = () => {
           abortEarly: false,
         });
 
-        await api.post('/login', data);
-        return navigate.navigate('Home');
-
+        await signIn({email: data.email, password: data.password});
       } catch (err) {
-
         if (err instanceof Yup.ValidationError) {
           const erros = getValidationErrors(err);
           formRef.current?.setErrors(erros);
 
           return;
         }
-        Alert.alert('Erro na validação', "Erro ao efetuar o Login!");
-        
+        Alert.alert('Erro na validação', 'Erro ao efetuar o Login!');
       }
     },
-    [navigate],
+    [signIn],
   );
 
   return (
     <>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'android' ? 'height' : 'padding'}
-        style={{ flex: 1 }}
+        style={{flex: 1}}
         enabled>
         <ScrollView
-          contentContainerStyle={{ flex: 1 }}
+          contentContainerStyle={{flex: 1}}
           keyboardShouldPersistTaps="handled">
           <Container>
             <Image source={Logo} />

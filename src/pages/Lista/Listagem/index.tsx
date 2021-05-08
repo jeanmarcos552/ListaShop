@@ -19,6 +19,7 @@ import {useNavigation} from '@react-navigation/native';
 import {Animated, View} from 'react-native';
 import HeaderLayout from '../../../Layout/Header';
 import {Swipeable, TouchableOpacity} from 'react-native-gesture-handler';
+import {useAuth} from '../../../hooks/auth';
 
 export interface Provider {
   id: string;
@@ -44,70 +45,13 @@ let DATA: Array<Provider> = [
       {key: 1, name: 'Papel 1', value: 10.9, status: true},
       {key: 2, name: 'Papel 1', value: 10.9, status: true},
     ],
-    total: 3,
-  },
-  {
-    id: '2',
-    title: 'Tatico Garavelo',
-    icon: 'check-circle',
-    itens: [
-      {key: 1, name: 'item 1', value: 23.9, status: true},
-      {key: 2, name: 'item 2', value: 23.9, status: false},
-    ],
-    total: 2,
-  },
-  {
-    id: '3',
-    title: 'Mateus supermecado.',
-    icon: 'check-circle',
-    itens: [
-      {key: 1, name: 'item 1', value: 23.9, status: true},
-      {key: 2, name: 'item 2', value: 23.9, status: true},
-      {key: 3, name: 'item 2', value: 23.9, status: true},
-      {key: 4, name: 'item 2', value: 23.9, status: true},
-      {key: 5, name: 'item 2', value: 23.9, status: true},
-    ],
-    total: 5,
-  },
-  {
-    id: '4',
-    title: 'Hugão',
-    icon: 'check-circle',
-    itens: [
-      {key: 1, name: 'item 1', value: 23.9, status: false},
-      {key: 2, name: 'item 2', value: 23.9, status: false},
-    ],
-    total: 2,
-  },
-  {
-    id: '5',
-    title: 'Aveninda',
-    icon: 'check-circle',
-    itens: [
-      {
-        key: 1,
-        name: 'Papel higiênico todos os dias 1',
-        value: 23.9,
-        status: false,
-      },
-      {key: 2, name: 'item 2', value: 23.9, status: false},
-    ],
-    total: 2,
-  },
-  {
-    id: '6',
-    title: 'Third Item',
-    icon: 'check-circle',
-    itens: [
-      {key: 1, name: 'item 1', value: 23.9, status: false},
-      {key: 2, name: 'item 2', value: 23.9, status: false},
-    ],
     total: 2,
   },
 ];
 
 const Lista = () => {
   const navigate = useNavigation();
+  const {user} = useAuth();
 
   const [lista, setLista] = useState(DATA);
 
@@ -153,7 +97,7 @@ const Lista = () => {
 
   return (
     <>
-      <HeaderLayout name="Jean" />
+      <HeaderLayout user={user} />
 
       <Container style={{flex: 1}}>
         <ShoppingList

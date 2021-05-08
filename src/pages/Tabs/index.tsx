@@ -4,23 +4,22 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {Text, View} from 'react-native';
 import Button from '../../Components/Button';
 
-import {useNavigation} from '@react-navigation/native';
-
 import Home from '../Home';
 import Icons from 'react-native-vector-icons/Ionicons';
 
 import Lista from '../Lista/Listagem';
+import {useAuth} from '../../hooks/auth';
 
 const Tab = createBottomTabNavigator();
 
 function Settings() {
-  const navigate = useNavigation();
+  const {signOut} = useAuth();
   return (
     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
       <Text>Settings!</Text>
       <Button
         onPress={() => {
-          navigate.navigate('SignIn');
+          signOut();
         }}>
         Sair
       </Button>
