@@ -3,7 +3,7 @@ import React from 'react';
 import {Header, HeaderText} from './style';
 
 interface PropsHeader {
-  user: {name: string};
+  user?: {name: string};
 }
 
 const HeaderLayout: React.FC<PropsHeader> = ({user}) => {
@@ -13,7 +13,7 @@ const HeaderLayout: React.FC<PropsHeader> = ({user}) => {
       start={{x: 0, y: 0}}
       end={{x: 1, y: 0}}>
       <HeaderText>
-        <HeaderText>Olá, {user.name}</HeaderText>
+        <HeaderText>Olá, {user?.name}</HeaderText>
       </HeaderText>
     </Header>
   );

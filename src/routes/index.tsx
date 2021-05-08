@@ -4,9 +4,20 @@ import AuthRoutes from './auth.routes';
 import AppRoutes from './app.routes';
 
 import {useAuth} from '../hooks/auth';
+import {View} from 'react-native';
+import {ActivityIndicator} from 'react-native-paper';
 
 const Routes: React.FC = () => {
-  const {user} = useAuth();
+  const {user, loading} = useAuth();
+
+  if (loading) {
+    return (
+      <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+        <ActivityIndicator size="large" color="#666" />
+      </View>
+    );
+  }
+
   return user ? <AppRoutes /> : <AuthRoutes />;
 };
 

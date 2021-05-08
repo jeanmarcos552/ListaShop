@@ -47,7 +47,6 @@ const SignIn: React.FC = () => {
 
   const {signIn} = useAuth();
 
-
   const handleSignIn = useCallback(
     async (data: SignInFormData) => {
       try {
@@ -120,14 +119,14 @@ const SignIn: React.FC = () => {
               </Button>
             </Form>
 
-            <ForgetPassword onPress={() => navigation.navigate('ForgetPass')}>
+            <ForgetPassword onPress={() => navigate.navigate('ForgetPass')}>
               <ForgetPasswordText>Esqueci a senha</ForgetPasswordText>
             </ForgetPassword>
           </Container>
         </ScrollView>
       </KeyboardAvoidingView>
 
-      <CreatAccount onPress={() => navigation.navigate('SignUp')}>
+      <CreatAccount onPress={() => navigate.navigate('SignUp')}>
         <IconText name="user-plus" color="#fff" size={20} />
         <CreatAccountText>Criar conta</CreatAccountText>
       </CreatAccount>
