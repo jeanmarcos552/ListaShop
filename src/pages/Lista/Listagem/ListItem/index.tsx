@@ -17,14 +17,7 @@ import {
   GridItens,
   TextValues,
 } from './style';
-import {ProviderItens} from '..';
-
-export interface Provider {
-  id: number;
-  total: number;
-  itens: Array<ProviderItens>;
-  totalChecked?: number;
-}
+import {ItemsReques, ProviderItens} from '..';
 
 interface PropsComponente {
   route: any;
@@ -34,7 +27,7 @@ interface PropsComponente {
 const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
   let {item} = route.params;
 
-  let [itensChecked, SetItensChecked] = useState<Provider>();
+  let [itensChecked, SetItensChecked] = useState<ItemsReques>();
   let [checked, SetChecked] = useState(0);
 
   const [elRefs, setElRefs] = useState<Array<any>>([]);
@@ -42,20 +35,17 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
   arrLength = item.itens?.length + 1;
 
   useEffect(() => {
-    SetItensChecked(item);
-    SetChecked(
-      item.itens?.filter((lista: ProviderItens) => lista.status === true)
-        .length,
-    );
+    // SetItensChecked(item);
+    // SetChecked();
   }, [item, itensChecked, checked]);
 
-  useEffect(() => {
-    setElRefs((el) =>
-      Array(arrLength)
-        .fill(arrLength)
-        .map((_, i) => el[i] || createRef()),
-    );
-  }, [arrLength]);
+  // useEffect(() => {
+  //   setElRefs((el) =>
+  //     Array(arrLength)
+  //       .fill(arrLength)
+  //       .map((_, i) => el[i] || createRef()),
+  //   );
+  // }, [arrLength]);
 
   const handleCheckItem = (provider: ProviderItens, index: number) => {
     !provider.status ? elRefs[index].current.focus() : '';

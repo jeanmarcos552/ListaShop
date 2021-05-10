@@ -79,7 +79,7 @@ const Lista = () => {
 
   const handleSeeIten = useCallback(
     (data: any) => {
-      navigate.navigate('ItensToList', {item: data});
+      navigate.navigate('ItensToList', {item: data.itens});
     },
     [navigate],
   );
