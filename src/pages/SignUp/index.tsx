@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react';
+import React, {useCallback, useRef} from 'react';
 import {
   KeyboardAvoidingView,
   Platform,
@@ -9,16 +9,16 @@ import {
 } from 'react-native';
 
 import * as Yup from 'yup';
-import { Form } from '@unform/mobile';
-import { FormHandles } from '@unform/core';
+import {Form} from '@unform/mobile';
+import {FormHandles} from '@unform/core';
 
 import Input from '../../Components/Input';
 import Button from '../../Components/Button';
 
-import { Title, Container, BackToLogin, BackToLoginText } from './style';
+import {Title, Container, BackToLogin, BackToLoginText} from './style';
 import Logo from '../../assets/img/logo.png';
-import { Image } from '../SignIn/style';
-import { useNavigation } from '@react-navigation/native';
+import {Image} from '../SignIn/style';
+import {useNavigation} from '@react-navigation/native';
 
 import IconBack from 'react-native-vector-icons/Feather';
 import getValidationErrors from '../../../Utils/getValidation';
@@ -49,6 +49,10 @@ const SignUp: React.FC = () => {
             .required('Email obrigatório!')
             .email('Email inválido!'),
           password: Yup.string().min(2, 'No mínimo 2 digitos'),
+          password_confirmation: Yup.string().oneOf(
+            [Yup.ref('password'), null],
+            'Passwords must match',
+          ),
         });
 
         await schema.validate(data, {
@@ -67,11 +71,11 @@ const SignUp: React.FC = () => {
         }
 
         if (err.response) {
-          let msg = "";
-          if(err.response.status === 422) {
+          let msg = '';
+          if (err.response.status === 422) {
             msg = `Email: ${data.email} já existe!`;
           }
-         
+
           Alert.alert('Erro na validação', msg);
         }
       }
@@ -82,10 +86,10 @@ const SignUp: React.FC = () => {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      style={{ flex: 1 }}
+      style={{flex: 1}}
       enabled>
       <ScrollView
-        contentContainerStyle={{ flex: 1 }}
+        contentContainerStyle={{flex: 1}}
         keyboardShouldPersistTaps="handled">
         <Container>
           <Image source={Logo} />

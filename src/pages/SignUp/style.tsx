@@ -19,15 +19,16 @@ export const Title = styled.Text`
 export const BackToLogin = styled.TouchableOpacity`
   position: absolute;
   bottom: 0;
-  color: #1abd33;
   left: 0;
   right: 0;
   padding: 16px 0 ${16 + getBottomSpace()}px;
 
   border-top-width: 1px;
-  border-color: #fff;
-  justify-content: center;
+  border-color: #01ac73;
+  background: #01ac73;
   align-items: center;
+  flex-direction: row;
+  justify-content: center;
 `;
 
 export const BackToLoginText = styled.Text`

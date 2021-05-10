@@ -50,7 +50,6 @@ export interface ItemsReques {
 const Lista = () => {
   const navigate = useNavigation();
   const [lista, setLista] = useState<ProviderRequest>({} as ProviderRequest);
-
   useEffect(() => {
     api.get('/lista').then((res) => setLista(res.data));
   }, []);
