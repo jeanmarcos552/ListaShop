@@ -41,6 +41,7 @@ const AuthProvider: React.FC = ({children}) => {
 
       if (token[1] && user[1]) {
         setData({token: token[1], user: JSON.parse(user[1])});
+        api.defaults.headers.Authorization = `Bearer ${token[1]}`;
       }
 
       setLoading(false);
@@ -57,6 +58,8 @@ const AuthProvider: React.FC = ({children}) => {
 
     const {token, user} = response.data;
 
+    api.defaults.headers.Authorization = `Bearer ${token}`;
+
     await AsyncStorage.multiSet([
       ['@GoBarber:token', token],
       ['@GoBarber:user', JSON.stringify(user)],
@@ -64,23 +67,11 @@ const AuthProvider: React.FC = ({children}) => {
     setData({token, user});
   }, []);
 
-  useEffect(() => {
-    api.defaults.headers.Authorization = `Bearer ${data.token}`;
-  }, [data]);
-
   const signOut = useCallback(async () => {
-    await api.post(
-      '/logout',
-      {},
-      {
-        headers: {
-          Authorization: `Bearer ${data.token}`,
-        },
-      },
-    );
+    await api.post('/logout');
     await AsyncStorage.multiRemove(['@GoBarber:user', '@GoBarber:token']);
     setData({} as AuthState);
-  }, [data.token]);
+  }, []);
 
   return (
     <AuthContext.Provider value={{user: data.user, signIn, signOut, loading}}>

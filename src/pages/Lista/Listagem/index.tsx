@@ -13,18 +13,18 @@ import {
   ContainerText,
   ButtonDelete,
   Container,
+  IconText,
 } from './style';
 import {useNavigation} from '@react-navigation/native';
 import {Animated, View} from 'react-native';
 import HeaderLayout from '../../../Layout/Header';
 import {Swipeable, TouchableOpacity} from 'react-native-gesture-handler';
-import {useAuth} from '../../../hooks/auth';
 import api from '../../../services/api';
 
 interface AuthUserProvider {
   user?: {name: string};
 }
-export interface Provider {
+export interface ProviderRequest {
   current_page: number;
   data: Array<ProviderItens>[];
 }
@@ -32,8 +32,8 @@ export interface Provider {
 export interface ProviderItens {
   id: number;
   name: string;
-  status: boolean;
   itens: Array<ItemsReques>;
+  total: number;
 }
 
 export interface ItemsReques {
@@ -42,13 +42,14 @@ export interface ItemsReques {
   pivot: {
     qty: number;
     value: number | string;
+    status: boolean;
   };
+  total: number;
 }
 
 const Lista = () => {
   const navigate = useNavigation();
-  const {user} = useAuth();
-  const [lista, setLista] = useState<Provider>({} as Provider);
+  const [lista, setLista] = useState<ProviderRequest>({} as ProviderRequest);
 
   useEffect(() => {
     api.get('/lista').then((res) => setLista(res.data));
@@ -87,16 +88,25 @@ const Lista = () => {
   function calcItensCheckt(provider: ProviderItens) {
     let itensChecked = 0;
     provider.itens?.forEach((item) => {
-      if (item.status) {
+      if (item.pivot.status) {
         itensChecked++;
       }
     });
-    return itensChecked / provider.total;
+    return itensChecked / provider.itens.length;
+  }
+
+  function somaValoresItens(pivot: ProviderItens) {
+    return pivot.itens
+      .map((item: ItemsReques) => item.pivot)
+      .map((prev: any) => +prev.qty * +prev.value)
+      .reduce((prev, current) => prev + current, 0)
+      .toFixed(2)
+      .replace('.', ',');
   }
 
   return (
     <>
-      <HeaderLayout user={user} />
+      <HeaderLayout />
 
       <Container style={{flex: 1}}>
         <ShoppingList
@@ -110,7 +120,7 @@ const Lista = () => {
                 <ItemList>
                   <ContainerText>
                     <ItemListText>{provider.name}</ItemListText>
-                    {/* <IconText
+                    <IconText
                       name={
                         calcItensCheckt(provider) === 1
                           ? 'check-circle'
@@ -120,9 +130,9 @@ const Lista = () => {
                         calcItensCheckt(provider) !== 1 ? '#f0ac1b' : '#01ac73'
                       }
                       size={20}
-                    /> */}
+                    />
                   </ContainerText>
-                  <ValueText>R$ 299,90</ValueText>
+                  <ValueText>R$ {somaValoresItens(provider)}</ValueText>
                 </ItemList>
                 <View
                   style={{paddingBottom: 10, paddingLeft: 4, paddingRight: 4}}>
@@ -134,6 +144,7 @@ const Lista = () => {
               </ContainerList>
             </Swipeable>
           )}
+          keyExtractor={(provider) => provider.id.toString()}
         />
         <FormLista />
       </Container>
