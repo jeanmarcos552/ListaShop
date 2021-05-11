@@ -21,9 +21,6 @@ import HeaderLayout from '../../../Layout/Header';
 import {Swipeable, TouchableOpacity} from 'react-native-gesture-handler';
 import api from '../../../services/api';
 
-interface AuthUserProvider {
-  user?: {name: string};
-}
 export interface ProviderRequest {
   current_page: number;
   data: Array<ProviderItens>[];
@@ -41,7 +38,7 @@ export interface ItemsReques {
   name: string;
   pivot: {
     qty: number;
-    value: number | string;
+    value: string;
     status: boolean;
   };
   total: number;
@@ -79,7 +76,7 @@ const Lista = () => {
 
   const handleSeeIten = useCallback(
     (data: any) => {
-      navigate.navigate('ItensToList', {item: data.itens});
+      navigate.navigate('ItensToList', {id: data.id});
     },
     [navigate],
   );

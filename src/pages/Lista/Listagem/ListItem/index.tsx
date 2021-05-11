@@ -1,7 +1,7 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {createRef, useEffect, useState} from 'react';
 import {KeyboardAvoidingView, Platform} from 'react-native';
 
-import {Money} from '../../../../../Utils/Mask';
 import Icon from 'react-native-vector-icons/Feather';
 import HeaderSingle from '../../../../Layout/HeaderSingle';
 
@@ -18,6 +18,7 @@ import {
   TextValues,
 } from './style';
 import {ItemsReques, ProviderItens} from '..';
+import api from '../../../../services/api';
 
 interface PropsComponente {
   route: any;
@@ -25,53 +26,52 @@ interface PropsComponente {
 }
 
 const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
-  let {item} = route.params;
+  let {id} = route.params;
 
-  let [itensChecked, SetItensChecked] = useState<ItemsReques>();
+  let [itensChecked, SetItensChecked] = useState<ProviderItens>(
+    {} as ProviderItens,
+  );
   let [checked, SetChecked] = useState(0);
-
   const [elRefs, setElRefs] = useState<Array<any>>([]);
-  let arrLength: Array<any>[];
-  arrLength = item.itens?.length + 1;
 
   useEffect(() => {
-    // SetItensChecked(item);
-    // SetChecked();
-  }, [item, itensChecked, checked]);
-
-  // useEffect(() => {
-  //   setElRefs((el) =>
-  //     Array(arrLength)
-  //       .fill(arrLength)
-  //       .map((_, i) => el[i] || createRef()),
-  //   );
-  // }, [arrLength]);
-
-  const handleCheckItem = (provider: ProviderItens, index: number) => {
-    !provider.status ? elRefs[index].current.focus() : '';
-
-    let newProvider = {...itensChecked};
-    let {itens} = newProvider;
-    let totalChecked = 0;
-    itens?.forEach((lista: ItensLista) => {
-      if (lista.key === provider.key) {
-        provider.status = provider.status ? false : true;
-      }
-      if (lista.status) {
-        totalChecked++;
+    api.get<ProviderItens>(`/lista/${id}`).then((res) => {
+      if (res.data) {
+        const itens = res.data[0];
+        SetItensChecked(itens);
+        setElRefs((el) =>
+          Array(itens.itens.length)
+            .fill(itens.itens.length.length)
+            .map((_, i) => el[i] || createRef()),
+        );
       }
     });
-    SetChecked(totalChecked);
+  }, [id]);
+
+  const handleCheckItem = (provider: ItemsReques, index: number) => {
+    elRefs[index].current.focus();
+
+    // let newProvider = {...itensChecked};
+
+    // let totalChecked = 0;
+    // newProvider?.forEach((lista: ItemsReques) => {
+    //   if (lista.id === provider.id) {
+    //     provider.status = provider.status ? false : true;
+    //   }
+    //   if (lista.status) {
+    //     totalChecked++;
+    //   }
+    // });
+    // SetChecked(totalChecked);
   };
 
-  const SetValuesItens = (text: string, {key}: any) => {
-    let itens = itensChecked?.itens.map((item) => {
-      if (key === item.key) {
-        item.value = text.replace(',', '.');
+  const SetValuesItens = (text: string, {id}: any) => {
+    let itens = itensChecked.itens.map((item) => {
+      if (id === item.id) {
+        item.pivot.value = text.replace(',', '.');
       }
       return item;
     });
-
     SetItensChecked({...itensChecked, itens});
   };
 
@@ -79,9 +79,9 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
     return (
       <TitleContainer>
         <Title>Itens concluídos: </Title>
-        <DisplayItensChecked>
+        {/* <DisplayItensChecked>
           {checked ? checked : 0}/{itensChecked?.total}
-        </DisplayItensChecked>
+        </DisplayItensChecked> */}
       </TitleContainer>
     );
   };
@@ -91,14 +91,18 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
       <TitleContainer>
         <TotalFooter>
           R$
-          {itensChecked?.itens
-            .filter((item) => item.status === true)
-            .map((item) =>
-              isNaN(parseFloat(item.value)) ? 0 : parseFloat(item.value),
-            )
-            .reduce((prev, current) => prev + current, 0)
-            .toFixed(2)
-            .replace('.', ',')}
+          {itensChecked.itens
+            ? itensChecked.itens
+                .filter((item) => item.pivot.status === true)
+                .map((item) =>
+                  isNaN(parseFloat(item.pivot.value))
+                    ? 0
+                    : parseFloat(item.pivot.value),
+                )
+                .reduce((prev, current) => prev + current, 0)
+                .toFixed(2)
+                .replace('.', ',')
+            : ''}
         </TotalFooter>
       </TitleContainer>
     );
@@ -106,16 +110,15 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
 
   return (
     <>
-      <HeaderSingle title={item.title} navigation={navigation} />
-
+      <HeaderSingle title="jean" navigation={navigation} />
       <KeyboardAvoidingView
         behavior={Platform.OS === 'android' ? 'height' : 'padding'}
         enabled
         style={{flex: 1}}>
         <Container>
           <ListItens
-            data={itensChecked?.itens}
-            keyExtractor={(provider) => provider.key.toString()}
+            data={itensChecked.itens}
+            keyExtractor={(provider) => provider.id.toString()}
             renderItem={({item: provider, index}) => {
               return (
                 <GridItens>
@@ -129,16 +132,16 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
                       fontSize: 20,
                       fontFamily: 'Exo-Regular',
                     }}
-                    isChecked={provider.status}
+                    isChecked={provider.pivot.status}
                     onPress={() => handleCheckItem(provider, index)}
                   />
                   <TextValues
                     ref={elRefs[index]}
-                    key={provider.key}
-                    defaultValue={provider.value.toString()}
+                    key={provider.id}
+                    defaultValue={provider.pivot.value.toString()}
                     keyboardType="numeric"
                     placeholder="0,00"
-                    value={provider.value.toString()}
+                    value={provider.pivot.value.toString()}
                     onChangeText={(text) => SetValuesItens(text, provider)}
                   />
                 </GridItens>
