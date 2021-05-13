@@ -2,9 +2,6 @@ import React from 'react';
 
 import {createStackNavigator} from '@react-navigation/stack';
 
-import SignIn from '../pages/SignIn';
-import SignUp from '../pages/SignUp';
-import ForgetPass from '../pages/ForgetPass';
 import Tabs from '../pages/Tabs';
 import Lista from '../pages/Lista/Listagem';
 import ItensToList from '../pages/Lista/Listagem/ListItem';

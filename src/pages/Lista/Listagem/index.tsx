@@ -16,7 +16,7 @@ import {
   IconText,
 } from './style';
 import {useNavigation} from '@react-navigation/native';
-import {Animated, View} from 'react-native';
+import {Animated, RefreshControl, View} from 'react-native';
 import HeaderLayout from '../../../Layout/Header';
 import {Swipeable, TouchableOpacity} from 'react-native-gesture-handler';
 import api from '../../../services/api';
@@ -40,6 +40,8 @@ export interface ItemsReques {
     qty: number;
     value: string;
     status: boolean;
+    lista_id: number;
+    itens_id: number;
   };
   total: number;
 }
@@ -47,8 +49,19 @@ export interface ItemsReques {
 const Lista = () => {
   const navigate = useNavigation();
   const [lista, setLista] = useState<ProviderRequest>({} as ProviderRequest);
+  const [refreshing, setRefreshing] = React.useState(false);
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    api.get('/lista').then((res) => {
+      setLista(res.data);
+      setRefreshing(false);
+    });
+  }, []);
+
   useEffect(() => {
     api.get('/lista').then((res) => setLista(res.data));
+    console.log('ola');
   }, []);
 
   const handleDelete = useCallback((data) => {
@@ -106,6 +119,9 @@ const Lista = () => {
 
       <Container style={{flex: 1}}>
         <ShoppingList
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
           data={lista.data}
           renderItem={({item: provider}) => (
             <Swipeable

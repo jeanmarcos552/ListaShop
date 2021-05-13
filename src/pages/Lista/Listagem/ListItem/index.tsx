@@ -32,16 +32,17 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
     {} as ProviderItens,
   );
   let [checked, SetChecked] = useState(0);
+  let [itemActive, SetItemActive] = useState({});
   const [elRefs, setElRefs] = useState<Array<any>>([]);
 
   useEffect(() => {
     api.get<ProviderItens>(`/lista/${id}`).then((res) => {
       if (res.data) {
-        const itens = res.data[0];
+        const itens = res.data;
         SetItensChecked(itens);
         setElRefs((el) =>
           Array(itens.itens.length)
-            .fill(itens.itens.length.length)
+            .fill(itens.itens.length)
             .map((_, i) => el[i] || createRef()),
         );
       }
@@ -49,29 +50,43 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
   }, [id]);
 
   const handleCheckItem = (provider: ItemsReques, index: number) => {
-    elRefs[index].current.focus();
+    let {pivot} = provider;
 
-    // let newProvider = {...itensChecked};
+    !pivot.status ? elRefs[index].current.focus() : '';
 
-    // let totalChecked = 0;
-    // newProvider?.forEach((lista: ItemsReques) => {
-    //   if (lista.id === provider.id) {
-    //     provider.status = provider.status ? false : true;
-    //   }
-    //   if (lista.status) {
-    //     totalChecked++;
-    //   }
-    // });
-    // SetChecked(totalChecked);
+    pivot.status = !pivot.status;
+
+    const obj = {
+      lista_id: pivot.lista_id,
+      itens_id: pivot.itens_id,
+      itens: {
+        status: pivot.status,
+      },
+    };
+    api.post('/updateItem', obj);
+  };
+
+  const updateValue = () => {
+    api.post('/updateItem', itemActive);
   };
 
   const SetValuesItens = (text: string, {id}: any) => {
-    let itens = itensChecked.itens.map((item) => {
+    let obj = {};
+    let itens = itensChecked.itens.map((item: ItemsReques) => {
       if (id === item.id) {
         item.pivot.value = text.replace(',', '.');
+
+        obj = {
+          lista_id: item.pivot.lista_id,
+          itens_id: item.pivot.itens_id,
+          itens: {
+            value: item.pivot.value,
+          },
+        };
       }
       return item;
     });
+    SetItemActive(obj);
     SetItensChecked({...itensChecked, itens});
   };
 
@@ -79,9 +94,13 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
     return (
       <TitleContainer>
         <Title>Itens concluídos: </Title>
-        {/* <DisplayItensChecked>
-          {checked ? checked : 0}/{itensChecked?.total}
-        </DisplayItensChecked> */}
+        {itensChecked.itens ? (
+          <DisplayItensChecked>
+            {checked ? checked : 0}/{itensChecked.itens.length}
+          </DisplayItensChecked>
+        ) : (
+          <DisplayItensChecked>0</DisplayItensChecked>
+        )}
       </TitleContainer>
     );
   };
@@ -142,6 +161,7 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
                     keyboardType="numeric"
                     placeholder="0,00"
                     value={provider.pivot.value.toString()}
+                    onBlur={updateValue}
                     onChangeText={(text) => SetValuesItens(text, provider)}
                   />
                 </GridItens>
