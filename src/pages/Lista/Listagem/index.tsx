@@ -61,7 +61,6 @@ const Lista = () => {
 
   useEffect(() => {
     api.get('/lista').then((res) => setLista(res.data));
-    console.log('ola');
   }, []);
 
   const handleDelete = useCallback((data) => {
@@ -88,20 +87,20 @@ const Lista = () => {
   };
 
   const handleSeeIten = useCallback(
-    (data: any) => {
-      navigate.navigate('ItensToList', {id: data.id});
+    (data: ItemsReques) => {
+      navigate.navigate('ItensToList', {
+        id: data.id,
+        title: data.name,
+      });
     },
     [navigate],
   );
 
   function calcItensCheckt(provider: ProviderItens) {
-    let itensChecked = 0;
-    provider.itens?.forEach((item) => {
-      if (item.pivot.status) {
-        itensChecked++;
-      }
-    });
-    return itensChecked / provider.itens.length;
+    let itensChecked = provider.itens?.filter(
+      (item) => item.pivot.status === true,
+    );
+    return itensChecked.length / provider.itens.length;
   }
 
   function somaValoresItens(pivot: ProviderItens) {

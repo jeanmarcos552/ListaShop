@@ -1,10 +1,9 @@
-import { getBottomSpace, getStatusBarHeight } from 'react-native-iphone-x-helper';
+import {getBottomSpace, getStatusBarHeight} from 'react-native-iphone-x-helper';
 import LinearGradient from 'react-native-linear-gradient';
 import styled from 'styled-components/native';
-import { Form } from '@unform/mobile';
+import {Form} from '@unform/mobile';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
-import { FlatList } from 'react-native-gesture-handler';
-import { TextInput } from 'react-native-paper';
+import {FlatList} from 'react-native-gesture-handler';
 
 export const Header = styled(LinearGradient)`
   flex-direction: row;
@@ -70,6 +69,9 @@ export const InputCheckbox = styled(BouncyCheckbox)`
   margin-bottom: 10px;
   padding: 2px;
   align-items: flex-end;
+  background-color: #fff;
+  height: 45px;
+  align-items: center;
 `;
 
 export const TotalFooter = styled.Text`
@@ -96,8 +98,9 @@ export const TextValues = styled.TextInput`
   padding: 5px;
   margin: 5px 0;
   border-radius: 3px;
-  width: 80px;
-  text-align: right;
+  width: 50px;
+  text-align: center;
   color: #585858;
   font-size: 15px;
+  margin-right: 3px;
 `;
