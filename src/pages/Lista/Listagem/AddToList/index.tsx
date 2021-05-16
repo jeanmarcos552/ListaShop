@@ -70,19 +70,20 @@ const AddToList: React.FC<PropsComponente> = ({route, navigation}) => {
     setIsFocus(true);
   }, []);
 
-  const handleSearchItens = useCallback(
-    (text) => {
-      onChangeText(text);
-      const item = listaItensBd.data.filter((item) => item.name === text);
-      setLista(item);
-    },
-    [listaItensBd],
-  );
+  const handleSearchItens = useCallback((text) => {
+    onChangeText(text);
+    if (text.length > 2) {
+      api.get(`/search/itens?name=${text}`).then((res) => setLista(res.data));
+    } else {
+      setLista([]);
+    }
+  }, []);
 
   const handleAddItemToLista = useCallback(
     (data) => {
       let newLista = [...listaOfItens, {...data}];
       setListaOfItens(newLista);
+      console.log(listaOfItens);
     },
     [listaOfItens],
   );
