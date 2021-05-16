@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {createRef, useCallback, useEffect, useState} from 'react';
-import {KeyboardAvoidingView, Platform} from 'react-native';
+import {KeyboardAvoidingView, Platform, Text, View} from 'react-native';
 
 import Icon from 'react-native-vector-icons/Feather';
 import HeaderSingle from '../../../../Layout/HeaderSingle';
@@ -70,12 +70,10 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
     api.post('/updateItem', {...pivot}).then((_) => getDados());
   };
 
-  const updateValue = (provider: ItemsReques) => {
-    api.post('/updateItem', {...provider.pivot}).then((_) => getDados());
-  };
-
-  const SetQtyItens = (provider: any) => {
-    api.post('/updateItem', {...provider}).then((_) => getDados());
+  const updateItem = (provider: ProviderItensLista) => {
+    const newPivot = {...provider.pivot};
+    newPivot.value = newPivot.value.replace(',', '.');
+    api.post('/updateItem', newPivot).then((_) => getDados());
   };
 
   function calcItensChecked(provider: ProviderItens) {
@@ -103,18 +101,7 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
       <TitleContainer>
         <TotalFooter>
           R$
-          {items.itens
-            ? items.itens
-                .filter((item) => item.pivot.status === true)
-                .map((item) =>
-                  isNaN(parseFloat(item.pivot.value))
-                    ? 0
-                    : parseFloat(item.pivot.value),
-                )
-                .reduce((prev, current) => prev + current, 0)
-                .toFixed(2)
-                .replace('.', ',')
-            : ''}
+          {somaValoresItens(items)}
         </TotalFooter>
       </TitleContainer>
     );
@@ -131,6 +118,19 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
     SetItems(newPivot);
   }
 
+  function somaValoresItens(pivot: ProviderItens) {
+    if (!pivot.itens) {
+      return 0;
+    }
+    return pivot.itens
+      .map((item: ItemsReques) => item.pivot)
+      .filter((item) => item.status === true)
+      .map((prev: any) => +prev.qty * +prev.value)
+      .reduce((prev, current) => prev + current, 0)
+      .toFixed(2)
+      .replace('.', ',');
+  }
+
   const leftSwipe = (progress: any, dragX: any, provider: ItemsReques) => {
     let {pivot} = provider;
     return (
@@ -140,7 +140,7 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
         keyboardType="numeric"
         placeholder="0"
         value={pivot.qty.toString()}
-        onBlur={() => SetQtyItens(pivot)}
+        onBlur={() => updateItem(provider)}
         onChangeText={(value) => handleChange(value, pivot, 'qty')}
       />
     );
@@ -178,18 +178,21 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
                       isChecked={pivot.status}
                       onPress={() => handleCheckItem(provider, index)}
                     />
-                    <TextValues
-                      ref={elRefs[index]}
-                      key={provider.id}
-                      defaultValue={pivot.value.toString()}
-                      keyboardType="numeric"
-                      placeholder="0,00"
-                      value={pivot.value.toString()}
-                      onBlur={() => updateValue(provider)}
-                      onChangeText={(value) =>
-                        handleChange(value, pivot, 'value')
-                      }
-                    />
+                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                      <Text style={{color: '#808080'}}>{pivot.qty} x </Text>
+                      <TextValues
+                        ref={elRefs[index]}
+                        key={provider.id}
+                        defaultValue={pivot.value.toString()}
+                        keyboardType="numeric"
+                        placeholder="0,00"
+                        value={pivot.value.toString()}
+                        onBlur={() => updateItem(provider)}
+                        onChangeText={(value) =>
+                          handleChange(value, pivot, 'value')
+                        }
+                      />
+                    </View>
                   </GridItens>
                 </Swipeable>
               );

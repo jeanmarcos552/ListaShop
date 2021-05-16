@@ -19,6 +19,7 @@ import {
   TextButton,
 } from './style';
 import {TouchableOpacity} from 'react-native-gesture-handler';
+import api from '../../../../services/api';
 
 interface PropsComponente {
   route: {
@@ -30,46 +31,35 @@ interface PropsComponente {
   };
   navigation: NavigationScreenProp<any, any>;
 }
+
 interface PropsTextInput {
   text?: string;
   value: string;
 }
 
 interface Provider {
-  id: number;
-  title: string;
+  data: Array<ProviderItens>;
 }
 
-const DATA = [
-  {
-    id: 1,
-    title: 'Papel higienico',
-  },
-  {
-    id: 2,
-    title: 'pera',
-  },
-  {
-    id: 3,
-    title: 'Detergente',
-  },
-  {
-    id: 4,
-    title: 'pera',
-  },
-];
+interface ProviderItens {
+  id: number;
+  name: string;
+}
 
 const AddToList: React.FC<PropsComponente> = ({route, navigation}) => {
   const searchRef = useRef<any>(null);
   let {item} = route.params;
   const [value, onChangeText] = useState<PropsTextInput>();
   let [lista, setLista] = useState<Provider[]>();
+  let [listaItensBd, setListaItensBd] = useState<Provider>({} as Provider);
   let [listaOfItens, setListaOfItens] = useState<Provider[]>([]);
 
   const [isFocus, setIsFocus] = useState(true);
 
   useEffect(() => {
     searchRef.current.focus();
+
+    api.get('/itens').then((res) => setListaItensBd(res.data));
   }, [searchRef, item]);
 
   const handleIsFocus = useCallback(() => {
@@ -83,10 +73,10 @@ const AddToList: React.FC<PropsComponente> = ({route, navigation}) => {
   const handleSearchItens = useCallback(
     (text) => {
       onChangeText(text);
-      const item = DATA.filter((item) => item.title === text);
+      const item = listaItensBd.data.filter((item) => item.name === text);
       setLista(item);
     },
-    [setLista],
+    [listaItensBd],
   );
 
   const handleAddItemToLista = useCallback(
@@ -142,7 +132,7 @@ const AddToList: React.FC<PropsComponente> = ({route, navigation}) => {
             )}
             renderItem={({item: provider}) => (
               <Item onPress={() => handleAddItemToLista(provider)}>
-                <ItemText>{provider.title}</ItemText>
+                <ItemText>{provider.name}</ItemText>
                 {listaOfItens.map((item) => {
                   return item.id === provider.id ? (
                     <Icon

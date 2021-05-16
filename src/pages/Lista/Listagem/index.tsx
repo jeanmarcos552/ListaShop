@@ -15,7 +15,7 @@ import {
   Container,
   IconText,
 } from './style';
-import {useNavigation} from '@react-navigation/native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {Animated, RefreshControl, View} from 'react-native';
 import HeaderLayout from '../../../Layout/Header';
 import {Swipeable, TouchableOpacity} from 'react-native-gesture-handler';
@@ -49,9 +49,9 @@ export interface ItemsReques {
 const Lista = () => {
   const navigate = useNavigation();
   const [lista, setLista] = useState<ProviderRequest>({} as ProviderRequest);
-  const [refreshing, setRefreshing] = React.useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
-  const onRefresh = React.useCallback(() => {
+  const onRefresh = useCallback(() => {
     setRefreshing(true);
     api.get('/lista').then((res) => {
       setLista(res.data);
@@ -62,6 +62,12 @@ const Lista = () => {
   useEffect(() => {
     api.get('/lista').then((res) => setLista(res.data));
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      api.get('/lista').then((res) => setLista(res.data));
+    }, []),
+  );
 
   const handleDelete = useCallback((data) => {
     console.log(data);
