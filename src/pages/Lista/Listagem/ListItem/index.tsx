@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {createRef, useEffect, useState} from 'react';
+import React, {createRef, useCallback, useEffect, useState} from 'react';
 import {KeyboardAvoidingView, Platform} from 'react-native';
 
 import Icon from 'react-native-vector-icons/Feather';
@@ -26,27 +26,39 @@ interface PropsComponente {
   navigation: any;
 }
 
+interface ProviderItensLista {
+  pivot: {
+    qty: number;
+    value: string;
+    status: boolean;
+    lista_id: number;
+    itens_id: number;
+  };
+}
+
 const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
-  let {id, title} = route.params;
+  let {id: id_lista, title} = route.params;
 
   let [items, SetItems] = useState<ProviderItens>({} as ProviderItens);
   const [elRefs, setElRefs] = useState<Array<any>>([]);
 
+  const getDados = useCallback(() => {
+    api.get<ProviderItens>(`/lista/${id_lista}`).then((res) => {
+      if (res.data) {
+        const itens = res.data;
+        SetItems(itens);
+        setElRefs((el) =>
+          Array(itens.itens.length)
+            .fill(itens.itens.length)
+            .map((_, i) => el[i] || createRef()),
+        );
+      }
+    });
+  }, [id_lista]);
+
   useEffect(() => {
-    if (id) {
-      api.get<ProviderItens>(`/lista/${id}`).then((res) => {
-        if (res.data) {
-          const itens = res.data;
-          SetItems(itens);
-          setElRefs((el) =>
-            Array(itens.itens.length)
-              .fill(itens.itens.length)
-              .map((_, i) => el[i] || createRef()),
-          );
-        }
-      });
-    }
-  }, [id]);
+    getDados();
+  }, [getDados]);
 
   const handleCheckItem = (provider: ItemsReques, index: number) => {
     let {pivot} = provider;
@@ -55,37 +67,15 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
 
     pivot.status = !pivot.status;
 
-    api
-      .post('/updateItem', {...pivot})
-      .then((_) => SetValuesItens(pivot.value, provider));
+    api.post('/updateItem', {...pivot}).then((_) => getDados());
   };
 
   const updateValue = (provider: ItemsReques) => {
-    api
-      .post('/updateItem', {...provider.pivot})
-      .then((res) => console.log(res));
+    api.post('/updateItem', {...provider.pivot}).then((_) => getDados());
   };
 
-  const SetValuesItens = (value: string, id: any, key = 'value') => {
-    let itens = items.itens.map((item: ItemsReques) => {
-      if (id === item.id) {
-        if (key === 'value') {
-          item.pivot.value = value.replace(',', '.');
-        } else {
-          console.log(value, item.pivot.qty);
-          // eslint-disable-next-line radix
-          item.pivot.qty = isNaN(parseInt(value)) ? 1 : parseInt(value);
-        }
-      }
-      return item;
-    });
-    SetItems({...items, itens});
-  };
-
-  const SetQtyItens = (provider: ItemsReques) => {
-    api
-      .post('/updateItem', {...provider.pivot})
-      .then((res) => console.log(res));
+  const SetQtyItens = (provider: any) => {
+    api.post('/updateItem', {...provider}).then((_) => getDados());
   };
 
   function calcItensChecked(provider: ProviderItens) {
@@ -130,16 +120,28 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
     );
   };
 
+  function handleChange(value: string, pivot: any, key = '') {
+    pivot[key] = value;
+    let newPivot = {...items};
+    newPivot.itens.map((provider) => {
+      if (provider.id === pivot) {
+        return (provider.pivot = pivot);
+      }
+    });
+    SetItems(newPivot);
+  }
+
   const leftSwipe = (progress: any, dragX: any, provider: ItemsReques) => {
+    let {pivot} = provider;
     return (
       <TextValues
-        key={provider.id}
-        defaultValue={provider.pivot.qty.toString()}
+        key={pivot.lista_id.toString()}
+        defaultValue={pivot.qty.toString()}
         keyboardType="numeric"
         placeholder="0"
-        value={provider.pivot.qty.toString()}
-        onBlur={() => SetQtyItens(provider)}
-        onChangeText={(value) => SetValuesItens(value, provider.id, 'qty')}
+        value={pivot.qty.toString()}
+        onBlur={() => SetQtyItens(pivot)}
+        onChangeText={(value) => handleChange(value, pivot, 'qty')}
       />
     );
   };
@@ -156,6 +158,7 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
             keyExtractor={(provider) => provider.id.toString()}
             style={{backgroundColor: '#fff'}}
             renderItem={({item: provider, index}) => {
+              const {pivot} = provider;
               return (
                 <Swipeable
                   renderLeftActions={(progress, dragX) =>
@@ -172,18 +175,20 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
                         fontSize: 20,
                         fontFamily: 'Exo-Regular',
                       }}
-                      isChecked={provider.pivot.status}
+                      isChecked={pivot.status}
                       onPress={() => handleCheckItem(provider, index)}
                     />
                     <TextValues
                       ref={elRefs[index]}
                       key={provider.id}
-                      defaultValue={provider.pivot.value.toString()}
+                      defaultValue={pivot.value.toString()}
                       keyboardType="numeric"
                       placeholder="0,00"
-                      value={provider.pivot.value.toString()}
+                      value={pivot.value.toString()}
                       onBlur={() => updateValue(provider)}
-                      onChangeText={(value) => SetValuesItens(value, provider)}
+                      onChangeText={(value) =>
+                        handleChange(value, pivot, 'value')
+                      }
                     />
                   </GridItens>
                 </Swipeable>
