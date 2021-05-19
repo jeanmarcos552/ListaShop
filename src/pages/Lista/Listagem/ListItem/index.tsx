@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {createRef, useCallback, useEffect, useState} from 'react';
-import {KeyboardAvoidingView, Platform, Text, View} from 'react-native';
+import React, { createRef, useCallback, useEffect, useState } from 'react';
+import { KeyboardAvoidingView, Platform, Text, View } from 'react-native';
 
 import Icon from 'react-native-vector-icons/Feather';
 import HeaderSingle from '../../../../Layout/HeaderSingle';
@@ -17,9 +17,9 @@ import {
   GridItens,
   TextValues,
 } from './style';
-import {ItemsReques, ProviderItens} from '..';
+import { ItemsReques, ProviderItens } from '..';
 import api from '../../../../services/api';
-import {Swipeable} from 'react-native-gesture-handler';
+import { Swipeable } from 'react-native-gesture-handler';
 
 interface PropsComponente {
   route: any;
@@ -36,8 +36,8 @@ interface ProviderItensLista {
   };
 }
 
-const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
-  let {id: id_lista, title} = route.params;
+const ItensToList: React.FC<PropsComponente> = ({ route, navigation }) => {
+  let { id: id_lista, title } = route.params;
 
   let [items, SetItems] = useState<ProviderItens>({} as ProviderItens);
   const [elRefs, setElRefs] = useState<Array<any>>([]);
@@ -46,12 +46,14 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
     api.get<ProviderItens>(`/lista/${id_lista}`).then((res) => {
       if (res.data) {
         const itens = res.data;
-        SetItems(itens);
-        setElRefs((el) =>
-          Array(itens.itens.length)
-            .fill(itens.itens.length)
-            .map((_, i) => el[i] || createRef()),
-        );
+        if (itens.itens) {
+          SetItems(itens);
+          setElRefs((el) =>
+            Array(itens.itens.length)
+              .fill(itens.itens.length)
+              .map((_, i) => el[i] || createRef()),
+          );
+        }
       }
     });
   }, [id_lista]);
@@ -61,17 +63,17 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
   }, [getDados]);
 
   const handleCheckItem = (provider: ItemsReques, index: number) => {
-    let {pivot} = provider;
+    let { pivot } = provider;
 
     !pivot.status ? elRefs[index].current.focus() : '';
 
     pivot.status = !pivot.status;
 
-    api.post('/updateItem', {...pivot}).then((_) => getDados());
+    api.post('/updateItem', { ...pivot }).then((_) => getDados());
   };
 
   const updateItem = (provider: ProviderItensLista) => {
-    const newPivot = {...provider.pivot};
+    const newPivot = { ...provider.pivot };
     newPivot.value = newPivot.value.replace(',', '.');
     api.post('/updateItem', newPivot).then((_) => getDados());
   };
@@ -109,7 +111,7 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
 
   function handleChange(value: string, pivot: any, key = '') {
     pivot[key] = value;
-    let newPivot = {...items};
+    let newPivot = { ...items };
     newPivot.itens.map((provider) => {
       if (provider.id === pivot) {
         return (provider.pivot = pivot);
@@ -132,7 +134,7 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
   }
 
   const leftSwipe = (progress: any, dragX: any, provider: ItemsReques) => {
-    let {pivot} = provider;
+    let { pivot } = provider;
     return (
       <TextValues
         key={pivot.lista_id.toString()}
@@ -151,14 +153,14 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
       <KeyboardAvoidingView
         behavior={Platform.OS === 'android' ? 'height' : 'padding'}
         enabled
-        style={{flex: 1}}>
+        style={{ flex: 1 }}>
         <Container>
           <ListItens
             data={items.itens}
             keyExtractor={(provider) => provider.id.toString()}
-            style={{backgroundColor: '#fff'}}
-            renderItem={({item: provider, index}) => {
-              const {pivot} = provider;
+            style={{ backgroundColor: '#fff' }}
+            renderItem={({ item: provider, index }) => {
+              const { pivot } = provider;
               return (
                 <Swipeable
                   renderLeftActions={(progress, dragX) =>
@@ -170,7 +172,7 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
                       fillColor="#01ac73"
                       unfillColor="#FFFFFF"
                       text={provider.name}
-                      iconStyle={{borderColor: '#01ac73'}}
+                      iconStyle={{ borderColor: '#01ac73' }}
                       textStyle={{
                         fontSize: 20,
                         fontFamily: 'Exo-Regular',
@@ -178,8 +180,8 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
                       isChecked={pivot.status}
                       onPress={() => handleCheckItem(provider, index)}
                     />
-                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                      <Text style={{color: '#808080'}}>{pivot.qty} x </Text>
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                      <Text style={{ color: '#808080' }}>{pivot.qty} x </Text>
                       <TextValues
                         ref={elRefs[index]}
                         key={provider.id}
@@ -204,7 +206,7 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
       </KeyboardAvoidingView>
 
       <FabButtom
-        onPress={() => navigation.navigate('AddToList', {item: items})}>
+        onPress={() => navigation.navigate('AddToList', { item: items })}>
         <Icon name="plus" size={40} color="#fff" />
       </FabButtom>
     </>
