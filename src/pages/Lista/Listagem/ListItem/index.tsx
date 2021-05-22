@@ -47,12 +47,14 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
     api.get<ProviderItens>(`/lista/${id_lista}`).then((res) => {
       if (res.data) {
         const itens = res.data;
-        SetItems(itens);
-        setElRefs((el) =>
-          Array(itens.itens.length)
-            .fill(itens.itens.length)
-            .map((_, i) => el[i] || createRef()),
-        );
+        if (itens.itens) {
+          SetItems(itens);
+          setElRefs((el) =>
+            Array(itens.itens.length)
+              .fill(itens.itens.length)
+              .map((_, i) => el[i] || createRef()),
+          );
+        }
       }
     });
   }, [id_lista]);
