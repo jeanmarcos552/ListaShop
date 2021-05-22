@@ -20,6 +20,7 @@ import {
 import {ItemsReques, ProviderItens} from '..';
 import api from '../../../../services/api';
 import {Swipeable} from 'react-native-gesture-handler';
+import {useFocusEffect} from '@react-navigation/native';
 
 interface PropsComponente {
   route: any;
@@ -59,6 +60,12 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
   useEffect(() => {
     getDados();
   }, [getDados]);
+
+  useFocusEffect(
+    useCallback(() => {
+      getDados();
+    }, [getDados]),
+  );
 
   const handleCheckItem = (provider: ItemsReques, index: number) => {
     let {pivot} = provider;

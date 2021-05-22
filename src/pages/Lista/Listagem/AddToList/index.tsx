@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {KeyboardAvoidingView, Platform, Text} from 'react-native';
+import {Alert, KeyboardAvoidingView, Platform, Text} from 'react-native';
 
 import {NavigationScreenProp} from 'react-navigation';
 
@@ -20,12 +20,15 @@ import {
 } from './style';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import api from '../../../../services/api';
+import {useAuth} from '../../../../hooks/auth';
+import {useFocusEffect} from '@react-navigation/native';
 
 interface PropsComponente {
   route: {
     params: {
       item: {
-        title: string;
+        id: number;
+        name: string;
       };
     };
   };
@@ -51,16 +54,21 @@ const AddToList: React.FC<PropsComponente> = ({route, navigation}) => {
   let {item} = route.params;
   const [value, onChangeText] = useState<PropsTextInput>();
   let [lista, setLista] = useState<Provider[]>();
-  let [listaItensBd, setListaItensBd] = useState<Provider>({} as Provider);
   let [listaOfItens, setListaOfItens] = useState<Provider[]>([]);
+  let [itensSalvos, setItensSalvos] = useState<Provider[]>([]);
 
   const [isFocus, setIsFocus] = useState(true);
 
+  const {user} = useAuth();
+
   useEffect(() => {
     searchRef.current.focus();
+    api.get(`lista/${item.id}`).then((res) => setListaOfItens(res.data.itens));
 
-    api.get('/itens').then((res) => setListaItensBd(res.data));
-  }, [searchRef, item]);
+    api.get('/itens').then((res) => {
+      setLista(res.data.data);
+    });
+  }, [searchRef, item.id]);
 
   const handleIsFocus = useCallback(() => {
     setIsFocus(false);
@@ -81,12 +89,49 @@ const AddToList: React.FC<PropsComponente> = ({route, navigation}) => {
 
   const handleAddItemToLista = useCallback(
     (data) => {
-      let newLista = [...listaOfItens, {...data}];
-      setListaOfItens(newLista);
-      console.log(listaOfItens);
+      const hasItem = listaOfItens.find((item) => item.id === data.id);
+      if (!hasItem) {
+        console.log('cadastrou um novo');
+        let newLista = [...listaOfItens, {...data}];
+        setListaOfItens(newLista);
+      } else {
+        api
+          .post('/removeItem', {
+            item_id: item.id,
+            lista: hasItem.id,
+          })
+          .then((_) => {
+            api
+              .get(`lista/${item.id}`)
+              .then((res) => setListaOfItens(res.data.itens));
+          });
+      }
     },
-    [listaOfItens],
+    [item.id, listaOfItens],
   );
+
+  const saveItensToList = useCallback(() => {
+    if (listaOfItens.length > 0) {
+      const itensSave = [...listaOfItens];
+
+      const itens = itensSave.map((item) => {
+        return {
+          itens_id: item.id,
+          qty: 1,
+        };
+      });
+
+      api
+        .post('/addItem', {
+          lista: item.id,
+          itens,
+          user: user.id,
+        })
+        .then((_) => navigation.goBack());
+    } else {
+      navigation.goBack();
+    }
+  }, [item.id, user, listaOfItens, navigation]);
 
   return (
     <>
@@ -108,7 +153,7 @@ const AddToList: React.FC<PropsComponente> = ({route, navigation}) => {
             onFocus={handleIsFocus}
             onBlur={handleIsFilled}
           />
-          <TouchableOpacity onPress={() => navigation.goBack()}>
+          <TouchableOpacity onPress={() => saveItensToList()}>
             <TextButton>
               {listaOfItens.length > 0 ? 'Concluir' : 'Cancelar'}
             </TextButton>
