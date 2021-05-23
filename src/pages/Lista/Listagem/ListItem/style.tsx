@@ -4,6 +4,7 @@ import styled from 'styled-components/native';
 import {Form} from '@unform/mobile';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import {FlatList} from 'react-native-gesture-handler';
+import {Colors} from 'react-native-paper';
 
 export const Header = styled(LinearGradient)`
   flex-direction: row;
@@ -107,4 +108,12 @@ export const TextValues = styled.TextInput`
   color: #585858;
   font-size: 15px;
   margin-right: 3px;
+`;
+
+export const ButtonDelete = styled.View`
+  background-color: ${Colors.red500};
+  justify-content: center;
+  align-items: center;
+  width: 80px;
+  height: 30px;
 `;

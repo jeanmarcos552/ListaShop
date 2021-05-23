@@ -1,12 +1,7 @@
-import { Form } from '@unform/mobile';
-import { FormHandles } from '@unform/core';
-import React, { useCallback, useRef, useState } from 'react';
-import {
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  StatusBar,
-} from 'react-native';
+import {Form} from '@unform/mobile';
+import {FormHandles} from '@unform/core';
+import React, {useCallback, useRef, useState} from 'react';
+import {KeyboardAvoidingView, Platform, ScrollView} from 'react-native';
 
 import Icon from 'react-native-vector-icons/Feather';
 
@@ -32,14 +27,17 @@ const FormLista: React.FC<ComponentProps> = (props) => {
   const formRef = useRef<FormHandles>(null);
   const [modalVisible, setModalVisible] = useState(false);
 
-  const handleCreateLista = useCallback((data) => {
-    api.post("lista", data).then(_ => {
-      if (props.afterSave) {
-        props.afterSave();
-      }
-      setModalVisible(false);
-    })
-  }, []);
+  const handleCreateLista = useCallback(
+    (data) => {
+      api.post('lista', data).then((_) => {
+        if (props.afterSave) {
+          props.afterSave();
+        }
+        setModalVisible(false);
+      });
+    },
+    [props],
+  );
 
   return (
     <>
@@ -52,10 +50,10 @@ const FormLista: React.FC<ComponentProps> = (props) => {
         }}>
         <KeyboardAvoidingView
           behavior={Platform.OS === 'android' ? 'height' : 'padding'}
-          style={{ flex: 1 }}
+          style={{flex: 1}}
           enabled>
           <ScrollView
-            contentContainerStyle={{ flex: 1 }}
+            contentContainerStyle={{flex: 1}}
             keyboardShouldPersistTaps="handled">
             <Container>
               <Title>Adicionar uma Lista de compras?</Title>

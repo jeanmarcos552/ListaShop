@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {Alert, KeyboardAvoidingView, Platform, Text} from 'react-native';
+import {KeyboardAvoidingView, Platform} from 'react-native';
 
 import {NavigationScreenProp} from 'react-navigation';
 
@@ -21,14 +21,15 @@ import {
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import api from '../../../../services/api';
 import {useAuth} from '../../../../hooks/auth';
-import {useFocusEffect} from '@react-navigation/native';
+
+import {ProviderItensLista} from '../ListItem';
 
 interface PropsComponente {
   route: {
     params: {
       item: {
         id: number;
-        name: string;
+        title: string;
       };
     };
   };
@@ -41,7 +42,14 @@ interface PropsTextInput {
 }
 
 interface Provider {
-  data: Array<ProviderItens>;
+  data: Array<ProviderItensLista>;
+  pivot: {
+    qty: number;
+    value: string;
+    status: boolean;
+    lista_id: number;
+    itens_id: number;
+  };
 }
 
 interface ProviderItens {
@@ -51,24 +59,25 @@ interface ProviderItens {
 
 const AddToList: React.FC<PropsComponente> = ({route, navigation}) => {
   const searchRef = useRef<any>(null);
-  let {item} = route.params;
+  let {id, title} = route.params.item;
   const [value, onChangeText] = useState<PropsTextInput>();
   let [lista, setLista] = useState<Provider[]>();
   let [listaOfItens, setListaOfItens] = useState<Provider[]>([]);
-  let [itensSalvos, setItensSalvos] = useState<Provider[]>([]);
-
   const [isFocus, setIsFocus] = useState(true);
-
   const {user} = useAuth();
 
   useEffect(() => {
     searchRef.current.focus();
-    api.get(`lista/${item.id}`).then((res) => setListaOfItens(res.data.itens));
+    api.get(`lista/${id}`).then((res) => {
+      if (res.data) {
+        setListaOfItens(res.data.itens);
+      }
+    });
 
     api.get('/itens').then((res) => {
       setLista(res.data.data);
     });
-  }, [searchRef, item.id]);
+  }, [searchRef, id]);
 
   const handleIsFocus = useCallback(() => {
     setIsFocus(false);
@@ -89,29 +98,31 @@ const AddToList: React.FC<PropsComponente> = ({route, navigation}) => {
 
   const handleAddItemToLista = useCallback(
     (data) => {
-      const hasItem = listaOfItens.find((item) => item.id === data.id);
+      let hasItem = listaOfItens.find((item) => item.id === data.id);
       if (!hasItem) {
-        console.log('cadastrou um novo');
         let newLista = [...listaOfItens, {...data}];
         setListaOfItens(newLista);
       } else {
         api
           .post('/removeItem', {
-            item_id: item.id,
-            lista: hasItem.id,
+            item_id: hasItem.pivot.itens_id,
+            lista: hasItem.pivot.lista_id,
           })
+          .then((res) => res.data)
           .then((_) => {
-            api
-              .get(`lista/${item.id}`)
-              .then((res) => setListaOfItens(res.data.itens));
+            api.get(`lista/${id}`).then((res) => {
+              if (res.data) {
+                setListaOfItens(res.data.itens);
+              }
+            });
           });
       }
     },
-    [item.id, listaOfItens],
+    [id, listaOfItens],
   );
 
   const saveItensToList = useCallback(() => {
-    if (listaOfItens.length > 0) {
+    if (listaOfItens && listaOfItens.length > 0) {
       const itensSave = [...listaOfItens];
 
       const itens = itensSave.map((item) => {
@@ -123,15 +134,16 @@ const AddToList: React.FC<PropsComponente> = ({route, navigation}) => {
 
       api
         .post('/addItem', {
-          lista: item.id,
+          lista: id,
           itens,
           user: user.id,
         })
-        .then((_) => navigation.goBack());
+        .then((_) => navigation.goBack())
+        .catch((err) => console.log(err));
     } else {
       navigation.goBack();
     }
-  }, [item.id, user, listaOfItens, navigation]);
+  }, [id, user, listaOfItens, navigation]);
 
   return (
     <>
@@ -155,7 +167,9 @@ const AddToList: React.FC<PropsComponente> = ({route, navigation}) => {
           />
           <TouchableOpacity onPress={() => saveItensToList()}>
             <TextButton>
-              {listaOfItens.length > 0 ? 'Concluir' : 'Cancelar'}
+              {listaOfItens && listaOfItens.length > 0
+                ? 'Concluir'
+                : 'Cancelar'}
             </TextButton>
           </TouchableOpacity>
         </TextInputSugest>
@@ -172,23 +186,24 @@ const AddToList: React.FC<PropsComponente> = ({route, navigation}) => {
             ListHeaderComponent={() => (
               <HeaderList>
                 <HeaderListTitle>
-                  Adicionar Itens a lista: <TitleBold>{item.title}</TitleBold>
+                  Adicionar Itens a lista: <TitleBold>{title}</TitleBold>
                 </HeaderListTitle>
               </HeaderList>
             )}
             renderItem={({item: provider}) => (
               <Item onPress={() => handleAddItemToLista(provider)}>
                 <ItemText>{provider.name}</ItemText>
-                {listaOfItens.map((item) => {
-                  return item.id === provider.id ? (
-                    <Icon
-                      key={provider.id}
-                      name="check"
-                      size={20}
-                      color="#01ac73"
-                    />
-                  ) : null;
-                })}
+                {listaOfItens &&
+                  listaOfItens.map((item) => {
+                    return item.id === provider.id ? (
+                      <Icon
+                        key={provider.id}
+                        name="check"
+                        size={20}
+                        color="#01ac73"
+                      />
+                    ) : null;
+                  })}
               </Item>
             )}
           />

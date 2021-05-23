@@ -1,8 +1,8 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 
 import FormLista from '../Add';
 
-import { ProgressBar } from 'react-native-paper';
+import {ProgressBar} from 'react-native-paper';
 
 import {
   ContainerList,
@@ -15,10 +15,10 @@ import {
   Container,
   IconText,
 } from './style';
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
-import { Animated, RefreshControl, View } from 'react-native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
+import {Animated, RefreshControl, View} from 'react-native';
 import HeaderLayout from '../../../Layout/Header';
-import { Swipeable, TouchableOpacity } from 'react-native-gesture-handler';
+import {Swipeable, TouchableOpacity} from 'react-native-gesture-handler';
 import api from '../../../services/api';
 
 export interface ProviderRequest {
@@ -52,16 +52,11 @@ const Lista = () => {
   const [refreshing, setRefreshing] = useState(false);
 
   const getDados = useCallback(() => {
-    api.get<ProviderRequest>(`/lista/`).then((res) => {
+    api.get<ProviderRequest>('/lista').then((res) => {
       if (res.data) {
         setLista(res.data);
       }
     });
-  }, []);
-
-
-  const teste = useCallback(() => {
-    return "reste";
   }, []);
 
   const onRefresh = useCallback(() => {
@@ -74,7 +69,7 @@ const Lista = () => {
 
   useEffect(() => {
     getDados();
-  }, []);
+  }, [getDados]);
 
   useFocusEffect(
     useCallback(() => {
@@ -83,7 +78,10 @@ const Lista = () => {
   );
 
   const handleDelete = useCallback((data) => {
-    api.delete(`/lista/${data}`).then(_ => getDados()).catch(err => console.log(err));
+    api
+      .delete(`/lista/${data}`)
+      .then((_) => getDados())
+      .catch((err) => console.log(err));
   }, []);
 
   const leftSwipe = (progress: any, dragX: any, provider: ProviderItens) => {
@@ -97,7 +95,7 @@ const Lista = () => {
         onPress={() => handleDelete(provider.id)}
         activeOpacity={0.6}>
         <ButtonDelete>
-          <Animated.Text style={{ color: '#fff', transform: [{ scale: scale }] }}>
+          <Animated.Text style={{color: '#fff', transform: [{scale: scale}]}}>
             Deletar
           </Animated.Text>
         </ButtonDelete>
@@ -135,13 +133,13 @@ const Lista = () => {
     <>
       <HeaderLayout />
 
-      <Container style={{ flex: 1 }}>
+      <Container style={{flex: 1}}>
         <ShoppingList
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
           data={lista.data}
-          renderItem={({ item: provider }) => (
+          renderItem={({item: provider}) => (
             <Swipeable
               renderLeftActions={(progress, dragX) =>
                 leftSwipe(progress, dragX, provider)
@@ -165,7 +163,7 @@ const Lista = () => {
                   <ValueText>R$ {somaValoresItens(provider)}</ValueText>
                 </ItemList>
                 <View
-                  style={{ paddingBottom: 10, paddingLeft: 4, paddingRight: 4 }}>
+                  style={{paddingBottom: 10, paddingLeft: 4, paddingRight: 4}}>
                   <ProgressBar
                     progress={calcItensCheckt(provider)}
                     color={'#01ac73'}

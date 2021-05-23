@@ -1,6 +1,12 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {createRef, useCallback, useEffect, useState} from 'react';
-import {KeyboardAvoidingView, Platform, Text, View} from 'react-native';
+import {
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
+  Text,
+  View,
+} from 'react-native';
 
 import Icon from 'react-native-vector-icons/Feather';
 import HeaderSingle from '../../../../Layout/HeaderSingle';
@@ -16,18 +22,20 @@ import {
   ListItens,
   GridItens,
   TextValues,
+  ButtonDelete,
 } from './style';
 import {ItemsReques, ProviderItens} from '..';
 import api from '../../../../services/api';
 import {Swipeable} from 'react-native-gesture-handler';
 import {useFocusEffect} from '@react-navigation/native';
+import Animated from 'react-native-reanimated';
 
 interface PropsComponente {
   route: any;
   navigation: any;
 }
 
-interface ProviderItensLista {
+export interface ProviderItensLista {
   pivot: {
     qty: number;
     value: string;
@@ -38,15 +46,14 @@ interface ProviderItensLista {
 }
 
 const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
-  let {id: id_lista, title} = route.params;
-
+  let {id, title} = route.params;
   let [items, SetItems] = useState<ProviderItens>({} as ProviderItens);
   const [elRefs, setElRefs] = useState<Array<any>>([]);
 
   const getDados = useCallback(() => {
-    api.get<ProviderItens>(`/lista/${id_lista}`).then((res) => {
+    api.get<ProviderItens>(`/lista/${id}`).then((res) => {
       if (res.data) {
-        const itens = res.data;
+        let itens = res.data;
         if (itens.itens) {
           SetItems(itens);
           setElRefs((el) =>
@@ -57,7 +64,7 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
         }
       }
     });
-  }, [id_lista]);
+  }, [id]);
 
   useEffect(() => {
     getDados();
@@ -140,7 +147,7 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
       .replace('.', ',');
   }
 
-  const leftSwipe = (progress: any, dragX: any, provider: ItemsReques) => {
+  const leftSwipe = (provider: ItemsReques) => {
     let {pivot} = provider;
     return (
       <TextValues
@@ -154,6 +161,7 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
       />
     );
   };
+
   return (
     <>
       <HeaderSingle title={title} navigation={navigation} />
@@ -169,10 +177,7 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
             renderItem={({item: provider, index}) => {
               const {pivot} = provider;
               return (
-                <Swipeable
-                  renderLeftActions={(progress, dragX) =>
-                    leftSwipe(progress, dragX, provider)
-                  }>
+                <Swipeable renderLeftActions={(_) => leftSwipe(provider)}>
                   <GridItens>
                     <InputCheckbox
                       size={25}
@@ -213,7 +218,11 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
       </KeyboardAvoidingView>
 
       <FabButtom
-        onPress={() => navigation.navigate('AddToList', {item: items})}>
+        onPress={() =>
+          navigation.navigate('AddToList', {
+            item: {id, title},
+          })
+        }>
         <Icon name="plus" size={40} color="#fff" />
       </FabButtom>
     </>
