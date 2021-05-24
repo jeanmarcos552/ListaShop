@@ -1,12 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {createRef, useCallback, useEffect, useState} from 'react';
-import {
-  TouchableOpacity,
-  KeyboardAvoidingView,
-  Platform,
-  Text,
-  View,
-} from 'react-native';
+import {KeyboardAvoidingView, Platform, Text, View} from 'react-native';
 
 import Icon from 'react-native-vector-icons/Feather';
 import HeaderSingle from '../../../../Layout/HeaderSingle';
@@ -22,13 +16,12 @@ import {
   ListItens,
   GridItens,
   TextValues,
-  ButtonDelete,
 } from './style';
 import {ItemsReques, ProviderItens} from '..';
 import api from '../../../../services/api';
 import {Swipeable} from 'react-native-gesture-handler';
 import {useFocusEffect} from '@react-navigation/native';
-import Animated from 'react-native-reanimated';
+import SkeletonListItem from './skeleton';
 
 interface PropsComponente {
   route: any;
@@ -49,6 +42,7 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
   let {id, title} = route.params;
   let [items, SetItems] = useState<ProviderItens>({} as ProviderItens);
   const [elRefs, setElRefs] = useState<Array<any>>([]);
+  const [loading, setLoading] = useState(true);
 
   const getDados = useCallback(() => {
     api.get<ProviderItens>(`/lista/${id}`).then((res) => {
@@ -56,6 +50,7 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
         let itens = res.data;
         if (itens.itens) {
           SetItems(itens);
+          setLoading(false);
           setElRefs((el) =>
             Array(itens.itens.length)
               .fill(itens.itens.length)
@@ -64,11 +59,11 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
         }
       }
     });
-  }, [id]);
+  }, [id, SetItems]);
 
   useEffect(() => {
     getDados();
-  }, [getDados]);
+  }, [id, getDados]);
 
   useFocusEffect(
     useCallback(() => {
@@ -165,66 +160,74 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
   return (
     <>
       <HeaderSingle title={title} navigation={navigation} />
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'android' ? 'height' : 'padding'}
-        enabled
-        style={{flex: 1}}>
-        <Container>
-          <ListItens
-            data={items.itens}
-            keyExtractor={(provider) => provider.id.toString()}
-            style={{backgroundColor: '#fff'}}
-            renderItem={({item: provider, index}) => {
-              const {pivot} = provider;
-              return (
-                <Swipeable renderLeftActions={(_) => leftSwipe(provider)}>
-                  <GridItens>
-                    <InputCheckbox
-                      size={25}
-                      fillColor="#01ac73"
-                      unfillColor="#FFFFFF"
-                      text={provider.name}
-                      iconStyle={{borderColor: '#01ac73'}}
-                      textStyle={{
-                        fontSize: 20,
-                        fontFamily: 'Exo-Regular',
-                      }}
-                      isChecked={pivot.status}
-                      onPress={() => handleCheckItem(provider, index)}
-                    />
-                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                      <Text style={{color: '#808080'}}>{pivot.qty} x </Text>
-                      <TextValues
-                        ref={elRefs[index]}
-                        key={provider.id}
-                        defaultValue={pivot.value.toString()}
-                        keyboardType="numeric"
-                        placeholder="0,00"
-                        value={pivot.value.toString()}
-                        onBlur={() => updateItem(provider)}
-                        onChangeText={(value) =>
-                          handleChange(value, pivot, 'value')
-                        }
-                      />
-                    </View>
-                  </GridItens>
-                </Swipeable>
-              );
-            }}
-            ListHeaderComponent={renderHeader()}
-          />
-          {renderFooter()}
-        </Container>
-      </KeyboardAvoidingView>
+      {loading ? (
+        <SkeletonListItem />
+      ) : (
+        <>
+          <KeyboardAvoidingView
+            behavior={Platform.OS === 'android' ? 'height' : 'padding'}
+            enabled
+            style={{flex: 1}}>
+            <Container>
+              <ListItens
+                data={items.itens}
+                keyExtractor={(provider) => provider.id.toString()}
+                style={{backgroundColor: '#fff'}}
+                renderItem={({item: provider, index}) => {
+                  return (
+                    <Swipeable renderLeftActions={(_) => leftSwipe(provider)}>
+                      <GridItens>
+                        <InputCheckbox
+                          size={25}
+                          fillColor="#01ac73"
+                          unfillColor="#FFFFFF"
+                          text={provider.name}
+                          iconStyle={{borderColor: '#01ac73'}}
+                          textStyle={{
+                            fontSize: 20,
+                            fontFamily: 'Exo-Regular',
+                          }}
+                          isChecked={provider.pivot.status}
+                          onPress={() => handleCheckItem(provider, index)}
+                        />
+                        <View
+                          style={{flexDirection: 'row', alignItems: 'center'}}>
+                          <Text style={{color: '#808080'}}>
+                            {provider.pivot.qty} x{' '}
+                          </Text>
+                          <TextValues
+                            ref={elRefs[index]}
+                            key={provider.id}
+                            defaultValue={provider.pivot.value.toString()}
+                            keyboardType="numeric"
+                            placeholder="0,00"
+                            value={provider.pivot.value.toString()}
+                            onBlur={() => updateItem(provider)}
+                            onChangeText={(value) =>
+                              handleChange(value, provider.pivot, 'value')
+                            }
+                          />
+                        </View>
+                      </GridItens>
+                    </Swipeable>
+                  );
+                }}
+                ListHeaderComponent={renderHeader()}
+              />
+              {renderFooter()}
+            </Container>
+          </KeyboardAvoidingView>
 
-      <FabButtom
-        onPress={() =>
-          navigation.navigate('AddToList', {
-            item: {id, title},
-          })
-        }>
-        <Icon name="plus" size={40} color="#fff" />
-      </FabButtom>
+          <FabButtom
+            onPress={() =>
+              navigation.navigate('AddToList', {
+                item: {id, title},
+              })
+            }>
+            <Icon name="plus" size={40} color="#fff" />
+          </FabButtom>
+        </>
+      )}
     </>
   );
 };

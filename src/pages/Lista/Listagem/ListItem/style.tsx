@@ -37,7 +37,7 @@ export const FormContainer = styled(Form)`
 
 export const FabButtom = styled.TouchableOpacity`
   position: absolute;
-  bottom: ${getBottomSpace() + 30}px;
+  top: ${getBottomSpace() + 12}px;
   right: 20px;
   background-color: #ff9000;
   border-radius: 100px;

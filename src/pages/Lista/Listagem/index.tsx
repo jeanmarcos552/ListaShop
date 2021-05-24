@@ -14,12 +14,18 @@ import {
   ButtonDelete,
   Container,
   IconText,
+  CompartilharLista,
+  ProgressBarView,
+  CompartilharListaText,
 } from './style';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
-import {Animated, RefreshControl, View} from 'react-native';
+import {Animated, RefreshControl, Text, View} from 'react-native';
 import HeaderLayout from '../../../Layout/Header';
 import {Swipeable, TouchableOpacity} from 'react-native-gesture-handler';
 import api from '../../../services/api';
+import {useAuth} from '../../../hooks/auth';
+import SkeletonListagem from './skeleton';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 export interface ProviderRequest {
   current_page: number;
@@ -36,6 +42,7 @@ export interface ProviderItens {
 export interface ItemsReques {
   id: number;
   name: string;
+  itens: Array;
   pivot: {
     qty: number;
     value: string;
@@ -50,20 +57,24 @@ const Lista = () => {
   const navigate = useNavigation();
   const [lista, setLista] = useState<ProviderRequest>({} as ProviderRequest);
   const [refreshing, setRefreshing] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const getDados = useCallback(() => {
     api.get<ProviderRequest>('/lista').then((res) => {
       if (res.data) {
         setLista(res.data);
+        setLoading(false);
       }
     });
   }, []);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
+    setLoading(true);
     api.get('/lista').then((res) => {
       setLista(res.data);
       setRefreshing(false);
+      setLoading(false);
     });
   }, []);
 
@@ -77,12 +88,15 @@ const Lista = () => {
     }, []),
   );
 
-  const handleDelete = useCallback((data) => {
-    api
-      .delete(`/lista/${data}`)
-      .then((_) => getDados())
-      .catch((err) => console.log(err));
-  }, []);
+  const handleDelete = useCallback(
+    (data) => {
+      api
+        .delete(`/lista/${data}`)
+        .then((_) => getDados())
+        .catch((err) => console.log(err));
+    },
+    [getDados],
+  );
 
   const leftSwipe = (progress: any, dragX: any, provider: ProviderItens) => {
     const scale = dragX.interpolate({
@@ -108,6 +122,7 @@ const Lista = () => {
       navigate.navigate('ItensToList', {
         id: data.id,
         title: data.name,
+        total: data.itens.length,
       });
     },
     [navigate],
@@ -133,48 +148,57 @@ const Lista = () => {
     <>
       <HeaderLayout />
 
-      <Container style={{flex: 1}}>
-        <ShoppingList
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
-          data={lista.data}
-          renderItem={({item: provider}) => (
-            <Swipeable
-              renderLeftActions={(progress, dragX) =>
-                leftSwipe(progress, dragX, provider)
-              }>
-              <ContainerList onPress={() => handleSeeIten(provider)}>
-                <ItemList>
-                  <ContainerText>
-                    <ItemListText>{provider.name}</ItemListText>
-                    <IconText
-                      name={
-                        calcItensCheckt(provider) === 1
-                          ? 'check-circle'
-                          : 'clock'
-                      }
-                      color={
-                        calcItensCheckt(provider) !== 1 ? '#f0ac1b' : '#01ac73'
-                      }
-                      size={20}
-                    />
-                  </ContainerText>
-                  <ValueText>R$ {somaValoresItens(provider)}</ValueText>
-                </ItemList>
-                <View
-                  style={{paddingBottom: 10, paddingLeft: 4, paddingRight: 4}}>
-                  <ProgressBar
-                    progress={calcItensCheckt(provider)}
-                    color={'#01ac73'}
-                  />
-                </View>
-              </ContainerList>
-            </Swipeable>
-          )}
-          keyExtractor={(provider) => provider.id.toString()}
-        />
-        <FormLista afterSave={getDados} />
+      <Container>
+        {loading ? (
+          [0, 1, 2].map((item) => <SkeletonListagem key={item} />)
+        ) : (
+          <>
+            <ShoppingList
+              refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+              }
+              data={lista.data}
+              renderItem={({item: provider}) => (
+                <Swipeable>
+                  <ContainerList>
+                    <ItemList onPress={() => handleSeeIten(provider)}>
+                      <ContainerText>
+                        <ItemListText>{provider.name}</ItemListText>
+                        <IconText
+                          name={
+                            calcItensCheckt(provider) === 1
+                              ? 'check-circle'
+                              : 'clock'
+                          }
+                          color={
+                            calcItensCheckt(provider) !== 1
+                              ? '#f0ac1b'
+                              : '#01ac73'
+                          }
+                          size={20}
+                        />
+                      </ContainerText>
+                      <ValueText>R$ {somaValoresItens(provider)}</ValueText>
+                    </ItemList>
+                    <ProgressBarView>
+                      <ProgressBar
+                        progress={calcItensCheckt(provider)}
+                        color={'#01ac73'}
+                      />
+                    </ProgressBarView>
+                    <CompartilharLista onPress={() => console.log(' oial')}>
+                      <CompartilharListaText>
+                        Compartilhar
+                      </CompartilharListaText>
+                    </CompartilharLista>
+                  </ContainerList>
+                </Swipeable>
+              )}
+              keyExtractor={(provider) => provider.id.toString()}
+            />
+            <FormLista afterSave={getDados} />
+          </>
+        )}
       </Container>
     </>
   );

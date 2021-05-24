@@ -19,7 +19,6 @@ export const Container = styled.View`
 
 export const HeaderSearch = styled.View`
   padding: ${getStatusBarHeight() + 25}px 15px 0px;
-  background-color:#01ac73;
 `;
 
 export const TextInputSugest = styled.View<PropsInput>`

@@ -14,7 +14,7 @@ const AppRoutes: React.FC = () => {
     <App.Navigator
       screenOptions={{
         headerShown: false,
-        cardStyle: {backgroundColor: '#00BC7E'},
+        cardStyle: {backgroundColor: '#fff'},
       }}
       initialRouteName="Tabs">
       <App.Screen name="Tabs" component={Tabs} />

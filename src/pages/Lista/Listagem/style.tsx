@@ -1,11 +1,9 @@
-import { Platform, FlatList } from 'react-native';
+import {Platform, FlatList} from 'react-native';
 import styled from 'styled-components/native';
-import { getStatusBarHeight, getBottomSpace } from 'react-native-iphone-x-helper';
-import { Provider } from './index';
+import {getStatusBarHeight} from 'react-native-iphone-x-helper';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/Feather';
-import { BaseButton } from 'react-native-gesture-handler';
-import { Colors } from 'react-native-paper';
+import {Colors} from 'react-native-paper';
 
 export const Container = styled.SafeAreaView`
   flex: 1;
@@ -24,37 +22,39 @@ export const HeaderText = styled.Text`
   color: #fff;
 `;
 
-export const ContainerList = styled(BaseButton)`
-  margin: 0px 0px 10px;
+export const ContainerList = styled.View`
+  margin: 10px;
   background-color: #fff;
-  /* box-shadow: 0px 2px 10px #e4e4e4; */
-  height:80px;
+  padding: 15px;
+  border-radius: 8px;
 `;
 
 export const ShoppingList = styled(FlatList as new () => FlatList<Provider>)`
-  padding-bottom: 16px;
+  overflow: hidden;
+  height: 100px;
 `;
 
-export const ItemList = styled.View`
+export const ItemList = styled.TouchableOpacity`
   justify-content: space-between;
   flex: 1;
   flex-direction: row;
   align-items: center;
-  padding-right: 10px;
 `;
 
 export const ContainerText = styled.View`
   flex-direction: row;
   align-items: center;
+
 `;
 
 export const ItemListText = styled.Text`
-  margin-bottom: 0px;
-  padding: 20px 10px;
+  margin-bottom: 10px;
   border-radius: 16px;
   font-family: 'Exo-Regular';
   font-size: 18px;
   color: #353434;
+  align-items: center;
+  align-content: center;
 `;
 
 export const ValueText = styled.Text`
@@ -62,13 +62,15 @@ export const ValueText = styled.Text`
   justify-content: center;
   font-size: 15px;
   color: #5a5858;
+  margin-bottom: 10px;
 `;
 
 export const IconText = styled(Icon)`
   border-radius: 100px;
   padding: 3px;
-  align-items:center;
-  justify-content:center;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
 `;
 
 export const ButtonDelete = styled.View`
@@ -77,4 +79,20 @@ export const ButtonDelete = styled.View`
   align-items: center;
   width: 100px;
   height: 80px;
+  overflow: hidden;
+  flex-direction: row;
+`;
+
+export const ProgressBarView = styled.View`
+  padding-bottom: 10px;
+`;
+export const CompartilharLista = styled.TouchableOpacity`
+  justify-content: center;
+  flex-direction: row;
+  padding: 10px;
+`;
+
+export const CompartilharListaText = styled.Text`
+  font-family: 'Exo-Regular';
+  color: ${Colors.lightBlue900};
 `;
