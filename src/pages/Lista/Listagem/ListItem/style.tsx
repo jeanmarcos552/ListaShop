@@ -54,6 +54,9 @@ export const TitleContainer = styled.View`
   flex-direction: row;
   margin: 5px 0 15px;
   justify-content: center;
+  align-content: center;
+  align-items: center;
+  justify-content: space-evenly;
 `;
 export const Title = styled.Text`
   font-size: 20px;

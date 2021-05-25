@@ -19,13 +19,11 @@ import {
   CompartilharListaText,
 } from './style';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
-import {Animated, RefreshControl, Text, View} from 'react-native';
+import {Animated, RefreshControl} from 'react-native';
 import HeaderLayout from '../../../Layout/Header';
 import {Swipeable, TouchableOpacity} from 'react-native-gesture-handler';
 import api from '../../../services/api';
-import {useAuth} from '../../../hooks/auth';
 import SkeletonListagem from './skeleton';
-import {SafeAreaView} from 'react-native-safe-area-context';
 
 export interface ProviderRequest {
   current_page: number;
@@ -42,7 +40,7 @@ export interface ProviderItens {
 export interface ItemsReques {
   id: number;
   name: string;
-  itens: Array;
+  itens: Array<any>;
   pivot: {
     qty: number;
     value: string;
@@ -122,7 +120,6 @@ const Lista = () => {
       navigate.navigate('ItensToList', {
         id: data.id,
         title: data.name,
-        total: data.itens.length,
       });
     },
     [navigate],

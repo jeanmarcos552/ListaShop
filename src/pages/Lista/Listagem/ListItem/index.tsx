@@ -19,7 +19,7 @@ import {
 } from './style';
 import {ItemsReques, ProviderItens} from '..';
 import api from '../../../../services/api';
-import {Swipeable} from 'react-native-gesture-handler';
+import {Swipeable, TouchableOpacity} from 'react-native-gesture-handler';
 import {useFocusEffect} from '@react-navigation/native';
 import SkeletonListItem from './skeleton';
 
@@ -43,6 +43,7 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
   let [items, SetItems] = useState<ProviderItens>({} as ProviderItens);
   const [elRefs, setElRefs] = useState<Array<any>>([]);
   const [loading, setLoading] = useState(true);
+  const [itensSelected, setItensSelected] = useState(false);
 
   const getDados = useCallback(() => {
     api.get<ProviderItens>(`/lista/${id}`).then((res) => {
@@ -107,9 +108,33 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
     );
   };
 
+  const showItens = async (show: boolean) => {
+    setItensSelected(show);
+    let newItens = Object.assign({}, items);
+
+    api.get(`/itensLista/${id}?status=${show}`).then((res) => {
+      newItens.itens = res.data;
+    });
+    SetItems(newItens);
+  };
+
   const renderFooter = () => {
     return (
       <TitleContainer>
+        <TouchableOpacity
+          onPress={() => showItens(!itensSelected)}
+          style={{backgroundColor: '#e7e4e4', borderRadius: 50, padding: 5}}>
+          <Icon
+            name={itensSelected ? 'check' : 'circle'}
+            size={18}
+            color="#01ac73"
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => getDados()}
+          style={{backgroundColor: '#e7e4e4', borderRadius: 50, padding: 5}}>
+          <Icon name="rotate-ccw" size={18} color="#01ac73" />
+        </TouchableOpacity>
         <TotalFooter>
           R$
           {somaValoresItens(items)}

@@ -44,7 +44,6 @@ export const ItemList = styled.TouchableOpacity`
 export const ContainerText = styled.View`
   flex-direction: row;
   align-items: center;
-
 `;
 
 export const ItemListText = styled.Text`
