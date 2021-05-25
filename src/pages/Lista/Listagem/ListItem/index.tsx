@@ -43,7 +43,7 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
   let [items, SetItems] = useState<ProviderItens>({} as ProviderItens);
   const [elRefs, setElRefs] = useState<Array<any>>([]);
   const [loading, setLoading] = useState(true);
-  const [itensSelected, setItensSelected] = useState(false);
+  const [itensSelected, setItensSelected] = useState(true);
 
   const getDados = useCallback(() => {
     api.get<ProviderItens>(`/lista/${id}`).then((res) => {
@@ -109,18 +109,14 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
   };
 
   const showItens = async (show: boolean) => {
-    if (show === false) {
-      setItensSelected(false);
-      let newItens = Object.assign({}, items);
+    console.log(show);
 
-      api.get(`/itensLista/${id}?status=false`).then((res) => {
-        newItens.itens = res.data;
-      });
-      SetItems(newItens);
-    } else {
-      getDados();
-      setItensSelected(true);
-    }
+    let newItens = Object.assign({}, items);
+    await api.get(`/itensLista/${id}?status=${show}`).then((res) => {
+      newItens.itens = res.data;
+    });
+    SetItems(newItens);
+    setItensSelected(show);
   };
 
   const renderFooter = () => {

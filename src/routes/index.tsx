@@ -12,7 +12,7 @@ const Routes: React.FC = () => {
   if (loading) {
     return (
       <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-        <ActivityIndicator size="large" color="#666" />
+        <ActivityIndicator size="large" color="#3f3e3e" />
       </View>
     );
   }

@@ -1,20 +1,27 @@
 import React from 'react';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
-import {useWindowDimensions, View} from 'react-native';
+import { useWindowDimensions, View } from 'react-native';
 
 const SkeletonListagem: React.FC = () => {
   const windowWidth = useWindowDimensions().width;
   //   const windowHeight = useWindowDimensions().height;
 
   return (
-    <View style={{marginBottom: 20}}>
+    <View style={{
+      backgroundColor: '#fff', 
+      marginTop: 10, 
+      marginLeft: 18,
+      marginRight: 18,
+      borderRadius: 8, 
+      padding: 15,
+      marginBottom: 10
+    }}>
       <SkeletonPlaceholder speed={3}>
         <SkeletonPlaceholder.Item
           marginTop={30}
           flexDirection="row"
           alignItems="center">
           <SkeletonPlaceholder.Item
-            marginLeft={20}
             width={windowWidth / 3}
             height={25}
             borderRadius={4}
@@ -26,7 +33,7 @@ const SkeletonListagem: React.FC = () => {
             borderRadius={100}
           />
 
-          <SkeletonPlaceholder.Item marginLeft={windowWidth / 3}>
+          <SkeletonPlaceholder.Item marginLeft={windowWidth / 3.5}>
             <SkeletonPlaceholder.Item width={60} height={25} borderRadius={4} />
           </SkeletonPlaceholder.Item>
         </SkeletonPlaceholder.Item>
@@ -36,11 +43,12 @@ const SkeletonListagem: React.FC = () => {
         <SkeletonPlaceholder.Item
           marginTop={8}
           flexDirection="row"
-          alignItems="center">
+          alignItems="center"
+          
+          >
           <SkeletonPlaceholder.Item
-            marginLeft={20}
             marginTop={6}
-            width={windowWidth - 45}
+            width={windowWidth / 1.2}
             height={10}
             borderRadius={4}
           />

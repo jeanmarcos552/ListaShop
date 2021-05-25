@@ -1,9 +1,9 @@
-import {Platform, FlatList} from 'react-native';
+import { Platform, FlatList } from 'react-native';
 import styled from 'styled-components/native';
-import {getStatusBarHeight} from 'react-native-iphone-x-helper';
+import { getStatusBarHeight } from 'react-native-iphone-x-helper';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/Feather';
-import {Colors} from 'react-native-paper';
+import { Colors } from 'react-native-paper';
 
 export const Container = styled.SafeAreaView`
   flex: 1;
@@ -23,7 +23,7 @@ export const HeaderText = styled.Text`
 `;
 
 export const ContainerList = styled.View`
-  margin: 10px;
+  margin: 10px 18px;
   background-color: #fff;
   padding: 15px;
   border-radius: 8px;
@@ -85,10 +85,16 @@ export const ButtonDelete = styled.View`
 export const ProgressBarView = styled.View`
   padding-bottom: 10px;
 `;
-export const CompartilharLista = styled.TouchableOpacity`
-  justify-content: center;
+
+export const FooterLoop = styled.View`
+  justify-content: space-between;
   flex-direction: row;
   padding: 10px;
+`;
+export const CompartilharLista = styled.TouchableOpacity``;
+export const TextRigthFooter = styled.Text`
+  font-family: 'Exo-Regular';
+  color: #969595dd;
 `;
 
 export const CompartilharListaText = styled.Text`

@@ -1,4 +1,6 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {useCallback, useEffect, useState} from 'react';
+import moment from 'moment';
 
 import FormLista from '../Add';
 
@@ -16,14 +18,16 @@ import {
   IconText,
   CompartilharLista,
   ProgressBarView,
-  CompartilharListaText,
+  FooterLoop,
+  TextRigthFooter,
 } from './style';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
-import {Animated, RefreshControl} from 'react-native';
+import {Animated, RefreshControl, View} from 'react-native';
 import HeaderLayout from '../../../Layout/Header';
 import {Swipeable, TouchableOpacity} from 'react-native-gesture-handler';
 import api from '../../../services/api';
 import SkeletonListagem from './skeleton';
+import Icon from 'react-native-vector-icons/Feather';
 
 export interface ProviderRequest {
   current_page: number;
@@ -142,12 +146,12 @@ const Lista = () => {
   }
 
   return (
-    <>
+    <View style={{flex: 1, backgroundColor: '#edededdd'}}>
       <HeaderLayout />
 
       <Container>
         {loading ? (
-          [0, 1, 2].map((item) => <SkeletonListagem key={item} />)
+          [0, 1, 2, 3].map((item) => <SkeletonListagem key={item} />)
         ) : (
           <>
             <ShoppingList
@@ -183,11 +187,14 @@ const Lista = () => {
                         color={'#01ac73'}
                       />
                     </ProgressBarView>
-                    <CompartilharLista onPress={() => console.log(' oial')}>
-                      <CompartilharListaText>
-                        Compartilhar
-                      </CompartilharListaText>
-                    </CompartilharLista>
+                    <FooterLoop>
+                      <TextRigthFooter>
+                        {moment(provider.created_at).format('DD/MM')}
+                      </TextRigthFooter>
+                      <CompartilharLista onPress={() => console.log(' oial')}>
+                        <Icon name="share" size={18} color="#969595dd" />
+                      </CompartilharLista>
+                    </FooterLoop>
                   </ContainerList>
                 </Swipeable>
               )}
@@ -197,7 +204,7 @@ const Lista = () => {
           </>
         )}
       </Container>
-    </>
+    </View>
   );
 };
 
