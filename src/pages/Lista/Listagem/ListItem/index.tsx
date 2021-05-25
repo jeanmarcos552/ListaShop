@@ -109,13 +109,18 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
   };
 
   const showItens = async (show: boolean) => {
-    setItensSelected(show);
-    let newItens = Object.assign({}, items);
+    if (show === false) {
+      setItensSelected(false);
+      let newItens = Object.assign({}, items);
 
-    api.get(`/itensLista/${id}?status=${show}`).then((res) => {
-      newItens.itens = res.data;
-    });
-    SetItems(newItens);
+      api.get(`/itensLista/${id}?status=false`).then((res) => {
+        newItens.itens = res.data;
+      });
+      SetItems(newItens);
+    } else {
+      getDados();
+      setItensSelected(true);
+    }
   };
 
   const renderFooter = () => {
