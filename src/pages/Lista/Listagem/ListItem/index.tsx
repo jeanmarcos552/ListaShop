@@ -38,12 +38,17 @@ export interface ProviderItensLista {
   };
 }
 
+import AsyncStorage from '@react-native-community/async-storage';
+
 const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
   let {id, title} = route.params;
   let [items, SetItems] = useState<ProviderItens>({} as ProviderItens);
+  let [choiceSelected, SetChoiceSelected] = useState<ProviderItens>(
+    {} as ProviderItens,
+  );
   const [elRefs, setElRefs] = useState<Array<any>>([]);
   const [loading, setLoading] = useState(true);
-  const [itensSelected, setItensSelected] = useState(true);
+  const [seeTrue, setSeeTrue] = useState(false);
 
   const getDados = useCallback(() => {
     api.get<ProviderItens>(`/lista/${id}`).then((res) => {
@@ -51,7 +56,9 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
         let itens = res.data;
         if (itens.itens) {
           SetItems(itens);
+          SetChoiceSelected(itens);
           setLoading(false);
+
           setElRefs((el) =>
             Array(itens.itens.length)
               .fill(itens.itens.length)
@@ -72,20 +79,28 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
     }, [getDados]),
   );
 
-  const handleCheckItem = (provider: ItemsReques, index: number) => {
+  const handleCheckItem = async (provider: ItemsReques, index: number) => {
     let {pivot} = provider;
 
     !pivot.status ? elRefs[index].current.focus() : '';
 
     pivot.status = !pivot.status;
 
-    api.post('/updateItem', {...pivot}).then((_) => getDados());
+    api.post('/updateItem', {...pivot}).then((_) => {
+      if (!seeTrue) {
+        getDados();
+      }
+    });
   };
 
   const updateItem = (provider: ProviderItensLista) => {
     const newPivot = {...provider.pivot};
     newPivot.value = newPivot.value.replace(',', '.');
-    api.post('/updateItem', newPivot).then((_) => getDados());
+    api.post('/updateItem', newPivot).then((_) => {
+      if (!seeTrue) {
+        getDados();
+      }
+    });
   };
 
   function calcItensChecked(provider: ProviderItens) {
@@ -109,32 +124,37 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
   };
 
   const showItens = async (show: boolean) => {
-    console.log(show);
+    setSeeTrue(show);
 
-    let newItens = Object.assign({}, items);
-    await api.get(`/itensLista/${id}?status=${show}`).then((res) => {
-      newItens.itens = res.data;
-    });
-    SetItems(newItens);
-    setItensSelected(show);
+    choiceSelected = Object.assign({}, items);
+
+    choiceSelected.itens = choiceSelected.itens
+      .map((item) => item)
+      .filter((item) => {
+        if (!item.pivot.status) {
+          return item;
+        }
+      });
+
+    SetChoiceSelected(choiceSelected);
   };
 
   const renderFooter = () => {
     return (
       <TitleContainer>
         <TouchableOpacity
-          onPress={() => showItens(!itensSelected)}
+          onPress={() => showItens(!seeTrue)}
           style={{backgroundColor: '#e7e4e4', borderRadius: 50, padding: 5}}>
           <Icon
-            name={itensSelected ? 'check' : 'circle'}
-            size={18}
+            name={!seeTrue ? 'check' : 'circle'}
+            size={20}
             color="#01ac73"
           />
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => getDados()}
           style={{backgroundColor: '#e7e4e4', borderRadius: 50, padding: 5}}>
-          <Icon name="rotate-ccw" size={18} color="#01ac73" />
+          <Icon name="rotate-ccw" size={20} color="#01ac73" />
         </TouchableOpacity>
         <TotalFooter>
           R$
@@ -196,7 +216,7 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
             style={{flex: 1}}>
             <Container>
               <ListItens
-                data={items.itens}
+                data={seeTrue ? choiceSelected.itens : items.itens}
                 keyExtractor={(provider) => provider.id.toString()}
                 style={{backgroundColor: '#fff'}}
                 renderItem={({item: provider, index}) => {
