@@ -39,6 +39,10 @@ export interface ProviderItens {
   name: string;
   itens: Array<ItemsReques>;
   total: number;
+  info: {
+    itens: number;
+    user: number;
+  };
 }
 
 export interface ItemsReques {

@@ -38,8 +38,10 @@ export interface ProviderItensLista {
   };
 }
 
-import AsyncStorage from '@react-native-community/async-storage';
-
+interface Filtro {
+  status: boolean;
+  itens?: boolean;
+}
 const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
   let {id, title} = route.params;
   let [items, SetItems] = useState<ProviderItens>({} as ProviderItens);
@@ -48,26 +50,34 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
   );
   const [elRefs, setElRefs] = useState<Array<any>>([]);
   const [loading, setLoading] = useState(true);
-  const [seeTrue, setSeeTrue] = useState(false);
+  let [filter, setFilter] = useState<Filtro>({} as Filtro);
+  let [somaItens, setSomaItens] = useState('0');
 
   const getDados = useCallback(() => {
-    api.get<ProviderItens>(`/lista/${id}`).then((res) => {
+    api.get(`/lista/${id}`).then((res) => {
       if (res.data) {
-        let itens = res.data;
-        if (itens.itens) {
-          SetItems(itens);
-          SetChoiceSelected(itens);
-          setLoading(false);
-
-          setElRefs((el) =>
-            Array(itens.itens.length)
-              .fill(itens.itens.length)
-              .map((_, i) => el[i] || createRef()),
-          );
-        }
+        somaValoresItens(res.data);
       }
     });
-  }, [id, SetItems]);
+    api
+      .get<ProviderItens>(`/lista/${id}`, {params: filter})
+      .then((res) => {
+        if (res.data) {
+          let itens = res.data;
+          if (itens.itens) {
+            SetItems(itens);
+            SetChoiceSelected(itens);
+            setLoading(false);
+
+            setElRefs((el) =>
+              Array(itens.itens.length)
+                .fill(itens.itens.length)
+                .map((_, i) => el[i] || createRef()),
+            );
+          }
+        }
+      });
+  }, [id, filter]);
 
   useEffect(() => {
     getDados();
@@ -87,7 +97,7 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
     pivot.status = !pivot.status;
 
     api.post('/updateItem', {...pivot}).then((_) => {
-      if (!seeTrue) {
+      if (filter.itens === undefined || !pivot.status) {
         getDados();
       }
     });
@@ -96,18 +106,14 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
   const updateItem = (provider: ProviderItensLista) => {
     const newPivot = {...provider.pivot};
     newPivot.value = newPivot.value.replace(',', '.');
-    api.post('/updateItem', newPivot).then((_) => {
-      if (!seeTrue) {
-        getDados();
-      }
-    });
+    api.post('/updateItem', newPivot).then((_) => getDados());
   };
 
   function calcItensChecked(provider: ProviderItens) {
     let itensChecked = provider.itens?.filter(
       (item) => item.pivot.status === true,
     );
-    return `${itensChecked.length} de ${items.itens.length}`;
+    return `${itensChecked.length} de ${choiceSelected.itens.length}`;
   }
 
   const renderHeader = () => {
@@ -123,42 +129,29 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
     );
   };
 
-  const showItens = async (show: boolean) => {
-    setSeeTrue(show);
-
-    choiceSelected = Object.assign({}, items);
-
-    choiceSelected.itens = choiceSelected.itens
-      .map((item) => item)
-      .filter((item) => {
-        if (!item.pivot.status) {
-          return item;
-        }
-      });
-
-    SetChoiceSelected(choiceSelected);
-  };
-
   const renderFooter = () => {
     return (
       <TitleContainer>
         <TouchableOpacity
-          onPress={() => showItens(!seeTrue)}
+          onPress={() => setFilter({...filter, itens: !filter.itens})}
           style={{backgroundColor: '#e7e4e4', borderRadius: 50, padding: 5}}>
           <Icon
-            name={!seeTrue ? 'check' : 'circle'}
+            name={filter.itens ? 'check' : 'circle'}
             size={20}
             color="#01ac73"
           />
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => getDados()}
+          onPress={() => {
+            setLoading(true);
+            setFilter({...filter, itens: null});
+          }}
           style={{backgroundColor: '#e7e4e4', borderRadius: 50, padding: 5}}>
           <Icon name="rotate-ccw" size={20} color="#01ac73" />
         </TouchableOpacity>
         <TotalFooter>
           R$
-          {somaValoresItens(items)}
+          {somaItens}
         </TotalFooter>
       </TitleContainer>
     );
@@ -176,16 +169,14 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
   }
 
   function somaValoresItens(pivot: ProviderItens) {
-    if (!pivot.itens) {
-      return 0;
-    }
-    return pivot.itens
+    const total = pivot.itens
       .map((item: ItemsReques) => item.pivot)
       .filter((item) => item.status === true)
       .map((prev: any) => +prev.qty * +prev.value)
       .reduce((prev, current) => prev + current, 0)
       .toFixed(2)
       .replace('.', ',');
+    setSomaItens(total);
   }
 
   const leftSwipe = (provider: ItemsReques) => {
@@ -216,7 +207,7 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
             style={{flex: 1}}>
             <Container>
               <ListItens
-                data={seeTrue ? choiceSelected.itens : items.itens}
+                data={filter.itens ? choiceSelected.itens : items.itens}
                 keyExtractor={(provider) => provider.id.toString()}
                 style={{backgroundColor: '#fff'}}
                 renderItem={({item: provider, index}) => {
