@@ -16,7 +16,6 @@ import {
   ButtonDelete,
   Container,
   IconText,
-  CompartilharLista,
   ProgressBarView,
   FooterLoop,
   TextRigthFooter,
@@ -28,6 +27,7 @@ import {Swipeable, TouchableOpacity} from 'react-native-gesture-handler';
 import api from '../../../services/api';
 import SkeletonListagem from './skeleton';
 import Icon from 'react-native-vector-icons/Feather';
+import ShareLista from './AddToUser';
 
 export interface ProviderRequest {
   current_page: number;
@@ -195,9 +195,8 @@ const Lista = () => {
                       <TextRigthFooter>
                         {moment(provider.created_at).format('DD/MM')}
                       </TextRigthFooter>
-                      <CompartilharLista onPress={() => console.log(' oial')}>
-                        <Icon name="share" size={18} color="#969595dd" />
-                      </CompartilharLista>
+
+                      <ShareLista key={provider.id} provider={provider} />
                     </FooterLoop>
                   </ContainerList>
                 </Swipeable>

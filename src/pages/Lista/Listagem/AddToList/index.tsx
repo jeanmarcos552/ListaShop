@@ -68,14 +68,14 @@ const AddToList: React.FC<PropsComponente> = ({route, navigation}) => {
 
   useEffect(() => {
     searchRef.current.focus();
+    api.get('/itens').then((res) => {
+      setLista(res.data.data);
+    });
+
     api.get(`lista/${id}`).then((res) => {
       if (res.data) {
         setListaOfItens(res.data.itens);
       }
-    });
-
-    api.get('/itens').then((res) => {
-      setLista(res.data.data);
     });
   }, [searchRef, id]);
 
@@ -98,16 +98,42 @@ const AddToList: React.FC<PropsComponente> = ({route, navigation}) => {
 
   const handleAddItemToLista = useCallback(
     (data) => {
+      let newLista = [...listaOfItens, {...data}];
+
+      console.log(newLista);
       let hasItem = listaOfItens.find((item) => item.id === data.id);
+      console.log(hasItem);
       if (!hasItem) {
-        let newLista = [...listaOfItens, {...data}];
-        setListaOfItens(newLista);
-      } else {
+        let {id: itens_id} = data;
+        const body = {
+          lista: id,
+          itens: {
+            itens_id,
+            qty: 1,
+          },
+          user: user.id,
+        };
         api
-          .post('/removeItem', {
+          .post('/addItem', {...body})
+          .then((_) => {
+            setListaOfItens(newLista);
+          })
+          .catch((err) => console.log(err));
+      } else {
+        let body = {};
+        if (hasItem.pivot) {
+          body = {
             item_id: hasItem.pivot.itens_id,
             lista: hasItem.pivot.lista_id,
-          })
+          };
+        } else {
+          body = {
+            item_id: hasItem.id,
+            lista: id,
+          };
+        }
+        api
+          .post('/removeItem', body)
           .then((res) => res.data)
           .then((_) => {
             api.get(`lista/${id}`).then((res) => {
@@ -118,32 +144,8 @@ const AddToList: React.FC<PropsComponente> = ({route, navigation}) => {
           });
       }
     },
-    [id, listaOfItens],
+    [id, listaOfItens, user.id],
   );
-
-  const saveItensToList = useCallback(() => {
-    if (listaOfItens && listaOfItens.length > 0) {
-      const itensSave = [...listaOfItens];
-
-      const itens = itensSave.map((item) => {
-        return {
-          itens_id: item.id,
-          qty: 1,
-        };
-      });
-
-      api
-        .post('/addItem', {
-          lista: id,
-          itens,
-          user: user.id,
-        })
-        .then((_) => navigation.goBack())
-        .catch((err) => console.log(err));
-    } else {
-      navigation.goBack();
-    }
-  }, [id, user, listaOfItens, navigation]);
 
   return (
     <>
@@ -165,11 +167,9 @@ const AddToList: React.FC<PropsComponente> = ({route, navigation}) => {
             onFocus={handleIsFocus}
             onBlur={handleIsFilled}
           />
-          <TouchableOpacity onPress={() => saveItensToList()}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
             <TextButton>
-              {listaOfItens && listaOfItens.length > 0
-                ? 'Concluir'
-                : 'Cancelar'}
+              {listaOfItens && listaOfItens.length > 0 ? 'Concluir' : 'Voltar'}
             </TextButton>
           </TouchableOpacity>
         </TextInputSugest>

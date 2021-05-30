@@ -1,216 +1,139 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {KeyboardAvoidingView, Platform} from 'react-native';
-
-import {NavigationScreenProp} from 'react-navigation';
+import {Form} from '@unform/mobile';
+import {FormHandles} from '@unform/core';
+import React, {useCallback, useRef, useState} from 'react';
+import {
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  View,
+} from 'react-native';
 
 import Icon from 'react-native-vector-icons/Feather';
+import * as Yup from 'yup';
 
 import {
+  Title,
   Container,
-  TextInputSugest,
-  InputText,
-  HeaderSearch,
-  ListResult,
-  Item,
-  ItemText,
-  HeaderList,
-  HeaderListTitle,
-  TitleBold,
-  TextButton,
+  Modal,
+  PressableButton,
+  PressableButtonText,
+  FooterButtons,
+  ButtonCreate,
+  ButtonCreateText,
+  CompartilharLista,
 } from './style';
-import {TouchableOpacity} from 'react-native-gesture-handler';
 import api from '../../../../services/api';
+import Input from '../../../../Components/Input';
+import getValidationErrors from '../../../../../Utils/getValidation';
 import {useAuth} from '../../../../hooks/auth';
 
-import {ProviderItensLista} from '../ListItem';
+interface ShareFormData {
+  user: string;
+}
 
-interface PropsComponente {
-  route: {
-    params: {
-      item: {
-        id: number;
-        title: string;
-      };
+interface ComponentProps {
+  provider: {
+    id: number;
+    name: string;
+    itens: Array<any>;
+    total: number;
+    info: {
+      itens: number;
+      user: number;
     };
   };
-  navigation: NavigationScreenProp<any, any>;
 }
+const ShareLista: React.FC<ComponentProps> = (props) => {
+  const formRef = useRef<FormHandles>(null);
+  const [modalVisible, setModalVisible] = useState(false);
 
-interface PropsTextInput {
-  text?: string;
-  value: string;
-}
+  const handleShareLista = useCallback(
+    async (data: ShareFormData) => {
+      try {
+        formRef.current?.setErrors({});
 
-interface Provider {
-  data: Array<ProviderItensLista>;
-  pivot: {
-    qty: number;
-    value: string;
-    status: boolean;
-    lista_id: number;
-    itens_id: number;
-  };
-}
+        const schema = Yup.object().shape({
+          user: Yup.string()
+            .required('E-mail obrigatorio')
+            .email('email inválido'),
+        });
 
-interface ProviderItens {
-  id: number;
-  name: string;
-}
+        await schema.validate(data, {
+          abortEarly: false,
+        });
 
-const AddToList: React.FC<PropsComponente> = ({route, navigation}) => {
-  const searchRef = useRef<any>(null);
-  let {id, title} = route.params.item;
-  const [value, onChangeText] = useState<PropsTextInput>();
-  let [lista, setLista] = useState<Provider[]>();
-  let [listaOfItens, setListaOfItens] = useState<Provider[]>([]);
-  const [isFocus, setIsFocus] = useState(true);
-  const {user} = useAuth();
-
-  useEffect(() => {
-    searchRef.current.focus();
-    api.get(`lista/${id}`).then((res) => {
-      if (res.data) {
-        setListaOfItens(res.data.itens);
-      }
-    });
-
-    api.get('/itens').then((res) => {
-      setLista(res.data.data);
-    });
-  }, [searchRef, id]);
-
-  const handleIsFocus = useCallback(() => {
-    setIsFocus(false);
-  }, []);
-
-  const handleIsFilled = useCallback(() => {
-    setIsFocus(true);
-  }, []);
-
-  const handleSearchItens = useCallback((text) => {
-    onChangeText(text);
-    if (text.length > 2) {
-      api.get(`/search/itens?name=${text}`).then((res) => setLista(res.data));
-    } else {
-      setLista([]);
-    }
-  }, []);
-
-  const handleAddItemToLista = useCallback(
-    (data) => {
-      let hasItem = listaOfItens.find((item) => item.id === data.id);
-      if (!hasItem) {
-        let newLista = [...listaOfItens, {...data}];
-        setListaOfItens(newLista);
-      } else {
         api
-          .post('/removeItem', {
-            item_id: hasItem.pivot.itens_id,
-            lista: hasItem.pivot.lista_id,
+          .post('/addUserToList', {lista: props.provider.id, user: data.user})
+          .then((res) => {
+            Alert.alert('Successo!', res.data.message);
+            setModalVisible(false);
           })
-          .then((res) => res.data)
-          .then((_) => {
-            api.get(`lista/${id}`).then((res) => {
-              if (res.data) {
-                setListaOfItens(res.data.itens);
-              }
-            });
-          });
+          .catch((err) => Alert.alert('Atenção!', err.response.data.message));
+      } catch (err) {
+        if (err instanceof Yup.ValidationError) {
+          const erros = getValidationErrors(err);
+          formRef.current?.setErrors(erros);
+          return;
+        }
+
+        Alert.alert('Erro na validação', 'Erro ao compartilhar a lista!');
       }
     },
-    [id, listaOfItens],
+    [props.provider.id],
   );
-
-  const saveItensToList = useCallback(() => {
-    if (listaOfItens && listaOfItens.length > 0) {
-      const itensSave = [...listaOfItens];
-
-      const itens = itensSave.map((item) => {
-        return {
-          itens_id: item.id,
-          qty: 1,
-        };
-      });
-
-      api
-        .post('/addItem', {
-          lista: id,
-          itens,
-          user: user.id,
-        })
-        .then((_) => navigation.goBack())
-        .catch((err) => console.log(err));
-    } else {
-      navigation.goBack();
-    }
-  }, [id, user, listaOfItens, navigation]);
 
   return (
     <>
-      <HeaderSearch>
-        <TextInputSugest isFocus={isFocus}>
-          <Icon
-            name="search"
-            size={15}
-            color={isFocus ? '#01ac73' : '#ff9000'}
-          />
-          <InputText
-            isFocus={isFocus}
-            ref={searchRef}
-            placeholder="pesquisar..."
-            value={value}
-            placeholderTextColor={isFocus ? '#01ac73' : '#ff9000'}
-            onChangeText={(text) => handleSearchItens(text)}
-            autoCapitalize="none"
-            onFocus={handleIsFocus}
-            onBlur={handleIsFilled}
-          />
-          <TouchableOpacity onPress={() => saveItensToList()}>
-            <TextButton>
-              {listaOfItens && listaOfItens.length > 0
-                ? 'Concluir'
-                : 'Cancelar'}
-            </TextButton>
-          </TouchableOpacity>
-        </TextInputSugest>
-      </HeaderSearch>
+      <Modal
+        presentationStyle="fullScreen"
+        animationType="slide"
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'android' ? 'height' : 'padding'}
+          style={{flex: 1}}
+          enabled>
+          <ScrollView
+            contentContainerStyle={{flex: 1}}
+            keyboardShouldPersistTaps="handled">
+            <Container>
+              <View>
+                <Title>Compartilhar lista?</Title>
+              </View>
 
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'android' ? 'height' : 'padding'}
-        style={{flex: 1}}
-        enabled>
-        <Container>
-          <ListResult
-            data={lista ?? []}
-            keyExtractor={(provider) => provider.id.toString()}
-            ListHeaderComponent={() => (
-              <HeaderList>
-                <HeaderListTitle>
-                  Adicionar Itens a lista: <TitleBold>{title}</TitleBold>
-                </HeaderListTitle>
-              </HeaderList>
-            )}
-            renderItem={({item: provider}) => (
-              <Item onPress={() => handleAddItemToLista(provider)}>
-                <ItemText>{provider.name}</ItemText>
-                {listaOfItens &&
-                  listaOfItens.map((item) => {
-                    return item.id === provider.id ? (
-                      <Icon
-                        key={provider.id}
-                        name="check"
-                        size={20}
-                        color="#01ac73"
-                      />
-                    ) : null;
-                  })}
-              </Item>
-            )}
-          />
-        </Container>
-      </KeyboardAvoidingView>
+              <Form onSubmit={handleShareLista} ref={formRef}>
+                <Input
+                  autoCapitalize="none"
+                  keyboardType="email-address"
+                  autoCorrect={false}
+                  name="user"
+                  placeholder="Digite o email"
+                  icon="mail"
+                />
+                <FooterButtons>
+                  <PressableButton
+                    onPress={() => setModalVisible(!modalVisible)}>
+                    <PressableButtonText>Cancelar</PressableButtonText>
+                  </PressableButton>
+                  <ButtonCreate onPress={() => formRef.current?.submitForm()}>
+                    <ButtonCreateText>Enviar</ButtonCreateText>
+                    <Icon name="send" size={20} color="#fff" />
+                  </ButtonCreate>
+                </FooterButtons>
+              </Form>
+            </Container>
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </Modal>
+
+      <CompartilharLista onPress={() => setModalVisible(true)}>
+        <Icon name="share" size={18} color="#969595dd" />
+      </CompartilharLista>
     </>
   );
 };
 
-export default AddToList;
+export default ShareLista;

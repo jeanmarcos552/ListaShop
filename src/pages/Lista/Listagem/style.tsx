@@ -1,9 +1,9 @@
-import { Platform, FlatList } from 'react-native';
+import {Platform, FlatList} from 'react-native';
 import styled from 'styled-components/native';
-import { getStatusBarHeight } from 'react-native-iphone-x-helper';
+import {getStatusBarHeight} from 'react-native-iphone-x-helper';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/Feather';
-import { Colors } from 'react-native-paper';
+import {Colors} from 'react-native-paper';
 
 export const Container = styled.SafeAreaView`
   flex: 1;
@@ -91,13 +91,7 @@ export const FooterLoop = styled.View`
   flex-direction: row;
   padding: 10px;
 `;
-export const CompartilharLista = styled.TouchableOpacity``;
 export const TextRigthFooter = styled.Text`
   font-family: 'Exo-Regular';
   color: #969595dd;
-`;
-
-export const CompartilharListaText = styled.Text`
-  font-family: 'Exo-Regular';
-  color: ${Colors.lightBlue900};
 `;

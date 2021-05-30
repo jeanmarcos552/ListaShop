@@ -52,6 +52,7 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
   const [loading, setLoading] = useState(true);
   let [filter, setFilter] = useState<Filtro>({} as Filtro);
   let [somaItens, setSomaItens] = useState('0');
+  // let [totalItens, setTotalItens] = useState('0');
 
   const getDados = useCallback(() => {
     api.get(`/lista/${id}`).then((res) => {
@@ -142,10 +143,7 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
           />
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => {
-            setLoading(true);
-            setFilter({...filter, itens: null});
-          }}
+          onPress={() => setFilter({...filter, itens: null})}
           style={{backgroundColor: '#e7e4e4', borderRadius: 50, padding: 5}}>
           <Icon name="rotate-ccw" size={20} color="#01ac73" />
         </TouchableOpacity>
@@ -153,6 +151,14 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
           R$
           {somaItens}
         </TotalFooter>
+        <FabButtom
+          onPress={() =>
+            navigation.navigate('AddToList', {
+              item: {id, title},
+            })
+          }>
+          <Icon name="plus" size={30} color="#fff" />
+        </FabButtom>
       </TitleContainer>
     );
   };
@@ -197,6 +203,7 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
   return (
     <>
       <HeaderSingle title={title} navigation={navigation} />
+
       {loading ? (
         <SkeletonListItem />
       ) : (
@@ -254,15 +261,6 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
               {renderFooter()}
             </Container>
           </KeyboardAvoidingView>
-
-          <FabButtom
-            onPress={() =>
-              navigation.navigate('AddToList', {
-                item: {id, title},
-              })
-            }>
-            <Icon name="plus" size={40} color="#fff" />
-          </FabButtom>
         </>
       )}
     </>
