@@ -90,8 +90,8 @@ const Lista = () => {
 
   useFocusEffect(
     useCallback(() => {
-      api.get('/lista').then((res) => setLista(res.data));
-    }, []),
+      getDados();
+    }, [getDados]),
   );
 
   const handleDelete = useCallback(

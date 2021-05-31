@@ -53,7 +53,6 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
   let [filter, setFilter] = useState<Filtro>({} as Filtro);
   let [somaItens, setSomaItens] = useState('0');
   // let [totalItens, setTotalItens] = useState('0');
-
   const getDados = useCallback(() => {
     api.get(`/lista/${id}`).then((res) => {
       if (res.data) {
