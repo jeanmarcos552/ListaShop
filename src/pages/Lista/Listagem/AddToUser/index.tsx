@@ -47,7 +47,7 @@ interface ComponentProps {
 const ShareLista: React.FC<ComponentProps> = (props) => {
   const formRef = useRef<FormHandles>(null);
   const [modalVisible, setModalVisible] = useState(false);
-
+  const {user} = useAuth();
   const handleShareLista = useCallback(
     async (data: ShareFormData) => {
       try {
@@ -64,7 +64,12 @@ const ShareLista: React.FC<ComponentProps> = (props) => {
         });
 
         api
-          .post('/addUserToList', {lista: props.provider.id, user: data.user})
+          .post('/notifications', {
+            lista: props.provider.id,
+            user_receiver: data.user,
+            user_send: user.id,
+            description: 'Convite: Nova lista',
+          })
           .then((res) => {
             Alert.alert('Successo!', res.data.message);
             setModalVisible(false);
@@ -80,7 +85,7 @@ const ShareLista: React.FC<ComponentProps> = (props) => {
         Alert.alert('Erro na validação', 'Erro ao compartilhar a lista!');
       }
     },
-    [props.provider.id],
+    [props.provider.id, user.id],
   );
 
   return (
