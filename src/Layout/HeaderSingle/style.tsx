@@ -1,7 +1,6 @@
 import {getStatusBarHeight} from 'react-native-iphone-x-helper';
 import LinearGradient from 'react-native-linear-gradient';
 import styled from 'styled-components/native';
-import {Badge} from 'react-native-paper';
 
 export const Header = styled(LinearGradient)`
   flex-direction: row;

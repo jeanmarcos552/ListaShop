@@ -5,6 +5,7 @@ import Icon from 'react-native-vector-icons/Feather';
 import {Header, HeaderText, Notificacao, NotificacaoTotal} from './style';
 import api from '../../services/api';
 import {Text} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 
 interface PropsHeader {
   user: {
@@ -21,9 +22,10 @@ interface ProviderNotification {
   lista: object;
 }
 
-const HeaderLayout: React.FC = () => {
+const HeaderLayout: React.FC = ({title}) => {
   const {user} = (useAuth() as unknown) as PropsHeader;
   const [notifications, setNotifications] = useState([]);
+  const navigate = useNavigation();
 
   const getNotifications = useCallback(() => {
     api.get('/notifications').then((res) => {
@@ -43,9 +45,9 @@ const HeaderLayout: React.FC = () => {
       start={{x: 0, y: 0}}
       end={{x: 1, y: 0}}>
       <HeaderText>
-        <HeaderText>Olá, {user.name}</HeaderText>
+        <HeaderText>{!title ? `Olá, ${user.name}` : title}</HeaderText>
       </HeaderText>
-      <Notificacao>
+      <Notificacao onPress={() => navigate.navigate('Notifications')}>
         {notifications && notifications.length > 0 ? (
           <NotificacaoTotal>{notifications.length}</NotificacaoTotal>
         ) : (

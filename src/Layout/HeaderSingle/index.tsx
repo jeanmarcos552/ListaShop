@@ -1,13 +1,14 @@
 import React from 'react';
-import {NavigationScreenProp} from 'react-navigation';
 
 import {Header, HeaderText, Username} from './style';
 
 interface PropsHeader {
   title: string;
-  navigation: NavigationScreenProp<any, any>;
+  navigation: NavigationProp<ParamListBase>;
 }
 import Icon from 'react-native-vector-icons/Feather';
+import {ParamListBase} from '@react-navigation/routers';
+import {NavigationProp} from '@react-navigation/native';
 
 const HeaderSingle: React.FC<PropsHeader> = ({title, navigation}) => {
   return (
