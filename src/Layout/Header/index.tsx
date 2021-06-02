@@ -13,16 +13,11 @@ interface PropsHeader {
     email: string;
   };
 }
-
-interface ProviderNotification {
-  id: string;
-  description: string;
-  user_send: object;
-  user_receiver: object;
-  lista: object;
+interface PropsComponent {
+  title: string;
 }
 
-const HeaderLayout: React.FC = ({title}) => {
+const HeaderLayout: React.FC<PropsComponent> = ({title}) => {
   const {user} = (useAuth() as unknown) as PropsHeader;
   const [notifications, setNotifications] = useState([]);
   const navigate = useNavigation();
