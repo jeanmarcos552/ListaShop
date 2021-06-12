@@ -8,6 +8,7 @@ import {Text} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 
 interface PropsHeader {
+  token: string;
   user: {
     name: string;
     email: string;
@@ -18,9 +19,11 @@ interface PropsComponent {
 }
 
 const HeaderLayout: React.FC<PropsComponent> = ({title}) => {
-  const {user} = (useAuth() as unknown) as PropsHeader;
+  const {user, token} = (useAuth() as unknown) as PropsHeader;
   const [notifications, setNotifications] = useState([]);
   const navigate = useNavigation();
+
+  const URL = 'ws://127.0.0.1:443';
 
   const getNotifications = useCallback(() => {
     api.get('/notifications').then((res) => {
@@ -33,6 +36,8 @@ const HeaderLayout: React.FC<PropsComponent> = ({title}) => {
   useEffect(() => {
     getNotifications();
   }, [getNotifications]);
+
+
 
   return (
     <Header
