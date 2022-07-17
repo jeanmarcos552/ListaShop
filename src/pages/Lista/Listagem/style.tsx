@@ -4,10 +4,10 @@ import {getStatusBarHeight} from 'react-native-iphone-x-helper';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/Feather';
 import {Colors} from 'react-native-paper';
-
+import {theme} from '../../../App';
 export const Container = styled.SafeAreaView`
   flex: 1;
-  margin-top: ${Platform.OS === 'android' ? 10 : 20}px;
+  margin-top: ${Platform.OS === 'android' ? 5 : 10}px;
 `;
 
 export const Header = styled(LinearGradient)`
@@ -23,13 +23,15 @@ export const HeaderText = styled.Text`
 `;
 
 export const ContainerList = styled.View`
-  margin: 10px 18px;
+  margin: 10px 10px;
   background-color: #fff;
   padding: 15px;
   border-radius: 8px;
+  border: 1px;
+  border-color: ${theme.colors.gray};
 `;
 
-export const ShoppingList = styled(FlatList as new () => FlatList<any>)`
+export const ShoppingList = styled(FlatList as new () => FlatList)`
   overflow: hidden;
   height: 100px;
 `;

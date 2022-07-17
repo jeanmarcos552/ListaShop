@@ -10,33 +10,31 @@ const SkeletonListagem: React.FC = () => {
     <View
       style={{
         backgroundColor: '#fff',
-        marginTop: 10,
-        marginLeft: 18,
-        marginRight: 18,
+        margin: 5,
         borderRadius: 8,
-        padding: 15,
+        padding: 8,
         marginBottom: 10,
+        borderColor: '#e9e3e3',
+        borderWidth: 1,
+        width: '97%',
       }}>
-      <SkeletonPlaceholder speed={3}>
+      <SkeletonPlaceholder speed={4}>
         <SkeletonPlaceholder.Item
-          marginTop={30}
+          marginTop={10}
           flexDirection="row"
-          alignItems="center">
+          alignItems="center"
+          justifyContent="space-between">
           <SkeletonPlaceholder.Item
             width={windowWidth / 3}
-            height={25}
+            height={15}
             borderRadius={4}
           />
           <SkeletonPlaceholder.Item
             marginLeft={5}
             width={25}
-            height={25}
+            height={15}
             borderRadius={100}
           />
-
-          <SkeletonPlaceholder.Item marginLeft={windowWidth / 3.5}>
-            <SkeletonPlaceholder.Item width={60} height={25} borderRadius={4} />
-          </SkeletonPlaceholder.Item>
         </SkeletonPlaceholder.Item>
       </SkeletonPlaceholder>
 
@@ -47,12 +45,13 @@ const SkeletonListagem: React.FC = () => {
           alignItems="center">
           <SkeletonPlaceholder.Item
             marginTop={6}
-            width={windowWidth / 1.2}
-            height={10}
+            width={windowWidth - 4}
+            height={5}
             borderRadius={4}
           />
         </SkeletonPlaceholder.Item>
       </SkeletonPlaceholder>
+
       <SkeletonPlaceholder>
         <SkeletonPlaceholder.Item
           marginTop={8}
@@ -62,7 +61,7 @@ const SkeletonListagem: React.FC = () => {
           <SkeletonPlaceholder.Item
             marginTop={6}
             width={120}
-            height={20}
+            height={12}
             borderRadius={4}
           />
         </SkeletonPlaceholder.Item>

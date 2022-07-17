@@ -2,9 +2,18 @@ import React, {useCallback, useEffect, useState} from 'react';
 import {useAuth} from '../../hooks/auth';
 import Icon from 'react-native-vector-icons/Feather';
 
-import {Header, HeaderText, Notificacao, NotificacaoTotal} from './style';
+import {
+  Header,
+  HeaderText,
+  Notificacao,
+  NotificacaoTotal,
+  ViewLeft,
+} from './style';
 import api from '../../services/api';
-import {Text} from 'react-native';
+
+import Echo from 'laravel-echo/dist/echo';
+import Socketio from 'socket.io-client';
+
 import {
   NavigationProp,
   ParamListBase,
@@ -19,15 +28,13 @@ interface PropsHeader {
   };
 }
 interface PropsComponent {
-  title: string;
+  title?: string;
 }
 
 const HeaderLayout: React.FC<PropsComponent> = ({title}) => {
-  const {user} = useAuth() as unknown as PropsHeader;
-  const [notifications, setNotifications] = useState([]);
+  const {user, token} = useAuth() as unknown as PropsHeader;
+  const [notifications, setNotifications] = useState([1]);
   const navigate = useNavigation<NavigationProp<ParamListBase>>();
-
-  // const URL = 'ws://127.0.0.1:443';
 
   const getNotifications = useCallback(() => {
     api.get('/notifications').then(res => {
@@ -41,22 +48,36 @@ const HeaderLayout: React.FC<PropsComponent> = ({title}) => {
     getNotifications();
   }, [getNotifications]);
 
+  useEffect(() => {
+    let echo = new Echo({
+      broadcaster: 'socket.io',
+      key: 'ABCDEFG',
+      cluster: 'mt1',
+      forceTLS: false,
+      wsHost: '192.168.100.23',
+      wsPort: 6001,
+      client: Socketio,
+    });
+
+    echo.private('user.3').listen('SendNotification', (event: any) => {
+      console.log(event);
+    });
+  }, [token]);
+
   return (
-    <Header
-      colors={['#01ac73', '#02865a']}
-      start={{x: 0, y: 0}}
-      end={{x: 1, y: 0}}>
+    <Header>
       <HeaderText>
-        <HeaderText>{!title ? `Olá, ${user.name}` : title}</HeaderText>
+        <HeaderText>{title ? title : `Olá, ${user.name}`}</HeaderText>
       </HeaderText>
-      <Notificacao onPress={() => navigate.navigate('Notifications')}>
-        {notifications && notifications.length > 0 ? (
-          <NotificacaoTotal>{notifications.length}</NotificacaoTotal>
-        ) : (
-          <Text />
-        )}
-        <Icon name="bell" size={25} color="#fff" />
-      </Notificacao>
+      <ViewLeft>
+        <Notificacao onPress={() => navigate.navigate('Notifications')}>
+          {notifications && notifications.length > 0 && (
+            <NotificacaoTotal>{3}</NotificacaoTotal>
+          )}
+          <Icon name="bell" size={20} color="#fff" />
+        </Notificacao>
+        <Icon name="log-out" size={20} color="#fff" />
+      </ViewLeft>
     </Header>
   );
 };

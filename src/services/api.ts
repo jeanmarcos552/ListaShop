@@ -1,9 +1,9 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://listashop-api.herokuapp.com/public/api',
+  // baseURL: 'http://listashop-api.herokuapp.com/public/api',
   // timeout: 5000,
-  // baseURL: 'http://127.0.0.1:8000/api',
+  baseURL: 'http://192.168.100.23:8080/api',
 });
 
 export default api;

@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@react-native-community/async-storage": "^1.12.1",
+    "@react-native-community/netinfo": "^9.3.0",
     "@react-native-masked-view/masked-view": "^0.2.6",
     "@react-navigation/bottom-tabs": "^6.3.2",
     "@react-navigation/native": "^6.0.11",
@@ -18,7 +19,9 @@
     "@unform/core": "^2.1.6",
     "@unform/mobile": "^2.1.6",
     "axios": "^0.27.2",
+    "laravel-echo": "^1.12.1",
     "moment": "^2.29.4",
+    "pusher-js": "^7.2.0",
     "react": "18.0.0",
     "react-dom": "^18.2.0",
     "react-native": "0.69.1",
@@ -33,6 +36,7 @@
     "react-native-swipe-list-view": "^3.2.9",
     "react-native-vector-icons": "^9.2.0",
     "react-navigation": "^4.4.4",
+    "socket.io-client": "^4.5.1",
     "styled-components": "^5.3.5",
     "yup": "^0.32.11"
   },

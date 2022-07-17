@@ -1,10 +1,9 @@
-/* eslint-disable react-native/no-inline-styles */
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import moment from 'moment';
 
 import FormLista from '../Add';
 
-import {ProgressBar} from 'react-native-paper';
+import {ProgressBar, withTheme} from 'react-native-paper';
 
 import {
   ContainerList,
@@ -22,14 +21,14 @@ import {
 import {
   NavigationProp,
   ParamListBase,
-  useFocusEffect,
   useNavigation,
 } from '@react-navigation/native';
 import {RefreshControl, View} from 'react-native';
 import HeaderLayout from '../../../Layout/Header';
-import api from '../../../services/api';
 import SkeletonListagem from './skeleton';
 import ShareLista from './AddToUser';
+import Empty from '../../../Components/Empty';
+import {ThemeOverride} from '../../../App';
 
 export interface ProviderRequest {
   current_page: number;
@@ -61,75 +60,82 @@ export interface ItemsReques {
   total: number;
 }
 
-const Lista = () => {
+interface PropLista {
+  theme: ThemeOverride;
+}
+
+const Lista = ({theme}: PropLista) => {
   const navigate = useNavigation<NavigationProp<ParamListBase>>();
-  const [lista, setLista] = useState<ProviderRequest>({} as ProviderRequest);
-  const [refreshing, setRefreshing] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [lista] = useState<any>({
+    current_page: 1,
+    data: [
+      {
+        id: 2,
+        name: 'Porto Seguro',
+        ativo: true,
+        created_at: '2022-07-17T15:49:10.000000Z',
+        updated_at: '2022-07-17T15:49:10.000000Z',
+        created_by: 3,
+        category_id: 1,
+        user: [
+          {
+            id: 3,
+            name: 'Simone Lopes',
+            email: 'jean.silva552@outlook.com',
+            email_verified_at: null,
+            created_at: '2022-07-16T22:34:43.000000Z',
+            updated_at: '2022-07-16T22:34:43.000000Z',
+            pivot: {
+              lista_id: 2,
+              user_id: 3,
+            },
+          },
+        ],
+        itens: [],
+        pivot: {
+          user_id: 3,
+          lista_id: 2,
+        },
+      },
+    ],
+  });
+  const [refreshing] = useState(false);
+  const [loading] = useState(false);
 
-  const getDados = useCallback(() => {
-    api
-      .get<ProviderRequest>('/lista')
-      .then(res => {
-        if (res.data) {
-          setLista(res.data);
-          setLoading(false);
-        }
-      })
-      .catch(err => {
-        console.log(err);
-        setLoading(false);
-      });
-  }, []);
+  // const getDados = useCallback(() => {
+  //   api
+  //     .get<ProviderRequest>('/lista')
+  //     .then(res => {
+  //       if (res.data) {
+  //         setLista(res.data);
+  //         setLoading(false);
+  //       }
+  //     })
+  //     .catch(err => {
+  //       console.log(err);
+  //       setLoading(false);
+  //     });
+  // }, []);
 
-  const onRefresh = useCallback(() => {
-    setRefreshing(true);
-    setLoading(true);
-    api.get('/lista').then(res => {
-      setLista(res.data);
-      setRefreshing(false);
-      setLoading(false);
-    });
-  }, []);
-
-  useEffect(() => {
-    getDados();
-  }, [getDados]);
-
-  useFocusEffect(
-    useCallback(() => {
-      getDados();
-    }, [getDados]),
-  );
-
-  // const handleDelete = useCallback(
-  //   (data: string) => {
-  //     api
-  //       .delete(`/lista/${data}`)
-  //       .then(_ => getDados())
-  //       .catch(err => console.log(err));
-  //   },
-  //   [getDados],
-  // );
-
-  // const leftSwipe = (progress: any, dragX: any, provider: ProviderItens) => {
-  //   const scale = dragX.interpolate({
-  //     inputRange: [0, 100],
-  //     outputRange: [0, 1],
-  //     extrapolate: 'clamp',
+  // const onRefresh = useCallback(() => {
+  //   setRefreshing(true);
+  //   setLoading(true);
+  //   api.get('/lista').then(res => {
+  //     setLista(res.data);
+  //     setRefreshing(false);
+  //     setLoading(false);
   //   });
-  //   return (
-  //     <TouchableOpacity
-  //       onPress={() => handleDelete(provider.id)}
-  //       activeOpacity={0.6}>
-  //       <ButtonDelete>
-  //         <Animated.Text style={{color: '#fff', transform: [{scale: scale}]}}>
-  //           Deletar
-  //         </Animated.Text>
-  //       </ButtonDelete>
-  //     </TouchableOpacity>
-  //   );
-  // };
+  // }, []);
+
+  // useEffect(() => {
+  //   getDados();
+  // }, [getDados]);
+
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     getDados();
+  //   }, [getDados]),
+  // );
 
   const handleSeeIten = useCallback(
     (data: ItemsReques) => {
@@ -142,10 +148,10 @@ const Lista = () => {
   );
 
   function calcItensCheckt(provider: ProviderItens) {
-    let itensChecked = provider.itens?.filter(
+    let itensChecked = provider?.itens?.filter(
       item => item.pivot.status === true,
     );
-    return itensChecked.length / provider.itens.length;
+    return itensChecked.length / provider?.itens?.length || 0;
   }
 
   function somaValoresItens(pivot: ProviderItens) {
@@ -158,19 +164,19 @@ const Lista = () => {
   }
 
   return (
-    <View style={{flex: 1, backgroundColor: '#edededdd'}}>
-      <HeaderLayout title="" />
-
+    <View style={{flex: 1, backgroundColor: '#ffffff'}}>
+      <HeaderLayout />
       <Container>
         {loading ? (
           [0, 1, 2, 3].map(item => <SkeletonListagem key={item} />)
         ) : (
           <>
             <ShoppingList
-              refreshControl={
-                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+              refreshControl={<RefreshControl refreshing={refreshing} />}
+              data={lista?.data}
+              ListEmptyComponent={
+                <Empty text="Você ainda não tem nenhuma lista :(" />
               }
-              data={lista.data}
               renderItem={({item: provider}: any) => (
                 <ContainerList>
                   <ItemList onPress={() => handleSeeIten(provider)}>
@@ -184,8 +190,8 @@ const Lista = () => {
                         }
                         color={
                           calcItensCheckt(provider) !== 1
-                            ? '#f0ac1b'
-                            : '#01ac73'
+                            ? theme.colors.primary
+                            : theme.colors.secondary
                         }
                         size={20}
                       />
@@ -195,7 +201,7 @@ const Lista = () => {
                   <ProgressBarView>
                     <ProgressBar
                       progress={calcItensCheckt(provider)}
-                      color={'#01ac73'}
+                      color={theme.colors.primary}
                     />
                   </ProgressBarView>
                   <FooterLoop>
@@ -209,7 +215,7 @@ const Lista = () => {
               )}
               keyExtractor={(provider: any) => provider.id.toString()}
             />
-            <FormLista afterSave={getDados} />
+            <FormLista afterSave={() => null} />
           </>
         )}
       </Container>
@@ -217,4 +223,4 @@ const Lista = () => {
   );
 };
 
-export default Lista;
+export default withTheme(Lista);

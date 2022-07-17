@@ -1,13 +1,13 @@
 import {Platform} from 'react-native';
 import {getStatusBarHeight} from 'react-native-iphone-x-helper';
-import LinearGradient from 'react-native-linear-gradient';
 import styled from 'styled-components/native';
 
-export const Header = styled(LinearGradient)`
+export const Header = styled.View`
   flex-direction: row;
   justify-content: space-between;
   padding: ${Platform.OS === 'ios' ? 10 + getStatusBarHeight() : 10}px 10px 10px;
   align-items: center;
+  background-color: #01ac73;
 `;
 
 export const HeaderText = styled.Text`

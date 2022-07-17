@@ -4,7 +4,6 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {Text, View} from 'react-native';
 import Button from '../../Components/Button';
 
-import Home from '../Home';
 import Icons from 'react-native-vector-icons/AntDesign';
 
 import Lista from '../Lista/Listagem';
@@ -28,10 +27,9 @@ const Tabs = () => {
       screenOptions={({route}) => ({
         tabBarIcon: ({focused, color, size}) => {
           let iconName: any;
-
           switch (route.name) {
             case 'Lista':
-              iconName = focused ? 'home' : 'home';
+              iconName = focused ? 'bars' : 'bars';
               break;
             case 'Settings':
               iconName = focused ? 'setting' : 'setting';
@@ -43,7 +41,6 @@ const Tabs = () => {
         tabBarShowLabel: false,
       })}
       initialRouteName="Lista">
-      <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="Lista" component={Lista} />
       <Tab.Screen name="Settings" component={Settings} />
     </Tab.Navigator>
