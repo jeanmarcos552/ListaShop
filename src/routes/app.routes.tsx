@@ -3,9 +3,9 @@ import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 
 import Tabs from '../pages/Tabs';
-import Lista from '../pages/Lista/Listagem';
-import ItensToList from '../pages/Lista/Listagem/ListItem';
-import AddToList from '../pages/Lista/Listagem/AddToList';
+import Lista from '../pages/Lista';
+import ItensToList from '../pages/Lista/ListItem';
+import AddToList from '../pages/Lista/AddToList';
 import Notifications from '../pages/Notifications';
 
 const App = createStackNavigator();

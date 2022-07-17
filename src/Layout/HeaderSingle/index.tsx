@@ -12,10 +12,7 @@ import {NavigationProp} from '@react-navigation/native';
 
 const HeaderSingle: React.FC<PropsHeader> = ({title, navigation}) => {
   return (
-    <Header
-      colors={['#01ac73', '#02865a']}
-      start={{x: 0, y: 0}}
-      end={{x: 1, y: 0}}>
+    <Header>
       <Icon
         name="arrow-left"
         size={20}

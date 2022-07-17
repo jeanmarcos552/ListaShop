@@ -19,8 +19,8 @@ import {
   TextButton,
 } from './style';
 import {TouchableOpacity} from 'react-native-gesture-handler';
-import api from '../../../../services/api';
-import {useAuth} from '../../../../hooks/auth';
+import api from '../../../services/api';
+import {useAuth} from '../../../hooks/auth';
 
 import {ProviderItensLista} from '../ListItem';
 
@@ -35,12 +35,6 @@ interface PropsComponente {
   };
   navigation: NavigationScreenProp<any, any>;
 }
-
-// interface PropsTextInput {
-//   text: any;
-//   value: string;
-// }
-
 interface Provider {
   data: Array<ProviderItensLista>;
   pivot: {

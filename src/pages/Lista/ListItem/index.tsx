@@ -3,7 +3,6 @@ import React, {createRef, useCallback, useEffect, useState} from 'react';
 import {KeyboardAvoidingView, Platform, Text, View} from 'react-native';
 
 import Icon from 'react-native-vector-icons/Feather';
-import HeaderSingle from '../../../../Layout/HeaderSingle';
 
 import {
   Container,
@@ -18,10 +17,11 @@ import {
   TextValues,
 } from './style';
 import {ItemsReques, ProviderItens} from '..';
-import api from '../../../../services/api';
 import {Swipeable, TouchableOpacity} from 'react-native-gesture-handler';
 import {useFocusEffect} from '@react-navigation/native';
 import SkeletonListItem from './skeleton';
+import api from '../../../services/api';
+import HeaderSingle from '../../../Layout/HeaderSingle';
 
 interface PropsComponente {
   route: any;
@@ -55,6 +55,7 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
   // let [totalItens, setTotalItens] = useState('0');
   const getDados = useCallback(() => {
     api.get(`/lista/${id}`).then(res => {
+      console.log(res);
       if (res.data) {
         somaValoresItens(res.data);
       }
@@ -79,7 +80,7 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
 
   useEffect(() => {
     getDados();
-  }, [id, getDados]);
+  }, [getDados]);
 
   useFocusEffect(
     useCallback(() => {

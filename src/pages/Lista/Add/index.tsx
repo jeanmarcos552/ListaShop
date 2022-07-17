@@ -13,9 +13,11 @@ import {
   FooterButtons,
   ButtonCreate,
   ButtonCreateText,
+  FabButtom,
 } from './style';
 import api from '../../../services/api';
-import {FAB, Portal, Provider} from 'react-native-paper';
+
+import Icons from 'react-native-vector-icons/Ionicons';
 
 interface ComponentProps {
   afterSave: Function;
@@ -24,12 +26,6 @@ interface ComponentProps {
 const FormLista: React.FC<ComponentProps> = props => {
   const formRef = useRef<FormHandles>(null);
   const [modalVisible, setModalVisible] = useState(false);
-
-  const [state, setState] = React.useState({open: false});
-
-  const onStateChange = ({open}: any) => setState({open});
-
-  const {open} = state;
 
   const handleCreateLista = useCallback(
     (data: any) => {
@@ -79,41 +75,9 @@ const FormLista: React.FC<ComponentProps> = props => {
           </ScrollView>
         </KeyboardAvoidingView>
       </Modal>
-
-      <Provider>
-        <Portal>
-          <FAB.Group
-            color="#fff"
-            visible
-            open={open}
-            icon={open ? 'close' : 'plus'}
-            actions={[
-              {icon: 'plus', onPress: () => setModalVisible(!modalVisible)},
-              {
-                icon: 'star',
-                label: 'Categorias',
-                onPress: () => console.log('Pressed star'),
-              },
-              {
-                icon: 'email',
-                label: 'Email',
-                onPress: () => console.log('Pressed email'),
-              },
-              {
-                icon: 'bell',
-                label: 'Remind',
-                onPress: () => console.log('Pressed notifications'),
-              },
-            ]}
-            onStateChange={onStateChange}
-            onPress={() => {
-              if (open) {
-                // do something if the speed dial is open
-              }
-            }}
-          />
-        </Portal>
-      </Provider>
+      <FabButtom>
+        <Icons name="add" color={'#fff'} size={25} />
+      </FabButtom>
     </>
   );
 };

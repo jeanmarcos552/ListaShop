@@ -4,7 +4,7 @@ import styled from 'styled-components/native';
 import {Form} from '@unform/mobile';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import {FlatList} from 'react-native-gesture-handler';
-import {Colors} from 'react-native-paper';
+import {MD2Colors as Colors} from 'react-native-paper';
 
 export const Header = styled(LinearGradient)`
   flex-direction: row;

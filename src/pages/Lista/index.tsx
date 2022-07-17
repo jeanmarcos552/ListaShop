@@ -1,7 +1,7 @@
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import moment from 'moment';
 
-import FormLista from '../Add';
+import FormLista from './Add';
 
 import {ProgressBar, withTheme} from 'react-native-paper';
 
@@ -23,12 +23,12 @@ import {
   ParamListBase,
   useNavigation,
 } from '@react-navigation/native';
-import {RefreshControl, View} from 'react-native';
-import HeaderLayout from '../../../Layout/Header';
+import {Alert, RefreshControl, View} from 'react-native';
+import HeaderLayout from '../../Layout/Header';
 import SkeletonListagem from './skeleton';
 import ShareLista from './AddToUser';
-import Empty from '../../../Components/Empty';
-import {ThemeOverride} from '../../../App';
+import Empty from '../../Components/Empty';
+import {fetchIndexCategory} from '../../services/category';
 
 export interface ProviderRequest {
   current_page: number;
@@ -60,11 +60,20 @@ export interface ItemsReques {
   total: number;
 }
 
-interface PropLista {
-  theme: ThemeOverride;
-}
+const Lista = () => {
+  const fetchApi = useCallback(async () => {
+    const {data, status} = await fetchIndexCategory();
+    if (status === 200) {
+      console.log(data);
+      return data;
+    }
+    return Alert.alert(data, '');
+  }, []);
 
-const Lista = ({theme}: PropLista) => {
+  useEffect(() => {
+    fetchApi();
+  }, [fetchApi]);
+
   const navigate = useNavigation<NavigationProp<ParamListBase>>();
   const [lista] = useState<any>({
     current_page: 1,
@@ -101,41 +110,6 @@ const Lista = ({theme}: PropLista) => {
   });
   const [refreshing] = useState(false);
   const [loading] = useState(false);
-
-  // const getDados = useCallback(() => {
-  //   api
-  //     .get<ProviderRequest>('/lista')
-  //     .then(res => {
-  //       if (res.data) {
-  //         setLista(res.data);
-  //         setLoading(false);
-  //       }
-  //     })
-  //     .catch(err => {
-  //       console.log(err);
-  //       setLoading(false);
-  //     });
-  // }, []);
-
-  // const onRefresh = useCallback(() => {
-  //   setRefreshing(true);
-  //   setLoading(true);
-  //   api.get('/lista').then(res => {
-  //     setLista(res.data);
-  //     setRefreshing(false);
-  //     setLoading(false);
-  //   });
-  // }, []);
-
-  // useEffect(() => {
-  //   getDados();
-  // }, [getDados]);
-
-  // useFocusEffect(
-  //   useCallback(() => {
-  //     getDados();
-  //   }, [getDados]),
-  // );
 
   const handleSeeIten = useCallback(
     (data: ItemsReques) => {
@@ -189,9 +163,7 @@ const Lista = ({theme}: PropLista) => {
                             : 'clock'
                         }
                         color={
-                          calcItensCheckt(provider) !== 1
-                            ? theme.colors.primary
-                            : theme.colors.secondary
+                          calcItensCheckt(provider) !== 1 ? '#f0f' : '#000'
                         }
                         size={20}
                       />
@@ -201,7 +173,7 @@ const Lista = ({theme}: PropLista) => {
                   <ProgressBarView>
                     <ProgressBar
                       progress={calcItensCheckt(provider)}
-                      color={theme.colors.primary}
+                      color="#f0f"
                     />
                   </ProgressBarView>
                   <FooterLoop>

@@ -1,7 +1,7 @@
 import {FlatList} from 'react-native';
 import styled from 'styled-components/native';
 import Icon from 'react-native-vector-icons/Feather';
-import {Colors} from 'react-native-paper';
+import {MD2Colors as Colors} from 'react-native-paper';
 import {ProviderItens} from '.';
 import {RectButton} from 'react-native-gesture-handler';
 

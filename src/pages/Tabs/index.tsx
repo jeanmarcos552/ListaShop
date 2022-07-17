@@ -3,7 +3,7 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
 import Icons from 'react-native-vector-icons/AntDesign';
 
-import Lista from '../Lista/Listagem';
+import Lista from '../Lista';
 import {Configurations} from '../Configurations';
 
 const Tab = createBottomTabNavigator();

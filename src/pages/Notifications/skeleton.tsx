@@ -1,4 +1,3 @@
-/* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import {useWindowDimensions, View} from 'react-native';

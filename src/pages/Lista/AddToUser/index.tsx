@@ -23,10 +23,10 @@ import {
   ButtonCreateText,
   CompartilharLista,
 } from './style';
-import api from '../../../../services/api';
-import Input from '../../../../Components/Input';
-import getValidationErrors from '../../../../../Utils/getValidation';
-import {useAuth} from '../../../../hooks/auth';
+import {useAuth} from '../../../hooks/auth';
+import api from '../../../services/api';
+import getValidationErrors from '../../../../Utils/getValidation';
+import Input from '../../../Components/Input';
 
 interface ShareFormData {
   user: string;
