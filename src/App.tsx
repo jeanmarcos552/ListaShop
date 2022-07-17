@@ -2,18 +2,20 @@ import 'react-native-gesture-handler';
 import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 
-import {DefaultTheme, Provider as PaperProvider} from 'react-native-paper';
+import {
+  Provider as PaperProvider,
+  MD3Colors as Colors,
+} from 'react-native-paper';
 
 import {StatusBar, View} from 'react-native';
 import AppProvider from './hooks';
 import Routes from './routes';
 
-export const theme = {
-  ...DefaultTheme,
+const theme = {
   roundness: 2,
   version: 3,
   colors: {
-    ...DefaultTheme.colors,
+    ...Colors,
     primary: '#01ac73',
     secondary: '#80a4ec',
     tertiary: '#013db4',

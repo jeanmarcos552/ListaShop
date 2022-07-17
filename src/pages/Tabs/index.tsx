@@ -1,25 +1,12 @@
 import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
-import {Text, View} from 'react-native';
-import Button from '../../Components/Button';
-
 import Icons from 'react-native-vector-icons/AntDesign';
 
 import Lista from '../Lista/Listagem';
-import {useAuth} from '../../hooks/auth';
+import {Configurations} from '../Configurations';
 
 const Tab = createBottomTabNavigator();
-
-function Settings() {
-  const {signOut} = useAuth();
-  return (
-    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-      <Text>Settings!</Text>
-      <Button onPress={signOut}>Sair</Button>
-    </View>
-  );
-}
 
 const Tabs = () => {
   return (
@@ -42,7 +29,7 @@ const Tabs = () => {
       })}
       initialRouteName="Lista">
       <Tab.Screen name="Lista" component={Lista} />
-      <Tab.Screen name="Settings" component={Settings} />
+      <Tab.Screen name="Settings" component={Configurations} />
     </Tab.Navigator>
   );
 };

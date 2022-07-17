@@ -1,7 +1,6 @@
 import {Platform, Pressable} from 'react-native';
 import {RectButton} from 'react-native-gesture-handler';
 import {getBottomSpace} from 'react-native-iphone-x-helper';
-import {Colors} from 'react-native-paper';
 import styled, {css} from 'styled-components/native';
 
 interface PropsGrid {
@@ -105,5 +104,5 @@ export const PressableButtonText = styled.Text`
 export const CompartilharLista = styled.TouchableOpacity``;
 export const CompartilharListaText = styled.Text`
   font-family: 'Exo-Regular';
-  color: ${Colors.lightBlue900};
+  color: red;
 `;

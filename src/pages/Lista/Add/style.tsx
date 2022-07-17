@@ -2,8 +2,7 @@ import {Platform, Pressable} from 'react-native';
 import {RectButton} from 'react-native-gesture-handler';
 import {getBottomSpace} from 'react-native-iphone-x-helper';
 import styled, {css} from 'styled-components/native';
-import {theme} from '../../../App';
-
+import {MD3Colors} from 'react-native-paper';
 interface PropsGrid {
   xs: number;
 }
@@ -20,7 +19,7 @@ export const Container = styled.View`
   flex: 1;
   justify-content: center;
   align-items: center;
-  background-color: ${theme.colors.primary};
+  background-color: ${MD3Colors.primary0};
 
   padding: 0 30px ${Platform.OS === 'android' ? 150 : 40}px;
 `;
@@ -46,7 +45,7 @@ export const FabButtom = styled.TouchableOpacity`
   position: absolute;
   bottom: ${getBottomSpace() + 22}px;
   right: 20px;
-  background-color: ${theme.colors.tertiary};
+  background-color: ${MD3Colors.tertiary0};
   border-radius: 100px;
 
   width: 55px;

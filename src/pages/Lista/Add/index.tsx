@@ -3,13 +3,10 @@ import {FormHandles} from '@unform/core';
 import React, {useCallback, useRef, useState} from 'react';
 import {KeyboardAvoidingView, Platform, ScrollView} from 'react-native';
 
-import Icon from 'react-native-vector-icons/Feather';
-
 import Input from '../../../Components/Input';
 import {
   Title,
   Container,
-  FabButtom,
   Modal,
   PressableButton,
   PressableButtonText,
@@ -18,6 +15,7 @@ import {
   ButtonCreateText,
 } from './style';
 import api from '../../../services/api';
+import {FAB, Portal, Provider} from 'react-native-paper';
 
 interface ComponentProps {
   afterSave: Function;
@@ -26,6 +24,12 @@ interface ComponentProps {
 const FormLista: React.FC<ComponentProps> = props => {
   const formRef = useRef<FormHandles>(null);
   const [modalVisible, setModalVisible] = useState(false);
+
+  const [state, setState] = React.useState({open: false});
+
+  const onStateChange = ({open}: any) => setState({open});
+
+  const {open} = state;
 
   const handleCreateLista = useCallback(
     (data: any) => {
@@ -76,9 +80,40 @@ const FormLista: React.FC<ComponentProps> = props => {
         </KeyboardAvoidingView>
       </Modal>
 
-      <FabButtom onPress={() => setModalVisible(!modalVisible)}>
-        <Icon name="plus" size={40} color="#fff" />
-      </FabButtom>
+      <Provider>
+        <Portal>
+          <FAB.Group
+            color="#fff"
+            visible
+            open={open}
+            icon={open ? 'close' : 'plus'}
+            actions={[
+              {icon: 'plus', onPress: () => setModalVisible(!modalVisible)},
+              {
+                icon: 'star',
+                label: 'Categorias',
+                onPress: () => console.log('Pressed star'),
+              },
+              {
+                icon: 'email',
+                label: 'Email',
+                onPress: () => console.log('Pressed email'),
+              },
+              {
+                icon: 'bell',
+                label: 'Remind',
+                onPress: () => console.log('Pressed notifications'),
+              },
+            ]}
+            onStateChange={onStateChange}
+            onPress={() => {
+              if (open) {
+                // do something if the speed dial is open
+              }
+            }}
+          />
+        </Portal>
+      </Provider>
     </>
   );
 };

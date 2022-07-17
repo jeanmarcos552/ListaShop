@@ -1,13 +1,11 @@
-import {Platform, FlatList} from 'react-native';
+import {FlatList} from 'react-native';
 import styled from 'styled-components/native';
 import {getStatusBarHeight} from 'react-native-iphone-x-helper';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/Feather';
-import {Colors} from 'react-native-paper';
-import {theme} from '../../../App';
+
 export const Container = styled.SafeAreaView`
   flex: 1;
-  margin-top: ${Platform.OS === 'android' ? 5 : 10}px;
 `;
 
 export const Header = styled(LinearGradient)`
@@ -28,7 +26,7 @@ export const ContainerList = styled.View`
   padding: 15px;
   border-radius: 8px;
   border: 1px;
-  border-color: ${theme.colors.gray};
+  border-color: #e6e4e4;
 `;
 
 export const ShoppingList = styled(FlatList as new () => FlatList)`
@@ -74,7 +72,7 @@ export const IconText = styled(Icon)`
 `;
 
 export const ButtonDelete = styled.View`
-  background-color: ${Colors.red500};
+  background-color: red;
   justify-content: center;
   align-items: center;
   width: 100px;
