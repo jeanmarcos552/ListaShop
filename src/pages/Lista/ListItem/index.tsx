@@ -49,7 +49,7 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
     {} as ProviderItens,
   );
   const [elRefs, setElRefs] = useState<Array<any>>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   let [filter, setFilter] = useState<Filtro>();
   let [somaItens, setSomaItens] = useState('0');
   // let [totalItens, setTotalItens] = useState('0');
@@ -79,7 +79,7 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
   }, [id, filter]);
 
   useEffect(() => {
-    getDados();
+    // getDados();
   }, [getDados]);
 
   useFocusEffect(

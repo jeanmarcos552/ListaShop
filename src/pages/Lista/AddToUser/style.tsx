@@ -2,6 +2,7 @@ import {Platform, Pressable} from 'react-native';
 import {RectButton} from 'react-native-gesture-handler';
 import {getBottomSpace} from 'react-native-iphone-x-helper';
 import styled, {css} from 'styled-components/native';
+import Icons from 'react-native-vector-icons/Feather';
 
 interface PropsGrid {
   xs: number;
@@ -105,4 +106,8 @@ export const CompartilharLista = styled.TouchableOpacity``;
 export const CompartilharListaText = styled.Text`
   font-family: 'Exo-Regular';
   color: red;
+`;
+
+export const IconsShare = styled(Icons)`
+  color: ${({theme}) => theme.colors.textSecondary};
 `;

@@ -1,9 +1,11 @@
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import moment from 'moment';
+
+import {withTheme} from 'styled-components/native';
 
 import FormLista from './Add';
 
-import {ProgressBar, withTheme} from 'react-native-paper';
+import {ProgressBar} from 'react-native-paper';
 
 import {
   ContainerList,
@@ -12,155 +14,128 @@ import {
   ValueText,
   ItemListText,
   ContainerText,
-  Container,
   IconText,
   ProgressBarView,
   FooterLoop,
   TextRigthFooter,
+  ViewDeleteItem,
+  TextDeleteItem,
 } from './style';
 import {
   NavigationProp,
   ParamListBase,
   useNavigation,
 } from '@react-navigation/native';
-import {RefreshControl} from 'react-native';
+import {Alert, RefreshControl} from 'react-native';
 import HeaderLayout from '../../Layout/Header';
 import SkeletonListagem from './skeleton';
 import ShareLista from './AddToUser';
 import Empty from '../../Components/Empty';
 import {GlobalStyles} from '../../styles/global';
+import {indexList} from '../../services/lista';
+import {ItemsReques, PayloadList, ProviderItens} from '../../types/lista';
+import TemplateDefault from '../../Layout/Default';
 
-export interface ProviderRequest {
-  current_page: number;
-  data: Array<ProviderItens>[];
+function somaValoresItens(pivot: ProviderItens) {
+  return pivot.itens
+    .map((item: ItemsReques) => item.pivot)
+    .map((prev: any) => +prev.qty * +prev.value)
+    .reduce((prev, current) => prev + current, 0)
+    .toFixed(2)
+    .replace('.', ',');
 }
 
-export interface ProviderItens {
-  id: number;
-  name: string;
-  itens: Array<ItemsReques>;
-  total: number;
-  info: {
-    itens: number;
-    user: number;
-  };
-}
-
-export interface ItemsReques {
-  id: number;
-  name: string;
-  itens: Array<any>;
-  pivot: {
-    qty: number;
-    value: string;
-    status: boolean;
-    lista_id: number;
-    itens_id: number;
-  };
-  total: number;
-}
-
-const Lista = () => {
-  // const fetchApi = useCallback(async () => {
-  //   const {data, status} = await fetchIndexCategory();
-  //   if (status === 200) {
-  //     console.log(data);
-  //     return data;
-  //   }
-  //   return Alert.alert(data, '');
-  // }, []);
-
-  // useEffect(() => {
-  //   fetchApi();
-  // }, [fetchApi]);
-
-  const navigate = useNavigation<NavigationProp<ParamListBase>>();
-  const [lista] = useState<any>({data: []});
-  const [refreshing] = useState(false);
-  const [loading] = useState(false);
-
-  const handleSeeIten = useCallback(
-    (data: ItemsReques) => {
-      navigate.navigate('ItensToList', {
-        id: data.id,
-        title: data.name,
-      });
-    },
-    [navigate],
+function calcItensCheckt(provider: ProviderItens) {
+  let itensChecked = provider?.itens?.filter(
+    item => item.pivot.status === true,
   );
+  return itensChecked.length / provider?.itens?.length || 0;
+}
 
-  function calcItensCheckt(provider: ProviderItens) {
-    let itensChecked = provider?.itens?.filter(
-      item => item.pivot.status === true,
-    );
-    return itensChecked.length / provider?.itens?.length || 0;
+function Lista({theme}) {
+  const navigate = useNavigation<NavigationProp<ParamListBase>>();
+  const [list, setList] = useState<PayloadList>();
+  const [refreshing] = useState(false);
+
+  const fetchApi = useCallback(async () => {
+    const {data, status} = await indexList();
+    if (status === 200) {
+      setList(data);
+      return data;
+    }
+    return Alert.alert(String(data), '');
+  }, []);
+
+  function handleSeeIten(data: ItemsReques) {
+    navigate.navigate('ItensToList', {
+      id: data.id,
+      title: data.name,
+    });
   }
 
-  function somaValoresItens(pivot: ProviderItens) {
-    return pivot.itens
-      .map((item: ItemsReques) => item.pivot)
-      .map((prev: any) => +prev.qty * +prev.value)
-      .reduce((prev, current) => prev + current, 0)
-      .toFixed(2)
-      .replace('.', ',');
-  }
+  useEffect(() => {
+    fetchApi();
+  }, [fetchApi]);
 
   return (
     <GlobalStyles>
       <HeaderLayout />
-      <Container>
-        {loading ? (
-          [0, 1, 2, 3].map(item => <SkeletonListagem key={item} />)
-        ) : (
-          <>
-            <ShoppingList
-              refreshControl={<RefreshControl refreshing={refreshing} />}
-              data={lista?.data}
-              ListEmptyComponent={
-                <Empty text="Você ainda não tem nenhuma lista :(" />
-              }
-              renderItem={({item: provider}: any) => (
-                <ContainerList>
-                  <ItemList onPress={() => handleSeeIten(provider)}>
-                    <ContainerText>
-                      <ItemListText>{provider.name}</ItemListText>
-                      <IconText
-                        name={
-                          calcItensCheckt(provider) === 1
-                            ? 'check-circle'
-                            : 'clock'
-                        }
-                        color={
-                          calcItensCheckt(provider) !== 1 ? '#f0f' : '#000'
-                        }
-                        size={20}
-                      />
-                    </ContainerText>
-                    <ValueText>R$ {somaValoresItens(provider)}</ValueText>
-                  </ItemList>
-                  <ProgressBarView>
-                    <ProgressBar
-                      progress={calcItensCheckt(provider)}
-                      color="#f0f"
+      <TemplateDefault
+        loadingComponent={<SkeletonListagem />}
+        loading={!list?.data}>
+        <>
+          <ShoppingList
+            refreshControl={<RefreshControl refreshing={refreshing} />}
+            data={list?.data}
+            ListEmptyComponent={
+              <Empty text="Você ainda não tem nenhuma lista :(" />
+            }
+            renderItem={({item: provider}: any) => (
+              <ContainerList>
+                <ItemList onPress={() => handleSeeIten(provider)}>
+                  <ContainerText>
+                    <ItemListText>{provider.name}</ItemListText>
+                    <IconText
+                      name={
+                        calcItensCheckt(provider) === 1
+                          ? 'check-circle'
+                          : 'clock'
+                      }
+                      color={
+                        calcItensCheckt(provider) !== 1
+                          ? theme.colors.warning
+                          : theme.colors.success
+                      }
+                      size={18}
                     />
-                  </ProgressBarView>
-                  <FooterLoop>
-                    <TextRigthFooter>
-                      {moment(provider.created_at).format('DD/MM')}
-                    </TextRigthFooter>
+                  </ContainerText>
+                  <ValueText>R$ {somaValoresItens(provider)}</ValueText>
+                </ItemList>
+                <ProgressBarView>
+                  <ProgressBar
+                    progress={calcItensCheckt(provider)}
+                    color={theme.colors.primary}
+                  />
+                </ProgressBarView>
+                <FooterLoop>
+                  <TextRigthFooter>
+                    {moment(provider.created_at).format('DD/MM')}
+                  </TextRigthFooter>
+                  <ViewDeleteItem>
+                    <TextDeleteItem>Deletar</TextDeleteItem>
+                  </ViewDeleteItem>
 
-                    <ShareLista key={provider.id} provider={provider} />
-                  </FooterLoop>
-                </ContainerList>
-              )}
-              keyExtractor={(provider: any) => provider.id.toString()}
-            />
-            <FormLista afterSave={() => null} />
-          </>
-        )}
-      </Container>
+                  <ShareLista key={provider.id} provider={provider} />
+                </FooterLoop>
+              </ContainerList>
+            )}
+            keyExtractor={(provider: any) => provider.id.toString()}
+          />
+          <FormLista afterSave={() => null} />
+        </>
+      </TemplateDefault>
     </GlobalStyles>
   );
-};
+}
 
 export default withTheme(Lista);

@@ -22,6 +22,7 @@ import {
   ButtonCreate,
   ButtonCreateText,
   CompartilharLista,
+  IconsShare,
 } from './style';
 import {useAuth} from '../../../hooks/auth';
 import api from '../../../services/api';
@@ -135,7 +136,7 @@ const ShareLista: React.FC<ComponentProps> = props => {
       </Modal>
 
       <CompartilharLista onPress={() => setModalVisible(true)}>
-        <Icon name="share" size={18} color="#969595dd" />
+        <IconsShare name="share" size={18} />
       </CompartilharLista>
     </>
   );

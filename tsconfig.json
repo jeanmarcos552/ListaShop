@@ -8,6 +8,6 @@
     "skipLibCheck": true /* Skip type checking all .d.ts files. */
   },
   "files": [
-    "src/styles/themes/styles.d.ts"
+    "src/@types/index.d.ts"
   ]
 }

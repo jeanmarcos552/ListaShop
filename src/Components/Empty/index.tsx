@@ -8,7 +8,6 @@ interface PropEmpty {
   text: string;
 }
 function Empty({theme, text = 'Ainda não existe nada por aqui!'}: PropEmpty) {
-  console.log(theme.colors);
   return (
     <Container>
       <Text>{text}</Text>

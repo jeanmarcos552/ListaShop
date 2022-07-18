@@ -14,10 +14,9 @@ import {
   ButtonCreate,
   ButtonCreateText,
   FabButtom,
+  IconsStyle,
 } from './style';
 import api from '../../../services/api';
-
-import Icons from 'react-native-vector-icons/Ionicons';
 
 interface ComponentProps {
   afterSave: Function;
@@ -62,21 +61,21 @@ const FormLista: React.FC<ComponentProps> = props => {
                 <Input name="name" placeholder="Nome da lista" icon="list" />
 
                 <FooterButtons>
-                  <ButtonCreate onPress={() => formRef.current?.submitForm()}>
-                    <ButtonCreateText>Criar</ButtonCreateText>
-                  </ButtonCreate>
                   <PressableButton
                     onPress={() => setModalVisible(!modalVisible)}>
                     <PressableButtonText>Cancelar</PressableButtonText>
                   </PressableButton>
+                  <ButtonCreate onPress={() => formRef.current?.submitForm()}>
+                    <ButtonCreateText>Criar</ButtonCreateText>
+                  </ButtonCreate>
                 </FooterButtons>
               </Form>
             </Container>
           </ScrollView>
         </KeyboardAvoidingView>
       </Modal>
-      <FabButtom>
-        <Icons name="add" color={'#fff'} size={25} />
+      <FabButtom onPress={() => setModalVisible(true)}>
+        <IconsStyle name="add" size={25} />
       </FabButtom>
     </>
   );
