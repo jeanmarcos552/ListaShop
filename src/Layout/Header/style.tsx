@@ -9,7 +9,7 @@ export const Header = styled.View`
   align-items: center;
   justify-content: space-between;
   padding: ${Platform.OS === 'ios' ? 5 + getStatusBarHeight() : 5}px 10px 5px;
-  background-color: #01ac73;
+  background-color: ${({theme}) => theme.colors.primary};
 `;
 export const HeaderText = styled.Text`
   font-size: 18px;

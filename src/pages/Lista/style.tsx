@@ -29,7 +29,7 @@ export const ContainerList = styled.View`
   border-color: #e6e4e4;
 `;
 
-export const ShoppingList = styled(FlatList as new () => FlatList)`
+export const ShoppingList = styled(FlatList)`
   overflow: hidden;
   height: 100px;
 `;

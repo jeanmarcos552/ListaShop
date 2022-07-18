@@ -23,11 +23,12 @@ import {
   ParamListBase,
   useNavigation,
 } from '@react-navigation/native';
-import {RefreshControl, View} from 'react-native';
+import {RefreshControl} from 'react-native';
 import HeaderLayout from '../../Layout/Header';
 import SkeletonListagem from './skeleton';
 import ShareLista from './AddToUser';
 import Empty from '../../Components/Empty';
+import {GlobalStyles} from '../../styles/global';
 
 export interface ProviderRequest {
   current_page: number;
@@ -105,7 +106,7 @@ const Lista = () => {
   }
 
   return (
-    <View style={{flex: 1, backgroundColor: '#ffffff'}}>
+    <GlobalStyles>
       <HeaderLayout />
       <Container>
         {loading ? (
@@ -158,7 +159,7 @@ const Lista = () => {
           </>
         )}
       </Container>
-    </View>
+    </GlobalStyles>
   );
 };
 

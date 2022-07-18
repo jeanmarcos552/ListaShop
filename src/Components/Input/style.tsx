@@ -8,7 +8,7 @@ interface PropsInput {
 }
 
 export const Container = styled.View<PropsInput>`
-  ${(props) =>
+  ${props =>
     props.size &&
     css`
       width: ${props.size}%;
@@ -26,13 +26,13 @@ export const Container = styled.View<PropsInput>`
   align-items: center;
   flex-direction: row;
 
-  ${(props) =>
+  ${props =>
     props.isErrored &&
     css`
       border-color: #c53030;
     `}
 
-  ${(props) =>
+  ${props =>
     props.isFocus &&
     css`
       border-color: #ff9000;
