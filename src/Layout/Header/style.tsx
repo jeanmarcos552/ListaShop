@@ -27,6 +27,8 @@ export const NotificacaoTotal = styled(Badge)`
   z-index: 99;
   top: -8px;
   right: -5px;
+  background-color: red;
+  color: white;
 `;
 
 export const ViewLeft = styled.View`

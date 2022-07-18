@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import moment from 'moment';
 
 import FormLista from './Add';
@@ -23,12 +23,11 @@ import {
   ParamListBase,
   useNavigation,
 } from '@react-navigation/native';
-import {Alert, RefreshControl, View} from 'react-native';
+import {RefreshControl, View} from 'react-native';
 import HeaderLayout from '../../Layout/Header';
 import SkeletonListagem from './skeleton';
 import ShareLista from './AddToUser';
 import Empty from '../../Components/Empty';
-import {fetchIndexCategory} from '../../services/category';
 
 export interface ProviderRequest {
   current_page: number;
@@ -61,53 +60,21 @@ export interface ItemsReques {
 }
 
 const Lista = () => {
-  const fetchApi = useCallback(async () => {
-    const {data, status} = await fetchIndexCategory();
-    if (status === 200) {
-      console.log(data);
-      return data;
-    }
-    return Alert.alert(data, '');
-  }, []);
+  // const fetchApi = useCallback(async () => {
+  //   const {data, status} = await fetchIndexCategory();
+  //   if (status === 200) {
+  //     console.log(data);
+  //     return data;
+  //   }
+  //   return Alert.alert(data, '');
+  // }, []);
 
-  useEffect(() => {
-    fetchApi();
-  }, [fetchApi]);
+  // useEffect(() => {
+  //   fetchApi();
+  // }, [fetchApi]);
 
   const navigate = useNavigation<NavigationProp<ParamListBase>>();
-  const [lista] = useState<any>({
-    current_page: 1,
-    data: [
-      {
-        id: 2,
-        name: 'Porto Seguro',
-        ativo: true,
-        created_at: '2022-07-17T15:49:10.000000Z',
-        updated_at: '2022-07-17T15:49:10.000000Z',
-        created_by: 3,
-        category_id: 1,
-        user: [
-          {
-            id: 3,
-            name: 'Simone Lopes',
-            email: 'jean.silva552@outlook.com',
-            email_verified_at: null,
-            created_at: '2022-07-16T22:34:43.000000Z',
-            updated_at: '2022-07-16T22:34:43.000000Z',
-            pivot: {
-              lista_id: 2,
-              user_id: 3,
-            },
-          },
-        ],
-        itens: [],
-        pivot: {
-          user_id: 3,
-          lista_id: 2,
-        },
-      },
-    ],
-  });
+  const [lista] = useState<any>({data: []});
   const [refreshing] = useState(false);
   const [loading] = useState(false);
 

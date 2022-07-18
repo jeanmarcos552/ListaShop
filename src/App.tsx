@@ -4,7 +4,7 @@ import {NavigationContainer} from '@react-navigation/native';
 
 import {
   Provider as PaperProvider,
-  MD3Colors as Colors,
+  MD2Colors as Colors,
 } from 'react-native-paper';
 
 import {StatusBar, View} from 'react-native';

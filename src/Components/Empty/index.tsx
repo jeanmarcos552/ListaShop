@@ -18,7 +18,8 @@ function Empty({theme, text = 'Ainda não existe nada por aqui!'}: PropEmpty) {
       />
       <Button
         mode="contained"
-        color={theme.colors.tertiary}
+        buttonColor={theme.colors.tertiary}
+        textColor={theme.colors.white}
         onPress={() => console.log('ok')}>
         Criar uma lista
       </Button>
