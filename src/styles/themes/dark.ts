@@ -7,6 +7,6 @@ export default {
 
     background: '#000',
     text: '#fff',
-    textSecondary: '#e5e7e6',
+    textSecondary: '#857f74',
   },
 };

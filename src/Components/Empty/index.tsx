@@ -13,12 +13,15 @@ function Empty({theme, text = 'Ainda não existe nada por aqui!'}: PropEmpty) {
     <Container>
       <Text>{text}</Text>
       <CenterView>
-        <Icon name="checkcircleo" size={30} color={theme.colors.text} />
+        <Icon
+          name="checkcircleo"
+          size={30}
+          color={theme.colors.textSecondary}
+        />
       </CenterView>
       <Button
         mode="contained"
         buttonColor={theme.colors.secondary}
-        textColor={theme.colors.text}
         onPress={() => console.log('ok')}>
         Criar uma lista
       </Button>

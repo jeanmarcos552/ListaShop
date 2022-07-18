@@ -1,29 +1,57 @@
 import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
-import Icons from 'react-native-vector-icons/AntDesign';
-
 import Lista from '../Lista';
 import {Configurations} from '../Configurations';
+import {TouchableWithoutFeedback} from 'react-native';
+import {IconsStyle, TabBarStyle} from './style';
 
 const Tab = createBottomTabNavigator();
 
 const Tabs = () => {
   return (
     <Tab.Navigator
-      screenOptions={({route}) => ({
-        tabBarIcon: ({focused, color, size}) => {
-          let iconName: any;
-          switch (route.name) {
-            case 'Lista':
-              iconName = focused ? 'bars' : 'bars';
-              break;
-            case 'Settings':
-              iconName = focused ? 'setting' : 'setting';
-              break;
-          }
-          return <Icons name={iconName} size={size} color={color} />;
-        },
+      tabBar={({state, descriptors, navigation}: any) => {
+        return (
+          <TabBarStyle>
+            {state.routes.map((route, index) => {
+              const {options} = descriptors[route.key];
+              const label =
+                options.tabBarLabel !== undefined
+                  ? options.tabBarLabel
+                  : options.title !== undefined
+                  ? options.title
+                  : route.name;
+
+              let iconName = 'bars';
+              if (label === 'Settings') {
+                iconName = 'setting';
+              }
+              const isFocused = state.index === index;
+
+              const onPress = () => {
+                const event = navigation.emit({
+                  type: 'tabPress',
+                  target: route.key,
+                  canPreventDefault: true,
+                });
+
+                if (!isFocused && !event.defaultPrevented) {
+                  // The `merge: true` option makes sure that the params inside the tab screen are preserved
+                  navigation.navigate({name: route.name, merge: true});
+                }
+              };
+
+              return (
+                <TouchableWithoutFeedback key={index} onPress={onPress}>
+                  <IconsStyle name={iconName} size={25} focus={isFocused} />
+                </TouchableWithoutFeedback>
+              );
+            })}
+          </TabBarStyle>
+        );
+      }}
+      screenOptions={() => ({
         headerShown: false,
         tabBarShowLabel: false,
       })}
