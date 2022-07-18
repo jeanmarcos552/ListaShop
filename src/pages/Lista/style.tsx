@@ -72,19 +72,9 @@ export const ValueText = styled.Text`
 
 export const IconText = styled(Icon)`
   border-radius: 100px;
-  padding: 3px;
+  padding: 0px 10px;
   align-items: center;
   justify-content: center;
-`;
-
-export const ButtonDelete = styled.View`
-  background-color: red;
-  justify-content: center;
-  align-items: center;
-  width: 100px;
-  height: 80px;
-  overflow: hidden;
-  flex-direction: row;
 `;
 
 export const ProgressBarView = styled.View`

@@ -113,6 +113,7 @@ function Lista({theme}) {
                 </ItemList>
                 <ProgressBarView>
                   <ProgressBar
+                    style={{height: 7, borderRadius: 5}}
                     progress={calcItensCheckt(provider)}
                     color={theme.colors.primary}
                   />
