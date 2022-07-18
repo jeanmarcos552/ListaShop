@@ -13,12 +13,12 @@ import dark from './styles/themes/dark';
 const App: React.FC = () => {
   const colorTheme = Appearance.getColorScheme();
   return (
-    <ThemeProvider theme={colorTheme !== 'dark' ? dark : light}>
+    <ThemeProvider theme={colorTheme === 'dark' ? dark : light}>
       <NavigationContainer>
         <StatusBar
           animated={true}
           backgroundColor={
-            colorTheme !== 'light' ? light.colors.primary : dark.colors.primary
+            colorTheme === 'light' ? light.colors.primary : dark.colors.primary
           }
           barStyle="default"
           showHideTransition="slide"
