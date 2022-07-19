@@ -24,7 +24,7 @@ const TemplateDefault: React.FC<PropsDefault> = ({
           loadingComponent
         ) : (
           <View style={{flex: 1}}>
-            {children}
+            <View style={{zIndex: 999, flex: 1}}>{children}</View>
             <SvgBackdrop width="100%" />
           </View>
         )}

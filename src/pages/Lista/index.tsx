@@ -1,11 +1,29 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useEffect, useReducer} from 'react';
+
+import {
+  NavigationProp,
+  ParamListBase,
+  useNavigation,
+} from '@react-navigation/native';
+import {RefreshControl} from 'react-native';
+
 import moment from 'moment';
 
-import {withTheme} from 'styled-components/native';
-
-import FormLista from './Add';
-
 import {ProgressBar} from 'react-native-paper';
+
+import Empty from '../../Components/Empty';
+
+import HeaderLayout from '../../Layout/Header';
+import TemplateDefault from '../../Layout/Default';
+
+import SkeletonListagem from './skeleton';
+import FormLista from './Add';
+import ShareLista from './AddToUser';
+
+import {withTheme} from 'styled-components/native';
+import {GlobalStyles} from '../../styles/global';
+
+import {ItemsReques, ProviderItens} from '../../types/lista';
 
 import {
   ContainerList,
@@ -21,20 +39,8 @@ import {
   ViewDeleteItem,
   TextDeleteItem,
 } from './style';
-import {
-  NavigationProp,
-  ParamListBase,
-  useNavigation,
-} from '@react-navigation/native';
-import {Alert, RefreshControl} from 'react-native';
-import HeaderLayout from '../../Layout/Header';
-import SkeletonListagem from './skeleton';
-import ShareLista from './AddToUser';
-import Empty from '../../Components/Empty';
-import {GlobalStyles} from '../../styles/global';
-import {indexList} from '../../services/lista';
-import {ItemsReques, PayloadList, ProviderItens} from '../../types/lista';
-import TemplateDefault from '../../Layout/Default';
+import {fetchData} from '../../store/actions/list/fetchData';
+import {initalList, reducerList} from '../../store/reducers/list';
 
 function somaValoresItens(pivot: ProviderItens) {
   return pivot.itens
@@ -54,39 +60,41 @@ function calcItensCheckt(provider: ProviderItens) {
 
 function Lista({theme}) {
   const navigate = useNavigation<NavigationProp<ParamListBase>>();
-  const [list, setList] = useState<PayloadList>();
-  const [refreshing] = useState(false);
+  const [{data, refreshing}, dispatch] = useReducer(reducerList, initalList);
 
-  const fetchApi = useCallback(async () => {
-    const {data, status} = await indexList();
-    if (status === 200) {
-      setList(data);
-      return data;
-    }
-    return Alert.alert(String(data), '');
+  useEffect(() => {
+    return fetchData(dispatch);
   }, []);
 
-  function handleSeeIten(data: ItemsReques) {
+  function handleSeeIten(dado: ItemsReques) {
     navigate.navigate('ItensToList', {
-      id: data.id,
-      title: data.name,
+      id: dado.id,
+      title: dado.name,
     });
   }
 
-  useEffect(() => {
-    fetchApi();
-  }, [fetchApi]);
+  function DisplayIconsByStatus(provider: ProviderItens) {
+    return (
+      <IconText
+        name={calcItensCheckt(provider) === 1 ? 'check-circle' : 'clock'}
+        color={
+          calcItensCheckt(provider) !== 1
+            ? theme.colors.warning
+            : theme.colors.success
+        }
+        size={18}
+      />
+    );
+  }
 
   return (
     <GlobalStyles>
       <HeaderLayout />
-      <TemplateDefault
-        loadingComponent={<SkeletonListagem />}
-        loading={!list?.data}>
+      <TemplateDefault loadingComponent={<SkeletonListagem />} loading={!data}>
         <>
           <ShoppingList
             refreshControl={<RefreshControl refreshing={refreshing} />}
-            data={list?.data}
+            data={data?.data}
             ListEmptyComponent={
               <Empty text="Você ainda não tem nenhuma lista :(" />
             }
@@ -95,19 +103,7 @@ function Lista({theme}) {
                 <ItemList onPress={() => handleSeeIten(provider)}>
                   <ContainerText>
                     <ItemListText>{provider.name}</ItemListText>
-                    <IconText
-                      name={
-                        calcItensCheckt(provider) === 1
-                          ? 'check-circle'
-                          : 'clock'
-                      }
-                      color={
-                        calcItensCheckt(provider) !== 1
-                          ? theme.colors.warning
-                          : theme.colors.success
-                      }
-                      size={18}
-                    />
+                    <DisplayIconsByStatus {...provider} />
                   </ContainerText>
                   <ValueText>R$ {somaValoresItens(provider)}</ValueText>
                 </ItemList>
