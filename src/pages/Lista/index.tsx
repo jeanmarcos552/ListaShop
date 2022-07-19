@@ -1,15 +1,15 @@
-import React, {useEffect, useReducer} from 'react';
+import React, {useEffect, useReducer, useState} from 'react';
 
 import {
   NavigationProp,
   ParamListBase,
   useNavigation,
 } from '@react-navigation/native';
-import {RefreshControl} from 'react-native';
+import {RefreshControl, View} from 'react-native';
 
 import moment from 'moment';
 
-import {ProgressBar} from 'react-native-paper';
+import {Button, ProgressBar} from 'react-native-paper';
 
 import Empty from '../../Components/Empty';
 
@@ -38,9 +38,16 @@ import {
   TextRigthFooter,
   ViewDeleteItem,
   TextDeleteItem,
+  ViewAction,
+  ViewHeader,
+  TextHeader,
+  ContainerDialogo,
 } from './style';
+
 import {fetchData} from '../../store/actions/list/fetchData';
 import {initalList, reducerList} from '../../store/reducers/list';
+import DialogComponent from '../../Components/Dialog';
+import {deleteList} from '../../store/actions/list/deleteList';
 
 function somaValoresItens(pivot: ProviderItens) {
   return pivot.itens
@@ -60,7 +67,11 @@ function calcItensCheckt(provider: ProviderItens) {
 
 function Lista({theme}) {
   const navigate = useNavigation<NavigationProp<ParamListBase>>();
-  const [{data, refreshing}, dispatch] = useReducer(reducerList, initalList);
+  const [{data, refreshing, itemToDelete}, dispatch] = useReducer(
+    reducerList,
+    initalList,
+  );
+  const [dialogo, setDialogo] = useState(false);
 
   useEffect(() => {
     return fetchData(dispatch);
@@ -87,23 +98,55 @@ function Lista({theme}) {
     );
   }
 
+  useEffect(() => {
+    setDialogo(!!itemToDelete);
+  }, [itemToDelete]);
+
   return (
     <GlobalStyles>
       <HeaderLayout />
       <TemplateDefault loadingComponent={<SkeletonListagem />} loading={!data}>
         <>
+          <DialogComponent
+            setVisible={setDialogo}
+            visible={dialogo}
+            title="Deletar essa lista?">
+            <ContainerDialogo>
+              <Button
+                mode="outlined"
+                onPress={() => dispatch({type: 'DELETE_LIST', payload: null})}>
+                Não
+              </Button>
+              <Button
+                mode="contained"
+                buttonColor={theme.colors.danger}
+                onPress={() => deleteList(dispatch, itemToDelete)}>
+                Sim
+              </Button>
+            </ContainerDialogo>
+          </DialogComponent>
+
           <ShoppingList
+            showsVerticalScrollIndicator={false}
             refreshControl={<RefreshControl refreshing={refreshing} />}
             data={data?.data}
             ListEmptyComponent={
               <Empty text="Você ainda não tem nenhuma lista :(" />
             }
+            ListFooterComponent={<View style={{marginBottom: 80}} />}
+            ListHeaderComponent={
+              <ViewHeader>
+                <TextHeader>Listas</TextHeader>
+              </ViewHeader>
+            }
             renderItem={({item: provider}: any) => (
               <ContainerList>
                 <ItemList onPress={() => handleSeeIten(provider)}>
                   <ContainerText>
-                    <ItemListText>{provider.name}</ItemListText>
-                    <DisplayIconsByStatus {...provider} />
+                    <ItemListText>
+                      {provider.name} - {provider.id}{' '}
+                    </ItemListText>
+                    <DisplayIconsByStatus {...provider} theme={theme} />
                   </ContainerText>
                   <ValueText>R$ {somaValoresItens(provider)}</ValueText>
                 </ItemList>
@@ -118,11 +161,16 @@ function Lista({theme}) {
                   <TextRigthFooter>
                     {moment(provider.created_at).format('DD/MM')}
                   </TextRigthFooter>
-                  <ViewDeleteItem>
-                    <TextDeleteItem>Deletar</TextDeleteItem>
-                  </ViewDeleteItem>
+                  <ViewAction>
+                    <ViewDeleteItem
+                      onPress={() =>
+                        dispatch({type: 'DELETE_LIST', payload: provider.id})
+                      }>
+                      <TextDeleteItem name="trash" size={18} />
+                    </ViewDeleteItem>
 
-                  <ShareLista key={provider.id} provider={provider} />
+                    <ShareLista key={provider.id} provider={provider} />
+                  </ViewAction>
                 </FooterLoop>
               </ContainerList>
             )}

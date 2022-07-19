@@ -9,25 +9,30 @@ import Routes from './routes';
 import {ThemeProvider} from 'styled-components/native';
 import light from './styles/themes/light';
 import dark from './styles/themes/dark';
+import {Provider} from 'react-native-paper';
 
 const App: React.FC = () => {
   const colorTheme = Appearance.getColorScheme();
   return (
-    <ThemeProvider theme={colorTheme === 'dark' ? dark : light}>
-      <NavigationContainer>
-        <StatusBar
-          animated={true}
-          backgroundColor={
-            colorTheme === 'light' ? light.colors.primary : dark.colors.primary
-          }
-          barStyle="default"
-          showHideTransition="slide"
-        />
-        <AppProvider>
-          <Routes />
-        </AppProvider>
-      </NavigationContainer>
-    </ThemeProvider>
+    <Provider>
+      <ThemeProvider theme={colorTheme === 'dark' ? dark : light}>
+        <NavigationContainer>
+          <StatusBar
+            animated={true}
+            backgroundColor={
+              colorTheme === 'light'
+                ? light.colors.primary
+                : dark.colors.primary
+            }
+            barStyle="default"
+            showHideTransition="slide"
+          />
+          <AppProvider>
+            <Routes />
+          </AppProvider>
+        </NavigationContainer>
+      </ThemeProvider>
+    </Provider>
   );
 };
 

@@ -8,6 +8,16 @@ export const Container = styled.SafeAreaView`
   flex: 1;
 `;
 
+export const ViewHeader = styled.View`
+  padding: 10px;
+`;
+
+export const TextHeader = styled.Text`
+  font-size: 30px;
+  font-family: 'Exo-SemiBold';
+  color: ${({theme}) => theme.colors.secondary};
+`;
+
 export const Header = styled(LinearGradient)`
   flex-direction: row;
   align-items: center;
@@ -21,7 +31,7 @@ export const HeaderText = styled.Text`
 `;
 
 export const ContainerList = styled.View`
-  margin: 10px 10px;
+  margin: 5px;
   background-color: ${({theme}) => theme.colors.colorItem};
   padding: 15px;
   border-radius: 8px;
@@ -39,13 +49,13 @@ export const ContainerList = styled.View`
 export const ShoppingList = styled(FlatList)`
   overflow: hidden;
   height: 100px;
+  position: relative;
 `;
 
 export const ItemList = styled.TouchableOpacity`
   justify-content: space-between;
   flex-direction: row;
   align-items: center;
-  margin-bottom: 10px;
 `;
 
 export const ContainerText = styled.View`
@@ -79,12 +89,14 @@ export const IconText = styled(Icon)`
 
 export const ProgressBarView = styled.View`
   padding-bottom: 10px;
+  margin-top: 10px;
 `;
 
 export const FooterLoop = styled.View`
   justify-content: space-between;
   flex-direction: row;
   align-items: center;
+  margin-top: 5px;
 `;
 export const TextRigthFooter = styled.Text`
   font-family: 'Exo-Regular';
@@ -95,11 +107,22 @@ export const ViewDeleteItem = styled.TouchableOpacity`
   border-radius: 20px;
   justify-content: center;
   align-items: center;
-  height: 30px;
+  height: 20px;
 `;
 
-export const TextDeleteItem = styled.Text`
-  color: ${({theme}) => theme.colors.textSecondary};
-  padding: 0px 20px;
-  font-size: 12px;
+export const TextDeleteItem = styled(Icon)`
+  color: ${({theme}) => theme.colors.danger};
+  padding: 0px 10px;
+`;
+
+export const ViewAction = styled.View`
+  align-items: center;
+  flex-direction: row;
+`;
+
+export const ContainerDialogo = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin: 10px 30px;
 `;

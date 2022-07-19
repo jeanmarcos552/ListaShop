@@ -10,13 +10,13 @@ export const TabBarStyle = styled.View`
   flex-direction: row;
   justify-content: space-between;
   padding: 15px 20px;
-  background-color: ${({theme}: any) => theme.colors.background};
-  border-width: 1px;
+  background-color: ${({theme}: any) => theme.colors.primary};
+  /* border-width: 1px;
   border-style: solid;
-  border-color: ${({theme}: any) => theme.colors.border};
+  border-color: ${({theme}: any) => theme.colors.border}; */
 `;
 
 export const IconsStyle = styled<any>(Icons)`
   color: ${({focus, theme}) =>
-    focus ? theme.colors.primary : theme.colors.textSecondary};
+    focus ? theme.colors.colorItem : theme.colors.background};
 `;
