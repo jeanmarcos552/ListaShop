@@ -1,5 +1,4 @@
-import {Appearance, Platform, Pressable} from 'react-native';
-import {RectButton} from 'react-native-gesture-handler';
+import {Appearance, Platform} from 'react-native';
 import {getBottomSpace} from 'react-native-iphone-x-helper';
 import styled, {css} from 'styled-components/native';
 import Icons from 'react-native-vector-icons/Ionicons';
@@ -62,7 +61,7 @@ export const Modal = styled.Modal`
   background-color: ${({theme}: any) => theme.colors.primary};
 `;
 
-export const ButtonCreate = styled(RectButton)`
+export const ButtonCreate = styled.TouchableOpacity`
   border-width: 2px;
   border-style: solid;
   border-color: ${({theme}) => theme.colors.secondary};
@@ -86,12 +85,11 @@ export const FooterButtons = styled.View`
   justify-content: space-evenly;
 `;
 
-export const PressableButton = styled(Pressable)`
+export const PressableButton = styled.TouchableOpacity`
   border-radius: 20px;
   border-width: 2px;
   border-style: solid;
-  border-color: ${({theme}) => theme.colors.tertiary};
-  background-color: ${({theme}) => theme.colors.tertiary};
+  border-color: white;
 
   flex: 1;
   height: 48px;

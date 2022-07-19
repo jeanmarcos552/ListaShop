@@ -1,6 +1,6 @@
 import {Form} from '@unform/mobile';
 import {FormHandles} from '@unform/core';
-import React, {useCallback, useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {KeyboardAvoidingView, Platform, ScrollView} from 'react-native';
 
 import Input from '../../../Components/Input';
@@ -16,28 +16,26 @@ import {
   FabButtom,
   IconsStyle,
 } from './style';
-import api from '../../../services/api';
+import {createNewList} from '../../../store/actions/list/createNewList';
 
 interface ComponentProps {
-  afterSave: Function;
+  dispatch: any;
 }
 
-const FormLista: React.FC<ComponentProps> = props => {
+const FormLista: React.FC<ComponentProps> = ({dispatch}) => {
   const formRef = useRef<FormHandles>(null);
   const [modalVisible, setModalVisible] = useState(false);
+  const inputRef = useRef<any>(null);
 
-  const handleCreateLista = useCallback(
-    (data: any) => {
-      api.post('lista', data).then(() => {
-        if (props.afterSave) {
-          props.afterSave();
-        }
-        setModalVisible(false);
-      });
-    },
-    [props],
-  );
-
+  function handleSubmit(data) {
+    createNewList(dispatch, data);
+    setModalVisible(!modalVisible);
+  }
+  useEffect(() => {
+    if (inputRef && modalVisible) {
+      inputRef?.current?.focus();
+    }
+  }, [modalVisible]);
   return (
     <>
       <Modal
@@ -57,8 +55,13 @@ const FormLista: React.FC<ComponentProps> = props => {
             <Container>
               <Title>Adicionar uma Lista de compras?</Title>
 
-              <Form onSubmit={handleCreateLista} ref={formRef}>
-                <Input name="name" placeholder="Nome da lista" icon="list" />
+              <Form onSubmit={handleSubmit} ref={formRef}>
+                <Input
+                  ref={inputRef}
+                  name="name"
+                  placeholder="Nome da lista"
+                  icon="list"
+                />
 
                 <FooterButtons>
                   <PressableButton

@@ -2,11 +2,6 @@ import {FlatList} from 'react-native';
 import {getStatusBarHeight} from 'react-native-iphone-x-helper';
 import styled, {css} from 'styled-components/native';
 
-interface Provider {
-  id: number;
-  title: string;
-}
-
 interface PropsInput {
   isFocus: boolean;
   isErrored: boolean;
@@ -59,7 +54,7 @@ export const InputText = styled.TextInput<PropsInput>`
     `}
 `;
 
-export const ListResult = styled(FlatList as new () => FlatList<Provider>)``;
+export const ListResult = styled(FlatList)``;
 
 export const Item = styled.TouchableOpacity`
   padding: 10px 0px;

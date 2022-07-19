@@ -176,7 +176,7 @@ function Lista({theme}) {
             )}
             keyExtractor={(provider: any) => provider.id.toString()}
           />
-          <FormLista afterSave={() => null} />
+          <FormLista dispatch={dispatch} />
         </>
       </TemplateDefault>
     </GlobalStyles>

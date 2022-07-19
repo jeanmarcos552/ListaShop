@@ -25,6 +25,12 @@ function filterData(state, action) {
   return copyData;
 }
 
+function appendData(state, action) {
+  const copyData = {...state.data};
+  copyData.data = [...copyData.data, action.payload];
+  return copyData;
+}
+
 export function reducerList(state: any, action: any) {
   switch (action.type) {
     case 'DATA':
@@ -38,6 +44,13 @@ export function reducerList(state: any, action: any) {
       return {
         ...state,
         data: filterData(state, action),
+        itemToDelete: null,
+      };
+
+    case 'ADD_ITEM_TO_LIST':
+      return {
+        ...state,
+        data: appendData(state, action),
         itemToDelete: null,
       };
   }

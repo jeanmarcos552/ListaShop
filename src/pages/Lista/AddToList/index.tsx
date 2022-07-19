@@ -139,13 +139,14 @@ const AddToList: React.FC<PropsComponente> = ({route, navigation}) => {
   return (
     <>
       <HeaderSearch>
-        <TextInputSugest isFocus={isFocus}>
+        <TextInputSugest isFocus={isFocus} isErrored={false}>
           <Icon
             name="search"
             size={15}
             color={isFocus ? '#01ac73' : '#ff9000'}
           />
           <InputText
+            isErrored={false}
             isFocus={isFocus}
             ref={searchRef}
             placeholder="pesquisar..."

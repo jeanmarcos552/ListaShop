@@ -32,37 +32,37 @@ interface PropsComponent {
 }
 
 const HeaderLayout: React.FC<PropsComponent> = ({title}) => {
-  const {user, token} = useAuth() as unknown as PropsHeader;
-  const [notifications, setNotifications] = useState([1]);
+  const {user} = useAuth() as unknown as PropsHeader;
+  const [notifications] = useState([]);
   const navigate = useNavigation<NavigationProp<ParamListBase>>();
 
-  const getNotifications = useCallback(() => {
-    api.get('/notifications').then(res => {
-      if (res.data) {
-        setNotifications(res.data.data);
-      }
-    });
-  }, []);
+  // const getNotifications = useCallback(() => {
+  //   api.get('/notifications').then(res => {
+  //     if (res.data) {
+  //       setNotifications(res.data.data);
+  //     }
+  //   });
+  // }, []);
 
-  useEffect(() => {
-    getNotifications();
-  }, [getNotifications]);
+  // useEffect(() => {
+  //   getNotifications();
+  // }, [getNotifications]);
 
-  useEffect(() => {
-    let echo = new Echo({
-      broadcaster: 'socket.io',
-      key: 'ABCDEFG',
-      cluster: 'mt1',
-      forceTLS: false,
-      wsHost: '192.168.100.23',
-      wsPort: 6001,
-      client: Socketio,
-    });
+  // useEffect(() => {
+  //   let echo = new Echo({
+  //     broadcaster: 'socket.io',
+  //     key: 'ABCDEFG',
+  //     cluster: 'mt1',
+  //     forceTLS: false,
+  //     wsHost: '192.168.100.23',
+  //     wsPort: 6001,
+  //     client: Socketio,
+  //   });
 
-    echo.private('user.3').listen('SendNotification', (event: any) => {
-      console.log(event);
-    });
-  }, [token]);
+  //   echo.private('user.3').listen('SendNotification', (event: any) => {
+  //     console.log(event);
+  //   });
+  // }, [token]);
 
   return (
     <Header>
@@ -71,7 +71,7 @@ const HeaderLayout: React.FC<PropsComponent> = ({title}) => {
       </HeaderText>
       <ViewLeft>
         <Notificacao onPress={() => navigate.navigate('Notifications')}>
-          {notifications && notifications.length > 0 && (
+          {notifications && notifications?.length > 0 && (
             <NotificacaoTotal>{3}</NotificacaoTotal>
           )}
           <Icon name="bell" size={20} color="#fff" />
