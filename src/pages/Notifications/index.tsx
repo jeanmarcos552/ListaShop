@@ -9,7 +9,7 @@ import {
   ContainerText,
   Container,
   InfoNotification,
-  TextRigthFooter,
+  TextRightFooter,
   EmptyListText,
   HeaderText,
   Layout,
@@ -34,10 +34,10 @@ import HeaderSingle from '../../Layout/HeaderSingle';
 
 export interface ProviderRequest {
   current_page: number;
-  data: Array<ProviderItens>[];
+  data: Array<ProviderItems>[];
 }
 
-export interface ProviderItens {
+export interface ProviderItems {
   id: number;
   description: string;
   user_send: {
@@ -128,14 +128,14 @@ const Notifications = () => {
                     </ItemList>
                     <Description>{provider.description}</Description>
                     <InfoNotification>
-                      <TextRigthFooter>
+                      <TextRightFooter>
                         Enviado por: <Bold>{provider.user_send.name}</Bold>
-                      </TextRigthFooter>
-                      <TextRigthFooter>
+                      </TextRightFooter>
+                      <TextRightFooter>
                         {`${moment(provider.created_at).format(
                           'DD/MM',
                         )} às ${moment(provider.created_at).format('H:s')}`}
-                      </TextRigthFooter>
+                      </TextRightFooter>
                     </InfoNotification>
                     <ButtomAlow onPress={() => handleRefuse(provider)}>
                       <ButtomAlowText>Aceitar</ButtomAlowText>

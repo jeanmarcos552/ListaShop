@@ -98,7 +98,7 @@ export const FooterLoop = styled.View`
   align-items: center;
   margin-top: 5px;
 `;
-export const TextRigthFooter = styled.Text`
+export const TextRightFooter = styled.Text`
   font-family: 'Exo-Regular';
   color: #969595dd;
 `;
@@ -120,7 +120,7 @@ export const ViewAction = styled.View`
   flex-direction: row;
 `;
 
-export const ContainerDialogo = styled.View`
+export const ContainerDialog = styled.View`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;

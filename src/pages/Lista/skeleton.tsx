@@ -2,9 +2,8 @@ import React from 'react';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import {useWindowDimensions, View} from 'react-native';
 
-const SkeletonListagem: React.FC = () => {
+const SkeletonListitem: React.FC = () => {
   const windowWidth = useWindowDimensions().width;
-  //   const windowHeight = useWindowDimensions().height;
 
   return (
     <View
@@ -70,4 +69,4 @@ const SkeletonListagem: React.FC = () => {
   );
 };
 
-export default SkeletonListagem;
+export default SkeletonListitem;

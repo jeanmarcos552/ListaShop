@@ -21,7 +21,7 @@ import {
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import api from '../../../services/api';
 import {useAuth} from '../../../hooks/auth';
-import {ProviderItensList} from '../../../types/lista';
+import {ProviderItemsList} from '../../../types/list';
 
 interface PropsComponente {
   route: {
@@ -35,7 +35,7 @@ interface PropsComponente {
   navigation: NavigationScreenProp<any, any>;
 }
 interface Provider {
-  data: Array<ProviderItensList>;
+  data: Array<ProviderItemsList>;
   pivot: {
     qty: number;
     value: string;

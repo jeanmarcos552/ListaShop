@@ -24,7 +24,7 @@ interface ComponentProps {
   modalVisible: boolean;
 }
 
-const FormLista: React.FC<ComponentProps> = ({
+const FormList: React.FC<ComponentProps> = ({
   dispatch,
   modalVisible,
   setModalVisible,
@@ -90,4 +90,4 @@ const FormLista: React.FC<ComponentProps> = ({
   );
 };
 
-export default FormLista;
+export default FormList;

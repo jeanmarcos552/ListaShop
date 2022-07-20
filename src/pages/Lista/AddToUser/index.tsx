@@ -45,11 +45,11 @@ interface ComponentProps {
     };
   };
 }
-const ShareLista: React.FC<ComponentProps> = props => {
+const ShareList: React.FC<ComponentProps> = props => {
   const formRef = useRef<FormHandles>(null);
   const [modalVisible, setModalVisible] = useState(false);
   const {user} = useAuth();
-  const handleShareLista = useCallback(
+  const handleShareList = useCallback(
     async (data: ShareFormData) => {
       try {
         formRef.current?.setErrors({});
@@ -110,7 +110,7 @@ const ShareLista: React.FC<ComponentProps> = props => {
                 <Title>Compartilhar lista?</Title>
               </View>
 
-              <Form onSubmit={handleShareLista} ref={formRef}>
+              <Form onSubmit={handleShareList} ref={formRef}>
                 <Input
                   autoCapitalize="none"
                   keyboardType="email-address"
@@ -142,4 +142,4 @@ const ShareLista: React.FC<ComponentProps> = props => {
   );
 };
 
-export default ShareLista;
+export default ShareList;

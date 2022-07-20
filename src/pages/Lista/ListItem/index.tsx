@@ -22,9 +22,9 @@ import api from '../../../services/api';
 import HeaderSingle from '../../../Layout/HeaderSingle';
 import {
   FiltroItensList,
-  ItemsReques,
-  ProviderItensList,
-} from '../../../types/lista';
+  ItemsRequest,
+  ProviderItemsList,
+} from '../../../types/list';
 import TemplateDefault from '../../../Layout/Default';
 import {showList} from '../../../services/lista';
 
@@ -35,7 +35,7 @@ interface PropsComponente {
 
 const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
   let {id, title} = route.params;
-  let [items, SetItems] = useState<ItemsReques[]>();
+  let [items, SetItems] = useState<ItemsRequest[]>();
   const [elRefs, setElRefs] = useState<Array<any>>([]);
   let [filter, setFilter] = useState<FiltroItensList>();
   let [somaItens, setSomaItens] = useState('0');
@@ -78,7 +78,7 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
   );
 
   const handleCheckItem = useCallback(
-    async (provider: ItemsReques, index: number) => {
+    async (provider: ItemsRequest, index: number) => {
       let {pivot} = provider;
 
       !pivot.status ? elRefs[index].current.focus() : '';
@@ -96,7 +96,7 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
     [elRefs, getDados],
   );
 
-  const updateItem = (provider: ProviderItensList) => {
+  const updateItem = (provider: ProviderItemsList) => {
     const newPivot = {...provider.pivot};
     newPivot.value = newPivot.value.replace(',', '.');
     api
@@ -171,7 +171,7 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
     }
 
     const total = pivot.itens
-      .map((item: ItemsReques) => item.pivot)
+      .map((item: ItemsRequest) => item.pivot)
       .filter(item => item.status === true)
       .map((prev: any) => +prev.qty * +prev.value)
       .reduce((prev, current) => prev + current, 0)
@@ -180,7 +180,7 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
     setSomaItens(total);
   }
 
-  const leftSwipe = (provider: ItemsReques) => {
+  const leftSwipe = (provider: ItemsRequest) => {
     let {pivot} = provider;
     return (
       <TextValues

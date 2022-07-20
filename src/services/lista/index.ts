@@ -1,5 +1,5 @@
 import {AxiosResponse} from 'axios';
-import {PayloadList, PropLista, StoreList, UpdateList} from '../../types/lista';
+import {PayloadList, PropLista, StoreList, UpdateList} from '../../types/list';
 import api, {displayError, mountErro} from '../api';
 
 export async function indexList(): Promise<AxiosResponse<PayloadList>> {

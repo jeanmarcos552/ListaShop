@@ -1,4 +1,4 @@
-import {PayloadList} from '../../../types/lista';
+import {PayloadList} from '../../../types/list';
 
 type PropReducer = {
   data: PayloadList[];

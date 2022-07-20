@@ -2,7 +2,7 @@ import {FlatList} from 'react-native';
 import styled from 'styled-components/native';
 import Icon from 'react-native-vector-icons/Feather';
 import {MD2Colors as Colors} from 'react-native-paper';
-import {ProviderItens} from '.';
+import {ProviderItems} from '.';
 import {RectButton} from 'react-native-gesture-handler';
 
 export const Container = styled.SafeAreaView`
@@ -28,7 +28,7 @@ export const ContainerList = styled.View`
   border-radius: 8px;
 `;
 
-export const List = styled(FlatList as new () => FlatList<ProviderItens>)`
+export const List = styled(FlatList as new () => FlatList<ProviderItems>)`
   overflow: hidden;
   height: 100px;
 `;
@@ -92,7 +92,7 @@ export const InfoNotification = styled.View`
   padding-bottom: 5px;
   margin-bottom: 15px;
 `;
-export const TextRigthFooter = styled.Text`
+export const TextRightFooter = styled.Text`
   font-family: 'Exo-Regular';
   color: #969595dd;
 `;

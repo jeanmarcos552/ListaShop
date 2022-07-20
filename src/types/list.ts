@@ -26,7 +26,7 @@ export interface PropLista {
       };
     },
   ];
-  itens?: ItemsReques[];
+  itens?: ItemsRequest[];
   pivot?: {
     user_id: number;
     lista_id: number;
@@ -46,13 +46,13 @@ export interface UpdateList extends StoreList {
 
 export interface ProviderRequest {
   current_page: number;
-  data: Array<ProviderItens>[];
+  data: Array<ProviderItems>[];
 }
 
-export interface ProviderItens {
+export interface ProviderItems {
   id: number;
   name: string;
-  itens: Array<ItemsReques>;
+  itens: Array<ItemsRequest>;
   total: number;
   info: {
     itens: number;
@@ -60,7 +60,7 @@ export interface ProviderItens {
   };
 }
 
-export interface ItemsReques {
+export interface ItemsRequest {
   id: number;
   name: string;
   itens: Array<any>;
@@ -74,7 +74,7 @@ export interface ItemsReques {
   total: number;
 }
 
-export interface ProviderItensList {
+export interface ProviderItemsList {
   pivot: {
     qty: number;
     value: string;

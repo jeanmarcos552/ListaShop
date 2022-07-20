@@ -17,14 +17,14 @@ import Empty from '../../Components/Empty';
 import HeaderLayout from '../../Layout/Header';
 import TemplateDefault from '../../Layout/Default';
 
-import SkeletonListagem from './skeleton';
-import FormLista from './Add';
-import ShareLista from './AddToUser';
+import SkeletonListitem from './skeleton';
+import FormList from './Add';
+import ShareList from './AddToUser';
 
 import {withTheme} from 'styled-components/native';
 import {GlobalStyles} from '../../styles/global';
 
-import {ItemsReques, ProviderItens} from '../../types/lista';
+import {ItemsRequest, ProviderItems} from '../../types/list';
 
 import {
   ContainerList,
@@ -36,13 +36,13 @@ import {
   IconText,
   ProgressBarView,
   FooterLoop,
-  TextRigthFooter,
+  TextRightFooter,
   ViewDeleteItem,
   TextDeleteItem,
   ViewAction,
   ViewHeader,
   TextHeader,
-  ContainerDialogo,
+  ContainerDialog,
 } from './style';
 
 import {fetchData} from '../../store/actions/list/fetchData';
@@ -50,19 +50,19 @@ import {initalList, reducerList} from '../../store/reducers/list';
 import DialogComponent from '../../Components/Dialog';
 import {removeList} from '../../store/actions/list/removeList';
 
-function somaValoresItens(pivot: ProviderItens) {
+function somaValoresItens(pivot: ProviderItems) {
   if (!pivot) {
     return 0;
   }
   return pivot.itens
-    .map((item: ItemsReques) => item.pivot)
+    .map((item: ItemsRequest) => item.pivot)
     .map((prev: any) => +prev.qty * +prev.value)
     .reduce((prev, current) => prev + current, 0)
     .toFixed(2)
     .replace('.', ',');
 }
 
-function calcItensCheckt(provider: ProviderItens) {
+function calcItensCheckt(provider: ProviderItems) {
   let itensChecked = provider?.itens?.filter(
     item => item.pivot.status === true,
   );
@@ -82,14 +82,14 @@ const Lista = ({theme}) => {
     fetchData(dispatch);
   }, []);
 
-  function handleSeeIten(dado: ItemsReques) {
+  function handleSeeItem(dado: ItemsRequest) {
     navigate.navigate('ItensToList', {
       id: dado.id,
       title: dado.name,
     });
   }
 
-  function DisplayIconsByStatus(provider: ProviderItens) {
+  function DisplayIconsByStatus(provider: ProviderItems) {
     return (
       <IconText
         name={calcItensCheckt(provider) === 1 ? 'check-circle' : 'clock'}
@@ -108,29 +108,6 @@ const Lista = ({theme}) => {
     Alert.alert('Atenção', String(resp));
   }, [itemToDelete]);
 
-  function RenderDialogo() {
-    return (
-      <DialogComponent
-        setVisible={setDialogo}
-        visible={dialogo}
-        title="Deletar essa lista?">
-        <ContainerDialogo>
-          <Button
-            mode="outlined"
-            onPress={() => dispatch({type: 'DELETE_LIST', payload: null})}>
-            Não
-          </Button>
-          <Button
-            mode="contained"
-            buttonColor={theme.colors.danger}
-            onPress={handleDelete}>
-            Sim
-          </Button>
-        </ContainerDialogo>
-      </DialogComponent>
-    );
-  }
-
   useEffect(() => {
     setDialogo(!!itemToDelete);
   }, [itemToDelete]);
@@ -145,10 +122,27 @@ const Lista = ({theme}) => {
     <GlobalStyles>
       <HeaderLayout />
       <TemplateDefault
-        loadingComponent={<SkeletonListagem />}
+        loadingComponent={<SkeletonListitem />}
         loading={!data.data}>
         <>
-          <RenderDialogo />
+          <DialogComponent
+            setVisible={setDialogo}
+            visible={dialogo}
+            title="Deletar essa lista?">
+            <ContainerDialog>
+              <Button
+                mode="outlined"
+                onPress={() => dispatch({type: 'DELETE_LIST', payload: null})}>
+                Não
+              </Button>
+              <Button
+                mode="contained"
+                buttonColor={theme.colors.danger}
+                onPress={handleDelete}>
+                Sim
+              </Button>
+            </ContainerDialog>
+          </DialogComponent>
           <ShoppingList
             showsVerticalScrollIndicator={false}
             refreshControl={<RefreshControl refreshing={refreshing} />}
@@ -167,7 +161,7 @@ const Lista = ({theme}) => {
             }
             renderItem={({item: provider}: any) => (
               <ContainerList>
-                <ItemList onPress={() => handleSeeIten(provider)}>
+                <ItemList onPress={() => handleSeeItem(provider)}>
                   <ContainerText>
                     <ItemListText>
                       {provider.name} - {provider.id}{' '}
@@ -184,9 +178,9 @@ const Lista = ({theme}) => {
                   />
                 </ProgressBarView>
                 <FooterLoop>
-                  <TextRigthFooter>
+                  <TextRightFooter>
                     {moment(provider.created_at).format('DD/MM')}
-                  </TextRigthFooter>
+                  </TextRightFooter>
                   <ViewAction>
                     <ViewDeleteItem
                       onPress={() =>
@@ -195,14 +189,14 @@ const Lista = ({theme}) => {
                       <TextDeleteItem name="trash" size={18} />
                     </ViewDeleteItem>
 
-                    <ShareLista key={provider.id} provider={provider} />
+                    <ShareList key={provider.id} provider={provider} />
                   </ViewAction>
                 </FooterLoop>
               </ContainerList>
             )}
             keyExtractor={(provider: any) => provider.id.toString()}
           />
-          <FormLista
+          <FormList
             dispatch={dispatch}
             modalVisible={modalVisible}
             setModalVisible={setModalVisible}
