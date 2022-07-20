@@ -3,6 +3,7 @@ import React, {useCallback, useEffect, useReducer, useState} from 'react';
 import {
   NavigationProp,
   ParamListBase,
+  useFocusEffect,
   useNavigation,
 } from '@react-navigation/native';
 import {Alert, RefreshControl, View} from 'react-native';
@@ -109,6 +110,12 @@ const Lista = ({theme}) => {
   useEffect(() => {
     setDialogo(!!itemToDelete);
   }, [itemToDelete]);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchData(dispatch);
+    }, []),
+  );
 
   return (
     <GlobalStyles>

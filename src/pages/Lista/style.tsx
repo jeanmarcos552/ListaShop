@@ -32,7 +32,7 @@ export const HeaderText = styled.Text`
 
 export const ContainerList = styled.View`
   margin: 5px;
-  background-color: ${({theme}) => theme.colors.colorItem};
+  background-color: ${({theme}) => theme.colors.background};
   padding: 15px;
   border-radius: 8px;
 

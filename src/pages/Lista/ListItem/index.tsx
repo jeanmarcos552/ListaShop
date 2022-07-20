@@ -59,9 +59,9 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
             );
           }
         }
+      } else {
+        SetItems([]);
       }
-
-      SetItems([]);
     } catch (erro) {
       console.log(erro.message);
     }
@@ -77,24 +77,31 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
     }, [getDados]),
   );
 
-  const handleCheckItem = async (provider: ItemsReques, index: number) => {
-    let {pivot} = provider;
+  const handleCheckItem = useCallback(
+    async (provider: ItemsReques, index: number) => {
+      let {pivot} = provider;
 
-    !pivot.status ? elRefs[index].current.focus() : '';
+      !pivot.status ? elRefs[index].current.focus() : '';
 
-    pivot.status = !pivot.status;
+      pivot.status = !pivot.status;
 
-    api.post('/updateItem', {...pivot}).then(_ => {
-      if (filter?.itens === undefined || !pivot.status) {
-        getDados();
-      }
-    });
-  };
+      api
+        .put(`/updateItem/${pivot.lista_id}/${pivot.itens_id}`, {...pivot})
+        .then(_ => {
+          if (!pivot.status) {
+            getDados();
+          }
+        });
+    },
+    [elRefs, getDados],
+  );
 
   const updateItem = (provider: ProviderItensList) => {
     const newPivot = {...provider.pivot};
     newPivot.value = newPivot.value.replace(',', '.');
-    api.post('/updateItem', newPivot).then(_ => getDados());
+    api
+      .put(`/updateItem/${newPivot.lista_id}/${newPivot.itens_id}`, newPivot)
+      .then(_ => getDados());
   };
 
   const renderHeader = () => {
@@ -139,16 +146,24 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
     );
   };
 
-  function handleChange(value: string, pivot: any, key = '') {
-    pivot[key] = value;
-
-    items?.map(provider => {
-      if (provider.id === pivot) {
-        return (provider.pivot = pivot);
+  const handleChange = useCallback(
+    (value: string, pivot: any, key = '') => {
+      if (!items?.length) {
+        return;
       }
-    });
-    SetItems(items);
-  }
+
+      const copyItem = [...items];
+      pivot[key] = value;
+
+      copyItem?.map(provider => {
+        if (provider.id === pivot) {
+          return (provider.pivot = pivot);
+        }
+      });
+      SetItems(copyItem);
+    },
+    [items],
+  );
 
   function somaValoresItens(pivot: any) {
     if (!pivot) {

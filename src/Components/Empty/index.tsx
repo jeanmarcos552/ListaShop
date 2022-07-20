@@ -2,6 +2,7 @@ import React from 'react';
 import {Button} from 'react-native-paper';
 import {CenterView, Container, Icon, Text} from './style';
 import {withTheme} from 'styled-components/native';
+import {ImageBackground} from 'react-native';
 
 interface PropEmpty {
   theme: any;
@@ -12,10 +13,15 @@ function Empty({theme, text = 'Ainda não existe nada por aqui!'}: PropEmpty) {
     <Container>
       <Text>{text}</Text>
       <CenterView>
-        <Icon
+        {/* <Icon
           name="checkcircleo"
           size={100}
           color={theme.colors.textSecondary}
+        /> */}
+        <ImageBackground
+          source={require('../../assets/img/empty.png')}
+          style={{height: 260, width: '100%'}}
+          resizeMode="contain"
         />
       </CenterView>
       <Button

@@ -36,6 +36,7 @@ const FormLista: React.FC<ComponentProps> = ({dispatch}) => {
       inputRef?.current?.focus();
     }
   }, [modalVisible]);
+
   return (
     <>
       <Modal

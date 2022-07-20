@@ -6,7 +6,7 @@ export default {
     tertiary: '#E84855',
     textSecondary: '#80a4ec',
 
-    background: '#eeeeee',
+    background: '#fff',
     text: '#312F2F',
     warning: '#f3c677',
     success: '#01ac73',
