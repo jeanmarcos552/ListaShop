@@ -1,11 +1,11 @@
-import React, {useEffect, useReducer, useState} from 'react';
+import React, {useCallback, useEffect, useReducer, useState} from 'react';
 
 import {
   NavigationProp,
   ParamListBase,
   useNavigation,
 } from '@react-navigation/native';
-import {RefreshControl, View} from 'react-native';
+import {Alert, RefreshControl, View} from 'react-native';
 
 import moment from 'moment';
 
@@ -47,9 +47,12 @@ import {
 import {fetchData} from '../../store/actions/list/fetchData';
 import {initalList, reducerList} from '../../store/reducers/list';
 import DialogComponent from '../../Components/Dialog';
-import {deleteList} from '../../store/actions/list/deleteList';
+import {removeList} from '../../store/actions/list/removeList';
 
 function somaValoresItens(pivot: ProviderItens) {
+  if (!pivot) {
+    return 0;
+  }
   return pivot.itens
     .map((item: ItemsReques) => item.pivot)
     .map((prev: any) => +prev.qty * +prev.value)
@@ -65,7 +68,7 @@ function calcItensCheckt(provider: ProviderItens) {
   return itensChecked.length / provider?.itens?.length || 0;
 }
 
-function Lista({theme}) {
+const Lista = ({theme}) => {
   const navigate = useNavigation<NavigationProp<ParamListBase>>();
   const [{data, refreshing, itemToDelete}, dispatch] = useReducer(
     reducerList,
@@ -74,7 +77,7 @@ function Lista({theme}) {
   const [dialogo, setDialogo] = useState(false);
 
   useEffect(() => {
-    return fetchData(dispatch);
+    fetchData(dispatch);
   }, []);
 
   function handleSeeIten(dado: ItemsReques) {
@@ -98,6 +101,11 @@ function Lista({theme}) {
     );
   }
 
+  const handleDelete = useCallback(async () => {
+    const resp = await removeList(dispatch, itemToDelete);
+    Alert.alert('Atenção', String(resp));
+  }, [itemToDelete]);
+
   useEffect(() => {
     setDialogo(!!itemToDelete);
   }, [itemToDelete]);
@@ -105,7 +113,9 @@ function Lista({theme}) {
   return (
     <GlobalStyles>
       <HeaderLayout />
-      <TemplateDefault loadingComponent={<SkeletonListagem />} loading={!data}>
+      <TemplateDefault
+        loadingComponent={<SkeletonListagem />}
+        loading={!data.data}>
         <>
           <DialogComponent
             setVisible={setDialogo}
@@ -120,7 +130,7 @@ function Lista({theme}) {
               <Button
                 mode="contained"
                 buttonColor={theme.colors.danger}
-                onPress={() => deleteList(dispatch, itemToDelete)}>
+                onPress={handleDelete}>
                 Sim
               </Button>
             </ContainerDialogo>
@@ -181,6 +191,6 @@ function Lista({theme}) {
       </TemplateDefault>
     </GlobalStyles>
   );
-}
+};
 
 export default withTheme(Lista);

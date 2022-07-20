@@ -105,3 +105,7 @@ export const PressableButtonText = styled.Text`
 export const IconsStyle = styled(Icons)`
   color: ${({theme}) => (colorTheme === 'dark' ? theme.colors.text : '#fff')};
 `;
+
+export const IconCheck = styled(Icons)`
+  color: #01ac73;
+`;

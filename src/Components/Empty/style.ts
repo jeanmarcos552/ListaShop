@@ -4,7 +4,7 @@ import Icons from 'react-native-vector-icons/AntDesign';
 export const Container = styled.View`
   justify-items: center;
   justify-content: center;
-  height: 100%;
+  height: 75%;
   padding: 15px;
 `;
 
@@ -12,7 +12,7 @@ export const CenterView = styled.View`
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: 150px;
+  min-height: 250px;
 `;
 export const Icon = styled(Icons)``;
 

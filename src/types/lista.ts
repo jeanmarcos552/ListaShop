@@ -4,34 +4,32 @@ export interface PayloadList extends ApiResponse {
   data: PropLista[];
 }
 
-export interface PropLista extends ApiResponse {
-  data: {
-    id: number;
-    name: string;
-    ativo: true;
-    created_at: string;
-    updated_at: string;
-    created_by: number;
-    category_id: number;
-    user?: [
-      {
-        id: number;
-        name: string;
-        email: string;
-        email_verified_at: null;
-        created_at: string;
-        updated_at: string;
-        pivot: {
-          lista_id: number;
-          user_id: number;
-        };
-      },
-    ];
-    itens?: [];
-    pivot?: {
-      user_id: number;
-      lista_id: number;
-    };
+export interface PropLista {
+  id: number;
+  name: string;
+  ativo: true;
+  created_at: string;
+  updated_at: string;
+  created_by: number;
+  category_id: number;
+  user?: [
+    {
+      id: number;
+      name: string;
+      email: string;
+      email_verified_at: null;
+      created_at: string;
+      updated_at: string;
+      pivot: {
+        lista_id: number;
+        user_id: number;
+      };
+    },
+  ];
+  itens?: ItemsReques[];
+  pivot?: {
+    user_id: number;
+    lista_id: number;
   };
 }
 
@@ -74,4 +72,19 @@ export interface ItemsReques {
     itens_id: number;
   };
   total: number;
+}
+
+export interface ProviderItensList {
+  pivot: {
+    qty: number;
+    value: string;
+    status: boolean;
+    lista_id: number;
+    itens_id: number;
+  };
+}
+
+export interface FiltroItensList {
+  status?: boolean;
+  itens?: boolean;
 }

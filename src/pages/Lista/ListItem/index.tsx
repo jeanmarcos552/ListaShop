@@ -1,4 +1,3 @@
-/* eslint-disable react-native/no-inline-styles */
 import React, {createRef, useCallback, useEffect, useState} from 'react';
 import {KeyboardAvoidingView, Platform, Text, View} from 'react-native';
 
@@ -16,70 +15,60 @@ import {
   GridItens,
   TextValues,
 } from './style';
-import {ItemsReques, ProviderItens} from '..';
 import {Swipeable, TouchableOpacity} from 'react-native-gesture-handler';
 import {useFocusEffect} from '@react-navigation/native';
 import SkeletonListItem from './skeleton';
 import api from '../../../services/api';
 import HeaderSingle from '../../../Layout/HeaderSingle';
+import {
+  FiltroItensList,
+  ItemsReques,
+  ProviderItensList,
+} from '../../../types/lista';
+import TemplateDefault from '../../../Layout/Default';
+import {showList} from '../../../services/lista';
 
 interface PropsComponente {
   route: any;
   navigation: any;
 }
 
-export interface ProviderItensLista {
-  pivot: {
-    qty: number;
-    value: string;
-    status: boolean;
-    lista_id: number;
-    itens_id: number;
-  };
-}
-
-interface Filtro {
-  status?: boolean;
-  itens?: boolean;
-}
 const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
   let {id, title} = route.params;
-  let [items, SetItems] = useState<ProviderItens>({} as ProviderItens);
-  let [choiceSelected, SetChoiceSelected] = useState<ProviderItens>(
-    {} as ProviderItens,
-  );
+  let [items, SetItems] = useState<ItemsReques[]>();
   const [elRefs, setElRefs] = useState<Array<any>>([]);
-  const [loading, setLoading] = useState(false);
-  let [filter, setFilter] = useState<Filtro>();
+  let [filter, setFilter] = useState<FiltroItensList>();
   let [somaItens, setSomaItens] = useState('0');
-  // let [totalItens, setTotalItens] = useState('0');
-  const getDados = useCallback(() => {
-    api.get(`/lista/${id}`).then(res => {
-      console.log(res);
-      if (res.data) {
-        somaValoresItens(res.data);
-      }
-    });
-    api.get<ProviderItens>(`/lista/${id}`, {params: filter}).then(res => {
-      if (res.data) {
-        let itens = res.data;
-        if (itens.itens) {
-          SetItems(itens);
-          SetChoiceSelected(itens);
-          setLoading(false);
 
-          setElRefs(el =>
-            Array(itens.itens.length)
-              .fill(itens.itens.length)
-              .map((_, i) => el[i] || createRef()),
-          );
+  const getDados = useCallback(async () => {
+    try {
+      const {data, status} = await showList(id);
+
+      if (status === 200) {
+        somaValoresItens(data);
+
+        if (data.itens) {
+          const {itens} = data;
+          if (itens) {
+            SetItems(itens);
+
+            setElRefs(el =>
+              Array(itens.length)
+                .fill(itens.length)
+                .map((_, i) => el[i] || createRef()),
+            );
+          }
         }
       }
-    });
-  }, [id, filter]);
+
+      SetItems([]);
+    } catch (erro) {
+      console.log(erro.message);
+    }
+  }, [id]);
 
   useEffect(() => {
-    // getDados();
+    getDados();
   }, [getDados]);
 
   useFocusEffect(
@@ -102,28 +91,17 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
     });
   };
 
-  const updateItem = (provider: ProviderItensLista) => {
+  const updateItem = (provider: ProviderItensList) => {
     const newPivot = {...provider.pivot};
     newPivot.value = newPivot.value.replace(',', '.');
     api.post('/updateItem', newPivot).then(_ => getDados());
   };
 
-  function calcItensChecked(provider: ProviderItens) {
-    let itensChecked = provider.itens?.filter(
-      item => item.pivot.status === true,
-    );
-    return `${itensChecked.length} de ${choiceSelected.itens.length}`;
-  }
-
   const renderHeader = () => {
     return (
       <TitleContainer>
         <Title>Itens concluídos: </Title>
-        {items.itens ? (
-          <DisplayItensChecked>{calcItensChecked(items)}</DisplayItensChecked>
-        ) : (
-          <DisplayItensChecked>0</DisplayItensChecked>
-        )}
+        <DisplayItensChecked>0</DisplayItensChecked>
       </TitleContainer>
     );
   };
@@ -163,16 +141,20 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
 
   function handleChange(value: string, pivot: any, key = '') {
     pivot[key] = value;
-    let newPivot = {...items};
-    newPivot.itens.map(provider => {
+
+    items?.map(provider => {
       if (provider.id === pivot) {
         return (provider.pivot = pivot);
       }
     });
-    SetItems(newPivot);
+    SetItems(items);
   }
 
-  function somaValoresItens(pivot: ProviderItens) {
+  function somaValoresItens(pivot: any) {
+    if (!pivot) {
+      return 0;
+    }
+
     const total = pivot.itens
       .map((item: ItemsReques) => item.pivot)
       .filter(item => item.status === true)
@@ -201,10 +183,7 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
   return (
     <>
       <HeaderSingle title={title} navigation={navigation} />
-
-      {loading ? (
-        <SkeletonListItem />
-      ) : (
+      <TemplateDefault loadingComponent={<SkeletonListItem />} loading={false}>
         <>
           <KeyboardAvoidingView
             behavior={Platform.OS === 'android' ? 'height' : 'padding'}
@@ -212,7 +191,7 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
             style={{flex: 1}}>
             <Container>
               <ListItens
-                data={filter?.itens ? choiceSelected.itens : items.itens}
+                data={items || []}
                 keyExtractor={(provider: any) => provider.id.toString()}
                 style={{backgroundColor: '#fff'}}
                 renderItem={({item: provider, index}: any) => {
@@ -260,7 +239,7 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
             </Container>
           </KeyboardAvoidingView>
         </>
-      )}
+      </TemplateDefault>
     </>
   );
 };

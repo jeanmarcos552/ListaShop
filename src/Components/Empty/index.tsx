@@ -14,7 +14,7 @@ function Empty({theme, text = 'Ainda não existe nada por aqui!'}: PropEmpty) {
       <CenterView>
         <Icon
           name="checkcircleo"
-          size={30}
+          size={100}
           color={theme.colors.textSecondary}
         />
       </CenterView>

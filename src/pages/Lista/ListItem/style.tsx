@@ -82,9 +82,9 @@ export const TotalFooter = styled.Text`
   align-items: flex-start;
 `;
 
-export const ListItens = styled(FlatList)`
+export const ListItens = styled.FlatList`
   padding: 16px 0px;
-`;
+` as unknown as FlatList;
 
 export const GridItens = styled.View`
   flex-direction: row;

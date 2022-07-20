@@ -14,9 +14,9 @@ export async function indexList(): Promise<AxiosResponse<PayloadList>> {
   }
 }
 
-export async function showList(id: number): Promise<PropLista> {
+export async function showList(id: number): Promise<AxiosResponse<PropLista>> {
   try {
-    const response = await api.delete(`/lista/${id}`).catch(erro => {
+    const response = await api.get(`/lista/${id}`).catch(erro => {
       throw Error(mountErro(erro));
     });
 
