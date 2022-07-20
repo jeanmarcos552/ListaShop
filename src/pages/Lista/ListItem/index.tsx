@@ -55,7 +55,6 @@ function checkItemsSelected(items: ProviderItemsList[]): number {
   }
 
   const totalSelected = items?.filter(item => item.pivot.status);
-  console.log(totalSelected.length);
   return totalSelected.length;
 }
 
@@ -90,7 +89,7 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
         SetItems([]);
       }
     } catch (erro) {
-      console.log(erro.message);
+      console.error(erro.message);
     }
   }, [id]);
 
@@ -123,7 +122,7 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
           setTotalSelected(checkItemsSelected(copyItems));
         }
       } catch (erro) {
-        console.log(erro);
+        console.error(erro);
       }
     },
     [elRefs, items],
@@ -211,7 +210,7 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
   );
 
   const leftSwipe = (provider: ItemsRequest) => {
-    let {pivot} = provider;
+    const {pivot} = provider;
     return (
       <TextValues
         key={pivot.lista_id.toString()}
