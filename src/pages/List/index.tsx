@@ -6,7 +6,7 @@ import {
   useFocusEffect,
   useNavigation,
 } from '@react-navigation/native';
-import {Alert, RefreshControl, View} from 'react-native';
+import {Alert, Animated, RefreshControl, View} from 'react-native';
 
 import moment from 'moment';
 
@@ -76,6 +76,7 @@ const List = ({theme}) => {
     initalList,
   );
   const [dialogo, setDialogo] = useState(false);
+  const [bottom, setBottom] = useState(new Animated.Value(-150));
 
   useEffect(() => {
     fetchData(dispatch);
@@ -114,6 +115,7 @@ const List = ({theme}) => {
   useFocusEffect(
     useCallback(() => {
       fetchData(dispatch);
+      setBottom(new Animated.Value(-150));
     }, []),
   );
 
@@ -198,6 +200,8 @@ const List = ({theme}) => {
             dispatch={dispatch}
             modalVisible={modalVisible}
             setModalVisible={setModalVisible}
+            bottom={bottom}
+            setBottom={setBottom}
           />
         </>
       </TemplateDefault>

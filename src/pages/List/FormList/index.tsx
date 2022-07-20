@@ -1,7 +1,12 @@
 import {Form} from '@unform/mobile';
 import {FormHandles} from '@unform/core';
 import React, {useEffect, useRef} from 'react';
-import {KeyboardAvoidingView, Platform, ScrollView} from 'react-native';
+import {
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  Animated,
+} from 'react-native';
 
 import Input from '../../../Components/Input';
 import {
@@ -22,12 +27,16 @@ interface ComponentProps {
   dispatch: any;
   setModalVisible: Function;
   modalVisible: boolean;
+  setBottom: Function;
+  bottom: any;
 }
 
 const FormList: React.FC<ComponentProps> = ({
   dispatch,
   modalVisible,
   setModalVisible,
+  setBottom,
+  bottom,
 }) => {
   const formRef = useRef<FormHandles>(null);
   const inputRef = useRef<any>(null);
@@ -39,8 +48,19 @@ const FormList: React.FC<ComponentProps> = ({
   useEffect(() => {
     if (inputRef && modalVisible) {
       inputRef?.current?.focus();
+      setBottom(new Animated.Value(0));
+    } else {
+      setBottom(new Animated.Value(-150));
     }
-  }, [modalVisible]);
+  }, [modalVisible, setBottom]);
+
+  useEffect(() => {
+    Animated.timing(bottom, {
+      toValue: 0,
+      duration: 600,
+      useNativeDriver: false,
+    }).start();
+  }, [bottom]);
 
   return (
     <>
@@ -83,9 +103,14 @@ const FormList: React.FC<ComponentProps> = ({
           </ScrollView>
         </KeyboardAvoidingView>
       </Modal>
-      <FabButtom onPress={() => setModalVisible(true)}>
-        <IconsStyle name="add" size={25} />
-      </FabButtom>
+      <Animated.View
+        style={{
+          bottom: bottom,
+        }}>
+        <FabButtom onPress={() => setModalVisible(true)}>
+          <IconsStyle name="add" size={25} />
+        </FabButtom>
+      </Animated.View>
     </>
   );
 };
