@@ -25,9 +25,9 @@ import {
   IconsShare,
 } from './style';
 import {useAuth} from '../../../hooks/auth';
-import api from '../../../services/api';
 import getValidationErrors from '../../../../Utils/getValidation';
 import Input from '../../../Components/Input';
+import {storeNotification} from '../../../services/notification';
 
 interface ShareFormData {
   user: string;
@@ -52,6 +52,7 @@ const ShareList: React.FC<ComponentProps> = props => {
   const handleShareList = useCallback(
     async (data: ShareFormData) => {
       try {
+        console.log(data);
         formRef.current?.setErrors({});
 
         const schema = Yup.object().shape({
@@ -64,25 +65,29 @@ const ShareList: React.FC<ComponentProps> = props => {
           abortEarly: false,
         });
 
-        api
-          .post('/notifications', {
+        const {status} = await storeNotification({
+          body: {
             lista: props.provider.id,
             user_receiver: data.user,
             user_send: user.id,
             description: 'Convite: Nova lista',
-          })
-          .then(res => {
-            Alert.alert('Successo!', res.data.message);
-            setModalVisible(false);
-          })
-          .catch(err => Alert.alert('Atenção!', err.response.data.message));
+          },
+        });
+        console.log(status);
+        if (status !== 201) {
+          throw new Error(String(data));
+        }
+
+        Alert.alert('Successo!', 'Lista foi enviada!');
+        setModalVisible(false);
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
           const erros = getValidationErrors(err);
           formRef.current?.setErrors(erros);
           return;
         }
-
+        console.error(err.message);
+        setModalVisible(false);
         Alert.alert('Erro na validação', 'Erro ao compartilhar a lista!');
       }
     },

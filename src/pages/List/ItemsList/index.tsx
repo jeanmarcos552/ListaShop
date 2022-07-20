@@ -57,6 +57,13 @@ function checkItemsSelected(items: ProviderItemsList[]): number {
   const totalSelected = items?.filter(item => item.pivot.status);
   return totalSelected.length;
 }
+function createRefsInput(setElRefs: Function, size: number) {
+  setElRefs(el =>
+    Array(size)
+      .fill(size)
+      .map((_, i) => el[i] || createRef()),
+  );
+}
 
 const ItemsList: React.FC<PropsComponente> = ({route, navigation}) => {
   const {id, title} = route.params;
@@ -77,16 +84,9 @@ const ItemsList: React.FC<PropsComponente> = ({route, navigation}) => {
           const {itens} = data;
           if (itens) {
             SetItems(itens);
-
-            setElRefs(el =>
-              Array(itens.length)
-                .fill(itens.length)
-                .map((_, i) => el[i] || createRef()),
-            );
+            createRefsInput(setElRefs, itens.length);
           }
         }
-      } else {
-        SetItems([]);
       }
     } catch (erro) {
       console.error(erro.message);
@@ -180,7 +180,7 @@ const ItemsList: React.FC<PropsComponente> = ({route, navigation}) => {
         </TotalFooter>
         <FabButtom
           onPress={() =>
-            navigation.navigate('AddToList', {
+            navigation.navigate('AddItemsToList', {
               item: {id, title},
             })
           }>

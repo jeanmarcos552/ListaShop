@@ -90,10 +90,6 @@ export const GridItens = styled.View`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  /* border-style: solid;
-  border-bottom-width: 1px;
-  border-color: #ebebeb;
-  padding: 10px 0; */
 `;
 
 export const TextValues = styled.TextInput`

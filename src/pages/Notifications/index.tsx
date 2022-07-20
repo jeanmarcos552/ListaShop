@@ -24,13 +24,14 @@ import {
   useFocusEffect,
   useNavigation,
 } from '@react-navigation/native';
-import {RefreshControl, View} from 'react-native';
+import {View} from 'react-native';
 import {Swipeable} from 'react-native-gesture-handler';
-import api from '../../services/api';
 import SkeletonListagem from './skeleton';
 
 import Icons from 'react-native-vector-icons/Ionicons';
 import HeaderSingle from '../../Layout/HeaderSingle';
+import {indexNotification} from '../../services/notification';
+import {INotification} from '../../types/notifications';
 
 export interface ProviderRequest {
   current_page: number;
@@ -65,29 +66,20 @@ export interface User {
 
 const Notifications = () => {
   const navigate = useNavigation<NavigationProp<ParamListBase>>();
-  const [notifications, setNotifications] = useState<ProviderRequest>(
-    {} as ProviderRequest,
-  );
-  const [refreshing, setRefreshing] = useState(false);
+  const [notifications, setNotifications] = useState<INotification[]>();
   const [loading, setLoading] = useState(true);
 
-  const getDados = useCallback(() => {
-    api.get<ProviderRequest>('/notifications').then(res => {
-      if (res.data) {
-        setNotifications(res.data);
-        setLoading(false);
+  const getDados = useCallback(async () => {
+    try {
+      const {status, data} = await indexNotification();
+      if (status !== 200) {
+        throw new Error(String(data));
       }
-    });
-  }, []);
-
-  const onRefresh = useCallback(() => {
-    setRefreshing(true);
-    setLoading(true);
-    api.get('/notifications').then(res => {
-      setNotifications(res.data);
-      setRefreshing(false);
+      setNotifications(data);
       setLoading(false);
-    });
+    } catch (erro) {
+      console.log(erro.message);
+    }
   }, []);
 
   useEffect(() => {
@@ -100,7 +92,11 @@ const Notifications = () => {
     }, [getDados]),
   );
 
-  const handleRefuse = useCallback((data: any) => {
+  // const handleRefuse = useCallback((data: any) => {
+  //   console.log(data);
+  // }, []);
+
+  const handleAccept = useCallback((data: any) => {
     console.log(data);
   }, []);
 
@@ -111,13 +107,13 @@ const Notifications = () => {
       <Layout>
         {loading ? (
           [0, 1, 2, 3].map(item => <SkeletonListagem key={item} />)
-        ) : notifications.data && notifications.data.length > 0 ? (
+        ) : notifications && notifications.length > 0 ? (
           <Container>
             <List
-              refreshControl={
-                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-              }
-              data={notifications.data}
+              // refreshControl={
+              //   <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+              // }
+              data={notifications}
               renderItem={({item: provider}: any) => (
                 <Swipeable>
                   <ContainerList>
@@ -137,7 +133,7 @@ const Notifications = () => {
                         )} às ${moment(provider.created_at).format('H:s')}`}
                       </TextRightFooter>
                     </InfoNotification>
-                    <ButtomAlow onPress={() => handleRefuse(provider)}>
+                    <ButtomAlow onPress={() => handleAccept(provider)}>
                       <ButtomAlowText>Aceitar</ButtomAlowText>
                     </ButtomAlow>
                   </ContainerList>

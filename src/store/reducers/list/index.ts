@@ -27,7 +27,7 @@ function filterData(state, action) {
 
 function appendData(state, action) {
   const copyData = {...state.data};
-  copyData.data = [...copyData.data, action.payload];
+  copyData.data = [action.payload, ...copyData.data];
   return copyData;
 }
 

@@ -1,5 +1,4 @@
 import {Platform, Pressable} from 'react-native';
-import {RectButton} from 'react-native-gesture-handler';
 import {getBottomSpace} from 'react-native-iphone-x-helper';
 import styled, {css} from 'styled-components/native';
 import Icons from 'react-native-vector-icons/Feather';
@@ -59,7 +58,7 @@ export const Modal = styled.Modal`
   align-items: center;
 `;
 
-export const ButtonCreate = styled(RectButton)`
+export const ButtonCreate = styled(Pressable)`
   border-width: 2px;
   border-style: solid;
   border-color: #ff9000;

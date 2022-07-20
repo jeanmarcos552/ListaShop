@@ -2,7 +2,6 @@ import {FlatList} from 'react-native';
 import styled from 'styled-components/native';
 import Icon from 'react-native-vector-icons/Feather';
 import {MD2Colors as Colors} from 'react-native-paper';
-import {ProviderItems} from '.';
 import {RectButton} from 'react-native-gesture-handler';
 
 export const Container = styled.SafeAreaView`
@@ -28,7 +27,7 @@ export const ContainerList = styled.View`
   border-radius: 8px;
 `;
 
-export const List = styled(FlatList as new () => FlatList<ProviderItems>)`
+export const List = styled(FlatList)`
   overflow: hidden;
   height: 100px;
 `;
