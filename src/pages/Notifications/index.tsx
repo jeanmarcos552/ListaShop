@@ -32,6 +32,7 @@ import Icons from 'react-native-vector-icons/Ionicons';
 import HeaderSingle from '../../Layout/HeaderSingle';
 import {indexNotification} from '../../services/notification';
 import {INotification} from '../../types/notifications';
+import {storeUserList} from '../../services/list/list-user';
 
 export interface ProviderRequest {
   current_page: number;
@@ -75,7 +76,7 @@ const Notifications = () => {
       if (status !== 200) {
         throw new Error(String(data));
       }
-      setNotifications(data);
+      setNotifications(data.data);
       setLoading(false);
     } catch (erro) {
       console.log(erro.message);
@@ -96,8 +97,15 @@ const Notifications = () => {
   //   console.log(data);
   // }, []);
 
-  const handleAccept = useCallback((data: any) => {
-    console.log(data);
+  const handleAccept = useCallback(async (data: ProviderItems) => {
+    const res = await storeUserList({
+      body: {
+        lista: data.lista.id,
+        user: data.user_receiver.email,
+        notification_id: data.id,
+      },
+    });
+    console.log(res);
   }, []);
 
   return (

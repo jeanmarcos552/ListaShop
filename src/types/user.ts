@@ -1,6 +1,7 @@
 export type StoreUserToList = {
   body: {
     lista: number;
-    user: number;
+    user: string;
+    notification_id: number;
   };
 };

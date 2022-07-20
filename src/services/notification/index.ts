@@ -9,7 +9,9 @@ import api, {displayError, mountErro} from '../api';
 /**
  * @returns Promise
  */
-export async function indexNotification(): Promise<PayloadNotification> {
+export async function indexNotification(): Promise<
+  AxiosResponse<PayloadNotification>
+> {
   try {
     const response = await api.get('/notifications').catch(erro => {
       throw Error(mountErro(erro));

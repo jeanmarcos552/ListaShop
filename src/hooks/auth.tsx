@@ -14,6 +14,7 @@ interface AuthState {
   token: string;
   user: {
     id: number;
+    name: string;
   };
 }
 
@@ -25,6 +26,7 @@ interface SignInCredentials {
 interface AuthContextData {
   user: {
     id: number;
+    name: string;
   };
   loading: boolean;
   signIn(credentials: SignInCredentials): Promise<void>;
