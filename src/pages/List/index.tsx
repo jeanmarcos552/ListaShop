@@ -18,11 +18,10 @@ import HeaderLayout from '../../Layout/Header';
 import TemplateDefault from '../../Layout/Default';
 
 import SkeletonListitem from './skeleton';
-import FormList from './Add';
-import ShareList from './AddToUser';
+import FormList from './FormList';
+import ShareList from './AddUserToList';
 
 import {withTheme} from 'styled-components/native';
-import {GlobalStyles} from '../../styles/global';
 
 import {ItemsRequest, ProviderItems} from '../../types/list';
 
@@ -69,7 +68,7 @@ function calcItensCheckt(provider: ProviderItems) {
   return itensChecked.length / provider?.itens?.length || 0;
 }
 
-const Lista = ({theme}) => {
+const List = ({theme}) => {
   const [modalVisible, setModalVisible] = useState(false);
   const navigate = useNavigation<NavigationProp<ParamListBase>>();
   const [{data, refreshing, itemToDelete}, dispatch] = useReducer(
@@ -83,7 +82,7 @@ const Lista = ({theme}) => {
   }, []);
 
   function handleSeeItem(dado: ItemsRequest) {
-    navigate.navigate('ItensToList', {
+    navigate.navigate('ItemsList', {
       id: dado.id,
       title: dado.name,
     });
@@ -119,7 +118,7 @@ const Lista = ({theme}) => {
   );
 
   return (
-    <GlobalStyles>
+    <>
       <HeaderLayout />
       <TemplateDefault
         loadingComponent={<SkeletonListitem />}
@@ -143,6 +142,7 @@ const Lista = ({theme}) => {
               </Button>
             </ContainerDialog>
           </DialogComponent>
+
           <ShoppingList
             showsVerticalScrollIndicator={false}
             refreshControl={<RefreshControl refreshing={refreshing} />}
@@ -163,9 +163,7 @@ const Lista = ({theme}) => {
               <ContainerList>
                 <ItemList onPress={() => handleSeeItem(provider)}>
                   <ContainerText>
-                    <ItemListText>
-                      {provider.name} - {provider.id}{' '}
-                    </ItemListText>
+                    <ItemListText>{provider.name}</ItemListText>
                     <DisplayIconsByStatus {...provider} theme={theme} />
                   </ContainerText>
                   <ValueText>R$ {somaValoresItens(provider)}</ValueText>
@@ -203,8 +201,8 @@ const Lista = ({theme}) => {
           />
         </>
       </TemplateDefault>
-    </GlobalStyles>
+    </>
   );
 };
 
-export default withTheme(Lista);
+export default withTheme(List);

@@ -11,12 +11,13 @@ export const TabBarStyle = styled.View`
   justify-content: space-between;
   padding: 15px 20px;
   background-color: ${({theme}: any) => theme.colors.primary};
-  /* border-width: 1px;
-  border-style: solid;
-  border-color: ${({theme}: any) => theme.colors.border}; */
 `;
 
 export const IconsStyle = styled<any>(Icons)`
   color: ${({focus, theme}) =>
-    focus ? theme.colors.colorItem : theme.colors.background};
+    focus ? theme.colors.primary : theme.colors.background};
+  ${({focus}) => (focus ? 'background-color: white;' : null)};
+  border-radius: 30px;
+  padding: 5px;
+  overflow: hidden;
 `;

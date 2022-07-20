@@ -1,6 +1,7 @@
 import React from 'react';
 import {View} from 'react-native';
 import {Container, SvgBackdrop} from './style';
+import {GlobalStyles} from '../../styles/global';
 
 interface PropsDefault {
   loading: boolean;
@@ -17,7 +18,7 @@ const TemplateDefault: React.FC<PropsDefault> = ({
   loadingComponent,
 }) => {
   return (
-    <>
+    <GlobalStyles>
       {header && header}
       <Container>
         {loading && loadingComponent ? (
@@ -29,7 +30,7 @@ const TemplateDefault: React.FC<PropsDefault> = ({
           </View>
         )}
       </Container>
-    </>
+    </GlobalStyles>
   );
 };
 

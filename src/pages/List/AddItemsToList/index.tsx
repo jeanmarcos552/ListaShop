@@ -43,7 +43,7 @@ interface Provider {
   };
 }
 
-const AddToList: React.FC<PropsComponente> = ({route, ...rest}) => {
+const AddItemsToList: React.FC<PropsComponente> = ({route, ...rest}) => {
   const searchRef = useRef<any>(null);
   let {id, title} = route.params.item;
   let [lista, setLista] = useState<Provider[]>();
@@ -167,4 +167,4 @@ const AddToList: React.FC<PropsComponente> = ({route, ...rest}) => {
   );
 };
 
-export default AddToList;
+export default AddItemsToList;

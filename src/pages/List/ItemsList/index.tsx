@@ -58,7 +58,7 @@ function checkItemsSelected(items: ProviderItemsList[]): number {
   return totalSelected.length;
 }
 
-const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
+const ItemsList: React.FC<PropsComponente> = ({route, navigation}) => {
   const {id, title} = route.params;
   const [items, SetItems] = useState<ItemsRequest[]>();
   const [elRefs, setElRefs] = useState<Array<any>>([]);
@@ -288,4 +288,4 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
   );
 };
 
-export default ItensToList;
+export default ItemsList;

@@ -1,7 +1,7 @@
 import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
-import Lista from '../Lista';
+import List from '../List';
 import {Configurations} from '../Configurations';
 import {TouchableWithoutFeedback} from 'react-native';
 import {IconsStyle, TabBarStyle} from './style';
@@ -55,8 +55,8 @@ const Tabs = () => {
         headerShown: false,
         tabBarShowLabel: false,
       })}
-      initialRouteName="Lista">
-      <Tab.Screen name="Lista" component={Lista} />
+      initialRouteName="List">
+      <Tab.Screen name="List" component={List} />
       <Tab.Screen name="Settings" component={Configurations} />
     </Tab.Navigator>
   );

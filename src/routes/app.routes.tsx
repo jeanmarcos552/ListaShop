@@ -3,9 +3,9 @@ import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 
 import Tabs from '../pages/Tabs';
-import Lista from '../pages/Lista';
-import ItensToList from '../pages/Lista/ListItem';
-import AddToList from '../pages/Lista/AddToList';
+import List from '../pages/List';
+import ItemsList from '../pages/List/ItemsList';
+import AddItemsToList from '../pages/List/AddItemsToList';
 import Notifications from '../pages/Notifications';
 
 const App = createStackNavigator();
@@ -19,9 +19,9 @@ const AppRoutes: React.FC = () => {
       }}
       initialRouteName="Tabs">
       <App.Screen name="Tabs" component={Tabs} />
-      <App.Screen name="Lista" component={Lista} />
-      <App.Screen name="ItensToList" component={ItensToList} />
-      <App.Screen name="AddToList" component={AddToList} />
+      <App.Screen name="List" component={List} />
+      <App.Screen name="ItemsList" component={ItemsList} />
+      <App.Screen name="AddItemsToList" component={AddItemsToList} />
       <App.Screen name="Notifications" component={Notifications} />
     </App.Navigator>
   );
