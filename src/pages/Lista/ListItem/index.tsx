@@ -18,7 +18,6 @@ import {
 import {Swipeable, TouchableOpacity} from 'react-native-gesture-handler';
 import {useFocusEffect} from '@react-navigation/native';
 import SkeletonListItem from './skeleton';
-import api from '../../../services/api';
 import HeaderSingle from '../../../Layout/HeaderSingle';
 import {
   FiltroItensList,
@@ -26,28 +25,56 @@ import {
   ProviderItemsList,
 } from '../../../types/list';
 import TemplateDefault from '../../../Layout/Default';
-import {showList} from '../../../services/lista';
+import {showList} from '../../../services/list';
+import {updateItems} from '../../../services/list/list-itens';
 
 interface PropsComponente {
   route: any;
   navigation: any;
 }
 
+function somaValoresItens(items: ProviderItemsList[]): string {
+  if (!items) {
+    return '0';
+  }
+
+  const total = items
+    .map(item => item.pivot)
+    .filter(item => item.status === true)
+    .map((prev: any) => +prev.qty * +prev.value)
+    .reduce((prev, current) => prev + current, 0)
+    .toFixed(2)
+    .replace('.', ',');
+
+  return total;
+}
+
+function checkItemsSelected(items: ProviderItemsList[]): number {
+  if (!items) {
+    return 0;
+  }
+
+  const totalSelected = items?.filter(item => item.pivot.status);
+  console.log(totalSelected.length);
+  return totalSelected.length;
+}
+
 const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
-  let {id, title} = route.params;
-  let [items, SetItems] = useState<ItemsRequest[]>();
+  const {id, title} = route.params;
+  const [items, SetItems] = useState<ItemsRequest[]>();
   const [elRefs, setElRefs] = useState<Array<any>>([]);
-  let [filter, setFilter] = useState<FiltroItensList>();
-  let [somaItens, setSomaItens] = useState('0');
+  const [filter, setFilter] = useState<FiltroItensList>();
+  const [somaItens, setSomaItens] = useState('0');
+  const [totalSelected, setTotalSelected] = useState(0);
 
   const getDados = useCallback(async () => {
     try {
       const {data, status} = await showList(id);
 
       if (status === 200) {
-        somaValoresItens(data);
-
         if (data.itens) {
+          setSomaItens(somaValoresItens(data.itens));
+          setTotalSelected(checkItemsSelected(data.itens));
           const {itens} = data;
           if (itens) {
             SetItems(itens);
@@ -79,41 +106,59 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
 
   const handleCheckItem = useCallback(
     async (provider: ItemsRequest, index: number) => {
-      let {pivot} = provider;
+      try {
+        let {pivot} = provider;
+        !pivot.status ? elRefs[index].current.focus() : '';
+        pivot.status = !pivot.status;
 
-      !pivot.status ? elRefs[index].current.focus() : '';
-
-      pivot.status = !pivot.status;
-
-      api
-        .put(`/updateItem/${pivot.lista_id}/${pivot.itens_id}`, {...pivot})
-        .then(_ => {
-          if (!pivot.status) {
-            getDados();
+        const copyItems = items?.map(item => {
+          if (item.id === pivot.itens_id) {
+            item.pivot = pivot;
           }
+          return item;
         });
+        await updateItems({body: pivot, ...pivot});
+        if (copyItems) {
+          setSomaItens(somaValoresItens(copyItems));
+          setTotalSelected(checkItemsSelected(copyItems));
+        }
+      } catch (erro) {
+        console.log(erro);
+      }
     },
-    [elRefs, getDados],
+    [elRefs, items],
   );
 
-  const updateItem = (provider: ProviderItemsList) => {
-    const newPivot = {...provider.pivot};
-    newPivot.value = newPivot.value.replace(',', '.');
-    api
-      .put(`/updateItem/${newPivot.lista_id}/${newPivot.itens_id}`, newPivot)
-      .then(_ => getDados());
-  };
+  const updateItem = useCallback(
+    async (provider: ProviderItemsList) => {
+      const newPivot = {...provider.pivot};
+      newPivot.value = newPivot.value.replace(',', '.');
+      await updateItems({body: newPivot, ...newPivot});
 
-  const renderHeader = () => {
+      const copyItems = items?.map(item => {
+        if (item.id === newPivot.itens_id) {
+          item.pivot = newPivot;
+        }
+        return item;
+      });
+      if (copyItems) {
+        setSomaItens(somaValoresItens(copyItems));
+        setTotalSelected(checkItemsSelected(copyItems));
+      }
+    },
+    [items],
+  );
+
+  const RenderHeader = useCallback(() => {
     return (
       <TitleContainer>
         <Title>Itens concluídos: </Title>
-        <DisplayItensChecked>0</DisplayItensChecked>
+        <DisplayItensChecked>{totalSelected}</DisplayItensChecked>
       </TitleContainer>
     );
-  };
+  }, [totalSelected]);
 
-  const renderFooter = () => {
+  const renderFooter = useCallback(() => {
     return (
       <TitleContainer>
         <TouchableOpacity
@@ -144,7 +189,7 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
         </FabButtom>
       </TitleContainer>
     );
-  };
+  }, [filter, id, navigation, somaItens, title]);
 
   const handleChange = useCallback(
     (value: string, pivot: any, key = '') => {
@@ -164,21 +209,6 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
     },
     [items],
   );
-
-  function somaValoresItens(pivot: any) {
-    if (!pivot) {
-      return 0;
-    }
-
-    const total = pivot.itens
-      .map((item: ItemsRequest) => item.pivot)
-      .filter(item => item.status === true)
-      .map((prev: any) => +prev.qty * +prev.value)
-      .reduce((prev, current) => prev + current, 0)
-      .toFixed(2)
-      .replace('.', ',');
-    setSomaItens(total);
-  }
 
   const leftSwipe = (provider: ItemsRequest) => {
     let {pivot} = provider;
@@ -248,7 +278,7 @@ const ItensToList: React.FC<PropsComponente> = ({route, navigation}) => {
                     </Swipeable>
                   );
                 }}
-                ListHeaderComponent={renderHeader()}
+                ListHeaderComponent={<RenderHeader />}
               />
               {renderFooter()}
             </Container>

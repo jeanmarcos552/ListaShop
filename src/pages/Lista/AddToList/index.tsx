@@ -7,21 +7,19 @@ import Icon from 'react-native-vector-icons/Feather';
 
 import {
   Container,
-  TextInputSugest,
-  InputText,
-  HeaderSearch,
   ListResult,
   Item,
   ItemText,
   HeaderList,
   HeaderListTitle,
   TitleBold,
-  TextButton,
 } from './style';
-import {TouchableOpacity} from 'react-native-gesture-handler';
+
 import api from '../../../services/api';
 import {useAuth} from '../../../hooks/auth';
 import {ProviderItemsList} from '../../../types/list';
+import {SearchItems} from './SearchItems';
+import {removeItemToList} from '../../../services/list/list-itens';
 
 interface PropsComponente {
   route: {
@@ -45,52 +43,37 @@ interface Provider {
   };
 }
 
-const AddToList: React.FC<PropsComponente> = ({route, navigation}) => {
+const AddToList: React.FC<PropsComponente> = ({route, ...rest}) => {
   const searchRef = useRef<any>(null);
   let {id, title} = route.params.item;
-  const [value, onChangeText] = useState<string>();
   let [lista, setLista] = useState<Provider[]>();
-  let [listaOfItens, setListaOfItens] = useState<Provider[]>([]);
-  const [isFocus, setIsFocus] = useState(true);
+  let [allItems, setAllItems] = useState<Provider[]>();
+  let [ItemsOfItens, setItemsOfItens] = useState<Provider[]>([]);
   const {user} = useAuth();
+
+  const getItemByList = useCallback(async () => {
+    api.get(`lista/${id}`).then(res => {
+      if (res.data) {
+        setItemsOfItens(res.data.itens);
+      }
+    });
+  }, [id]);
 
   useEffect(() => {
     searchRef.current.focus();
     api.get('/itens').then(res => {
       setLista(res.data.data);
+      setAllItems(res.data.data);
     });
 
-    api.get(`lista/${id}`).then(res => {
-      if (res.data) {
-        setListaOfItens(res.data.itens);
-      }
-    });
-  }, [searchRef, id]);
-
-  const handleIsFocus = useCallback(() => {
-    setIsFocus(false);
-  }, []);
-
-  const handleIsFilled = useCallback(() => {
-    setIsFocus(true);
-  }, []);
-
-  const handleSearchItens = useCallback((text: string) => {
-    onChangeText(text);
-    if (text.length > 2) {
-      api.get(`/search/itens?name=${text}`).then(res => setLista(res.data));
-    } else {
-      setLista([]);
-    }
-  }, []);
+    getItemByList();
+  }, [searchRef, id, getItemByList]);
 
   const handleAddItemToLista = useCallback(
-    (data: any) => {
-      let newLista = [...listaOfItens, {...data}];
+    async (data: any) => {
+      let newLista = [...ItemsOfItens, {...data}];
 
-      console.log(newLista);
-      let hasItem: any = listaOfItens.find((item: any) => item.id === data.id);
-      console.log(hasItem);
+      let hasItem: any = ItemsOfItens.find((item: any) => item.id === data.id);
       if (!hasItem) {
         let {id: itens_id} = data;
         const body = {
@@ -104,66 +87,48 @@ const AddToList: React.FC<PropsComponente> = ({route, navigation}) => {
         api
           .post('/addItem', {...body})
           .then(_ => {
-            setListaOfItens(newLista);
+            setItemsOfItens(newLista);
           })
           .catch(err => console.log(err));
       } else {
-        let body = {};
+        let body: any = {};
         if (hasItem.pivot) {
           body = {
-            item_id: hasItem.pivot.itens_id,
-            lista: hasItem.pivot.lista_id,
+            itens_id: hasItem.pivot.itens_id,
+            lista_id: hasItem.pivot.lista_id,
           };
         } else {
           body = {
-            item_id: hasItem.id,
-            lista: id,
+            itens_id: hasItem.id,
+            lista_id: id,
           };
         }
-        api
-          .post('/removeItem', body)
-          .then(res => res.data)
-          .then(_ => {
-            api.get(`lista/${id}`).then(res => {
-              if (res.data) {
-                setListaOfItens(res.data.itens);
-              }
-            });
-          });
+        await removeItemToList(body);
+        getItemByList();
       }
     },
-    [id, listaOfItens, user.id],
+    [ItemsOfItens, id, user.id, getItemByList],
+  );
+
+  const handleSearchItens = useCallback(
+    (text: string) => {
+      if (text.length > 2) {
+        api.get(`/itens-search?name=${text}`).then(res => setLista(res.data));
+      } else {
+        setLista(allItems);
+      }
+    },
+    [allItems],
   );
 
   return (
     <>
-      <HeaderSearch>
-        <TextInputSugest isFocus={isFocus} isErrored={false}>
-          <Icon
-            name="search"
-            size={15}
-            color={isFocus ? '#01ac73' : '#ff9000'}
-          />
-          <InputText
-            isErrored={false}
-            isFocus={isFocus}
-            ref={searchRef}
-            placeholder="pesquisar..."
-            value={value}
-            placeholderTextColor={isFocus ? '#01ac73' : '#ff9000'}
-            onChangeText={(text: string) => handleSearchItens(text)}
-            autoCapitalize="none"
-            onFocus={handleIsFocus}
-            onBlur={handleIsFilled}
-          />
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-            <TextButton>
-              {listaOfItens && listaOfItens.length > 0 ? 'Concluir' : 'Voltar'}
-            </TextButton>
-          </TouchableOpacity>
-        </TextInputSugest>
-      </HeaderSearch>
-
+      <SearchItems
+        searchRef={searchRef}
+        handleSearchItens={handleSearchItens}
+        isConclude={ItemsOfItens && ItemsOfItens.length > 0}
+        {...rest}
+      />
       <KeyboardAvoidingView
         behavior={Platform.OS === 'android' ? 'height' : 'padding'}
         style={{flex: 1}}
@@ -182,8 +147,8 @@ const AddToList: React.FC<PropsComponente> = ({route, navigation}) => {
             renderItem={({item: provider}: any) => (
               <Item onPress={() => handleAddItemToLista(provider)}>
                 <ItemText>{provider.name}</ItemText>
-                {listaOfItens &&
-                  listaOfItens.map((item: any) => {
+                {ItemsOfItens &&
+                  ItemsOfItens.map((item: any) => {
                     return item.id === provider.id ? (
                       <Icon
                         key={provider.id}

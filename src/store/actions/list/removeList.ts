@@ -1,4 +1,4 @@
-import {deleteList} from '../../../services/lista';
+import {deleteList} from '../../../services/list';
 
 export async function removeList(dispatch, payload): Promise<string> {
   const data = await deleteList(payload);

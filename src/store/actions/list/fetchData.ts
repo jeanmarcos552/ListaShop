@@ -1,4 +1,4 @@
-import {indexList} from '../../../services/lista';
+import {indexList} from '../../../services/list';
 
 export async function fetchData(dispath) {
   const {data, status} = await indexList();

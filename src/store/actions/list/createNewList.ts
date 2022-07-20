@@ -1,4 +1,4 @@
-import {storeList} from '../../../services/lista';
+import {storeList} from '../../../services/list';
 
 export async function createNewList(dispatch, payload) {
   const {data} = await storeList({body: {...payload, category_id: 1}});
