@@ -1,6 +1,6 @@
 import {Form} from '@unform/mobile';
 import {FormHandles} from '@unform/core';
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useRef} from 'react';
 import {KeyboardAvoidingView, Platform, ScrollView} from 'react-native';
 
 import Input from '../../../Components/Input';
@@ -20,11 +20,16 @@ import {createNewList} from '../../../store/actions/list/createNewList';
 
 interface ComponentProps {
   dispatch: any;
+  setModalVisible: Function;
+  modalVisible: boolean;
 }
 
-const FormLista: React.FC<ComponentProps> = ({dispatch}) => {
+const FormLista: React.FC<ComponentProps> = ({
+  dispatch,
+  modalVisible,
+  setModalVisible,
+}) => {
   const formRef = useRef<FormHandles>(null);
-  const [modalVisible, setModalVisible] = useState(false);
   const inputRef = useRef<any>(null);
 
   function handleSubmit(data) {

@@ -70,6 +70,7 @@ function calcItensCheckt(provider: ProviderItens) {
 }
 
 const Lista = ({theme}) => {
+  const [modalVisible, setModalVisible] = useState(false);
   const navigate = useNavigation<NavigationProp<ParamListBase>>();
   const [{data, refreshing, itemToDelete}, dispatch] = useReducer(
     reducerList,
@@ -107,6 +108,29 @@ const Lista = ({theme}) => {
     Alert.alert('Atenção', String(resp));
   }, [itemToDelete]);
 
+  function RenderDialogo() {
+    return (
+      <DialogComponent
+        setVisible={setDialogo}
+        visible={dialogo}
+        title="Deletar essa lista?">
+        <ContainerDialogo>
+          <Button
+            mode="outlined"
+            onPress={() => dispatch({type: 'DELETE_LIST', payload: null})}>
+            Não
+          </Button>
+          <Button
+            mode="contained"
+            buttonColor={theme.colors.danger}
+            onPress={handleDelete}>
+            Sim
+          </Button>
+        </ContainerDialogo>
+      </DialogComponent>
+    );
+  }
+
   useEffect(() => {
     setDialogo(!!itemToDelete);
   }, [itemToDelete]);
@@ -124,31 +148,16 @@ const Lista = ({theme}) => {
         loadingComponent={<SkeletonListagem />}
         loading={!data.data}>
         <>
-          <DialogComponent
-            setVisible={setDialogo}
-            visible={dialogo}
-            title="Deletar essa lista?">
-            <ContainerDialogo>
-              <Button
-                mode="outlined"
-                onPress={() => dispatch({type: 'DELETE_LIST', payload: null})}>
-                Não
-              </Button>
-              <Button
-                mode="contained"
-                buttonColor={theme.colors.danger}
-                onPress={handleDelete}>
-                Sim
-              </Button>
-            </ContainerDialogo>
-          </DialogComponent>
-
+          <RenderDialogo />
           <ShoppingList
             showsVerticalScrollIndicator={false}
             refreshControl={<RefreshControl refreshing={refreshing} />}
             data={data?.data}
             ListEmptyComponent={
-              <Empty text="Você ainda não tem nenhuma lista :(" />
+              <Empty
+                text="Você ainda não tem nenhuma lista :("
+                action={() => setModalVisible(true)}
+              />
             }
             ListFooterComponent={<View style={{marginBottom: 80}} />}
             ListHeaderComponent={
@@ -193,7 +202,11 @@ const Lista = ({theme}) => {
             )}
             keyExtractor={(provider: any) => provider.id.toString()}
           />
-          <FormLista dispatch={dispatch} />
+          <FormLista
+            dispatch={dispatch}
+            modalVisible={modalVisible}
+            setModalVisible={setModalVisible}
+          />
         </>
       </TemplateDefault>
     </GlobalStyles>
