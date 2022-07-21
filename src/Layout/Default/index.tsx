@@ -18,19 +18,21 @@ const TemplateDefault: React.FC<PropsDefault> = ({
   loadingComponent,
 }) => {
   return (
-    <GlobalStyles>
+    <>
       {header && header}
-      <Container>
-        {loading && loadingComponent ? (
-          loadingComponent
-        ) : (
-          <View style={{flex: 1}}>
-            <View style={{zIndex: 999, flex: 1}}>{children}</View>
-            <SvgBackdrop width="100%" />
-          </View>
-        )}
-      </Container>
-    </GlobalStyles>
+      <GlobalStyles>
+        <Container>
+          {loading && loadingComponent ? (
+            loadingComponent
+          ) : (
+            <View style={{flex: 1}}>
+              <View style={{zIndex: 999, flex: 1}}>{children}</View>
+              <SvgBackdrop width="100%" />
+            </View>
+          )}
+        </Container>
+      </GlobalStyles>
+    </>
   );
 };
 

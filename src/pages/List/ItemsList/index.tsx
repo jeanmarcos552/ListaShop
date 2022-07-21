@@ -1,32 +1,25 @@
 import React, {createRef, useCallback, useEffect, useState} from 'react';
-import {KeyboardAvoidingView, Platform, Text, View} from 'react-native';
-
-import Icon from 'react-native-vector-icons/Feather';
+import {KeyboardAvoidingView, Platform, View} from 'react-native';
 
 import {
   Container,
-  FabButtom,
-  TitleContainer,
-  Title,
-  DisplayItensChecked,
   InputCheckbox,
-  TotalFooter,
   ListItens,
   GridItens,
   TextValues,
+  IconTrash,
 } from './style';
 import {Swipeable, TouchableOpacity} from 'react-native-gesture-handler';
 import {useFocusEffect} from '@react-navigation/native';
 import SkeletonListItem from './skeleton';
 import HeaderSingle from '../../../Layout/HeaderSingle';
-import {
-  FiltroItensList,
-  ItemsRequest,
-  ProviderItemsList,
-} from '../../../types/list';
+import {ItemsRequest, ProviderItemsList} from '../../../types/list';
 import TemplateDefault from '../../../Layout/Default';
 import {showList} from '../../../services/list';
-import {updateItems} from '../../../services/list/list-itens';
+import {removeItemToList, updateItems} from '../../../services/list/list-itens';
+import {CenterView, TextJ} from '../../../styles/global';
+import {RenderFooter} from './Footer';
+import {RenderHeader} from './RenderHeader';
 
 interface PropsComponente {
   route: any;
@@ -69,7 +62,6 @@ const ItemsList: React.FC<PropsComponente> = ({route, navigation}) => {
   const {id, title} = route.params;
   const [items, SetItems] = useState<ItemsRequest[]>();
   const [elRefs, setElRefs] = useState<Array<any>>([]);
-  const [filter, setFilter] = useState<FiltroItensList>();
   const [somaItens, setSomaItens] = useState('0');
   const [totalSelected, setTotalSelected] = useState(0);
 
@@ -79,8 +71,6 @@ const ItemsList: React.FC<PropsComponente> = ({route, navigation}) => {
 
       if (status === 200) {
         if (data.itens) {
-          setSomaItens(somaValoresItens(data.itens));
-          setTotalSelected(checkItemsSelected(data.itens));
           const {itens} = data;
           if (itens) {
             SetItems(itens);
@@ -93,14 +83,25 @@ const ItemsList: React.FC<PropsComponente> = ({route, navigation}) => {
     }
   }, [id]);
 
-  useEffect(() => {
-    getDados();
-  }, [getDados]);
+  const handleDeleteItem = useCallback(async ({pivot}) => {
+    const {data, status} = await removeItemToList({...pivot});
+    SetItems(state => state?.filter(item => item.id !== pivot.itens_id));
 
-  useFocusEffect(
-    useCallback(() => {
-      getDados();
-    }, [getDados]),
+    console.log(data, status);
+  }, []);
+
+  const changeItem = useCallback(
+    async pivot => {
+      const copyItems = items?.map(item => {
+        if (item.id === pivot.itens_id) {
+          item.pivot = pivot;
+        }
+        return item;
+      });
+      await updateItems({body: pivot, ...pivot});
+      SetItems(_ => copyItems);
+    },
+    [items],
   );
 
   const handleCheckItem = useCallback(
@@ -110,93 +111,28 @@ const ItemsList: React.FC<PropsComponente> = ({route, navigation}) => {
         !pivot.status ? elRefs[index].current.focus() : '';
         pivot.status = !pivot.status;
 
-        const copyItems = items?.map(item => {
-          if (item.id === pivot.itens_id) {
-            item.pivot = pivot;
-          }
-          return item;
-        });
-        await updateItems({body: pivot, ...pivot});
-        if (copyItems) {
-          setSomaItens(somaValoresItens(copyItems));
-          setTotalSelected(checkItemsSelected(copyItems));
-        }
+        changeItem(pivot);
       } catch (erro) {
         console.error(erro);
       }
     },
-    [elRefs, items],
+    [changeItem, elRefs],
   );
 
   const updateItem = useCallback(
     async (provider: ProviderItemsList) => {
-      const newPivot = {...provider.pivot};
-      newPivot.value = newPivot.value.replace(',', '.');
-      await updateItems({body: newPivot, ...newPivot});
+      let {pivot} = provider;
+      pivot.value = pivot.value.replace(',', '.');
+      await updateItems({body: pivot, ...pivot});
 
-      const copyItems = items?.map(item => {
-        if (item.id === newPivot.itens_id) {
-          item.pivot = newPivot;
-        }
-        return item;
-      });
-      if (copyItems) {
-        setSomaItens(somaValoresItens(copyItems));
-        setTotalSelected(checkItemsSelected(copyItems));
-      }
+      changeItem(pivot);
     },
-    [items],
+    [changeItem],
   );
-
-  const RenderHeader = useCallback(() => {
-    return (
-      <TitleContainer>
-        <Title>Itens concluídos: </Title>
-        <DisplayItensChecked>{totalSelected}</DisplayItensChecked>
-      </TitleContainer>
-    );
-  }, [totalSelected]);
-
-  const renderFooter = useCallback(() => {
-    return (
-      <TitleContainer>
-        <TouchableOpacity
-          onPress={() => setFilter({...filter, itens: !filter?.itens})}
-          style={{backgroundColor: '#e7e4e4', borderRadius: 50, padding: 5}}>
-          <Icon
-            name={filter?.itens ? 'check' : 'circle'}
-            size={20}
-            color="#01ac73"
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => setFilter({...filter, itens: false})}
-          style={{backgroundColor: '#e7e4e4', borderRadius: 50, padding: 5}}>
-          <Icon name="rotate-ccw" size={20} color="#01ac73" />
-        </TouchableOpacity>
-        <TotalFooter>
-          R$
-          {somaItens}
-        </TotalFooter>
-        <FabButtom
-          onPress={() =>
-            navigation.navigate('AddItemsToList', {
-              item: {id, title},
-            })
-          }>
-          <Icon name="plus" size={30} color="#fff" />
-        </FabButtom>
-      </TitleContainer>
-    );
-  }, [filter, id, navigation, somaItens, title]);
 
   const handleChange = useCallback(
     (value: string, pivot: any, key = '') => {
-      if (!items?.length) {
-        return;
-      }
-
-      const copyItem = [...items];
+      const copyItem = [...(items || [])];
       pivot[key] = value;
 
       copyItem?.map(provider => {
@@ -209,82 +145,126 @@ const ItemsList: React.FC<PropsComponente> = ({route, navigation}) => {
     [items],
   );
 
-  const leftSwipe = (provider: ItemsRequest) => {
-    const {pivot} = provider;
-    return (
-      <TextValues
-        key={pivot.lista_id.toString()}
-        defaultValue={pivot.qty.toString()}
-        keyboardType="numeric"
-        placeholder="0"
-        value={pivot.qty.toString()}
-        onBlur={() => updateItem(provider)}
-        onChangeText={(value: string) => handleChange(value, pivot, 'qty')}
-      />
-    );
-  };
+  const leftSwipe = useCallback(
+    (provider: any) => {
+      const {pivot} = provider;
+      return (
+        <TextValues
+          key={pivot.lista_id.toString()}
+          defaultValue={pivot.qty.toString()}
+          keyboardType="numeric"
+          placeholder="0"
+          value={pivot.qty.toString()}
+          onBlur={() => updateItem(provider)}
+          onChangeText={(value: string) => handleChange(value, pivot, 'qty')}
+        />
+      );
+    },
+    [handleChange, updateItem],
+  );
+
+  const rightSwipe = useCallback(
+    (provider: any) => {
+      return (
+        <CenterView>
+          <TouchableOpacity onPress={() => handleDeleteItem(provider)}>
+            <IconTrash name="trash" size={18} style={{paddingLeft: 4}} />
+          </TouchableOpacity>
+        </CenterView>
+      );
+    },
+    [handleDeleteItem],
+  );
+
+  useEffect(() => {
+    getDados();
+  }, [getDados]);
+
+  useEffect(() => {
+    if (items) {
+      setSomaItens(somaValoresItens(items));
+      setTotalSelected(checkItemsSelected(items));
+    }
+  }, [items]);
+
+  useFocusEffect(
+    useCallback(() => {
+      getDados();
+    }, [getDados]),
+  );
 
   return (
-    <>
-      <HeaderSingle title={title} navigation={navigation} />
-      <TemplateDefault loadingComponent={<SkeletonListItem />} loading={false}>
-        <>
-          <KeyboardAvoidingView
-            behavior={Platform.OS === 'android' ? 'height' : 'padding'}
-            enabled
-            style={{flex: 1}}>
-            <Container>
-              <ListItens
-                data={items || []}
-                keyExtractor={(provider: any) => provider.id.toString()}
-                style={{backgroundColor: '#fff'}}
-                renderItem={({item: provider, index}: any) => {
-                  return (
-                    <Swipeable renderLeftActions={_ => leftSwipe(provider)}>
-                      <GridItens>
-                        <InputCheckbox
-                          size={25}
-                          fillColor="#01ac73"
-                          unfillColor="#FFFFFF"
-                          text={provider.name}
-                          iconStyle={{borderColor: '#01ac73'}}
-                          textStyle={{
-                            fontSize: 20,
-                            fontFamily: 'Exo-Regular',
-                          }}
-                          isChecked={provider.pivot.status}
-                          onPress={() => handleCheckItem(provider, index)}
-                        />
-                        <View
-                          style={{flexDirection: 'row', alignItems: 'center'}}>
-                          <Text style={{color: '#808080'}}>
-                            {provider.pivot.qty} x{' '}
-                          </Text>
-                          <TextValues
-                            ref={elRefs[index]}
-                            key={provider.id}
-                            defaultValue={provider.pivot.value.toString()}
-                            keyboardType="numeric"
-                            placeholder="0,00"
-                            value={provider.pivot.value.toString()}
-                            onBlur={() => updateItem(provider)}
-                            onChangeText={(value: string) =>
-                              handleChange(value, provider.pivot, 'value')
-                            }
-                          />
-                        </View>
-                      </GridItens>
-                    </Swipeable>
-                  );
-                }}
-                ListHeaderComponent={<RenderHeader />}
-              />
-              {renderFooter()}
-            </Container>
-          </KeyboardAvoidingView>
-        </>
-      </TemplateDefault>
-    </>
+    <TemplateDefault
+      header={<HeaderSingle title={title} navigation={navigation} />}
+      loadingComponent={<SkeletonListItem />}
+      loading={false}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'android' ? 'height' : 'padding'}
+        enabled
+        style={{flex: 1}}>
+        <Container>
+          <ListItens
+            data={items || []}
+            keyExtractor={(provider: any) => provider.id.toString()}
+            style={{backgroundColor: '#fff'}}
+            renderItem={({item: provider, index}: any) => {
+              return (
+                <Swipeable
+                  renderLeftActions={_ => leftSwipe(provider)}
+                  renderRightActions={_ => rightSwipe(provider)}
+                  useNativeAnimations={true}>
+                  <GridItens>
+                    <InputCheckbox
+                      size={25}
+                      fillColor="#01ac73"
+                      unfillColor="#FFFFFF"
+                      text={provider.name}
+                      iconStyle={{borderColor: '#01ac73'}}
+                      textStyle={{
+                        fontSize: 20,
+                        fontFamily: 'Exo-Regular',
+                      }}
+                      isChecked={provider.pivot.status}
+                      onPress={() => handleCheckItem(provider, index)}
+                    />
+
+                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                      <TextJ color="#808080" direction="row">
+                        {provider.pivot.qty}
+                      </TextJ>
+                      <TextJ ml={2} fontSize={10} color="#808080">
+                        ({provider.un}) x{' '}
+                      </TextJ>
+                      <TextValues
+                        ref={elRefs[index]}
+                        key={provider.id}
+                        defaultValue={provider.pivot.value.toString()}
+                        keyboardType="numeric"
+                        placeholder="0,00"
+                        value={provider.pivot.value.toString()}
+                        onBlur={() => updateItem(provider)}
+                        onChangeText={(value: string) =>
+                          handleChange(value, provider.pivot, 'value')
+                        }
+                      />
+                    </View>
+                  </GridItens>
+                </Swipeable>
+              );
+            }}
+            ListHeaderComponent={<RenderHeader totalSelected={totalSelected} />}
+          />
+          <RenderFooter
+            sumItems={somaItens}
+            action={() =>
+              navigation.navigate('AddItemsToList', {
+                item: {id, title},
+              })
+            }
+          />
+        </Container>
+      </KeyboardAvoidingView>
+    </TemplateDefault>
   );
 };
 

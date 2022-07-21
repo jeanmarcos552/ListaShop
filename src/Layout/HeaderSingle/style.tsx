@@ -5,7 +5,7 @@ import styled from 'styled-components/native';
 export const Header = styled.View`
   flex-direction: row;
   justify-content: space-between;
-  padding: ${Platform.OS === 'ios' ? 10 + getStatusBarHeight() : 10}px 10px 10px;
+  padding: ${Platform.OS === 'ios' ? 10 + getStatusBarHeight() : 0}px 10px 5px;
   align-items: center;
   background-color: #01ac73;
 `;

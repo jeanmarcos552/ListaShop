@@ -63,7 +63,7 @@ export interface ProviderItems {
 export interface ItemsRequest {
   id: number;
   name: string;
-  itens: Array<any>;
+  itens: Array<ProviderItemsList>;
   pivot: {
     qty: number;
     value: string;

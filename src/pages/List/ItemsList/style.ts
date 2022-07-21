@@ -5,6 +5,7 @@ import {Form} from '@unform/mobile';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import {FlatList} from 'react-native-gesture-handler';
 import {MD2Colors as Colors} from 'react-native-paper';
+import Icon from 'react-native-vector-icons/Feather';
 
 export const Header = styled(LinearGradient)`
   flex-direction: row;
@@ -14,7 +15,7 @@ export const Header = styled(LinearGradient)`
 `;
 
 export const Container = styled.View`
-  padding: 20px;
+  padding: 0 10px;
   background-color: #fff;
   flex: 1;
 `;
@@ -49,7 +50,7 @@ export const FabButtom = styled.TouchableOpacity`
 
 export const TitleContainer = styled.View`
   flex-direction: row;
-  margin: 5px 0 15px;
+  margin: 0 0 15px;
   justify-content: center;
   align-content: center;
   align-items: center;
@@ -63,7 +64,7 @@ export const Title = styled.Text`
 export const DisplayItensChecked = styled.Text`
   font-size: 20px;
   color: #01ac73;
-  font-family: 'Exo-Regular';
+  font-family: 'Exo-SemiBold';
 `;
 
 export const InputCheckbox = styled(BouncyCheckbox)`
@@ -90,20 +91,20 @@ export const GridItens = styled.View`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  background-color: #fff;
 `;
 
 export const TextValues = styled.TextInput`
   font-family: 'Exo-SemiBold';
   height: 35px;
   background-color: #f5f5f5;
-  padding: 5px;
-  margin: 5px 0;
+  padding: 2px;
+  margin: 5px 1px;
   border-radius: 3px;
-  width: 50px;
+  width: 40px;
   text-align: center;
   color: #585858;
-  font-size: 15px;
-  margin-right: 3px;
+  font-size: 13px;
 `;
 
 export const ButtonDelete = styled.View`
@@ -112,4 +113,8 @@ export const ButtonDelete = styled.View`
   align-items: center;
   width: 80px;
   height: 30px;
+`;
+
+export const IconTrash = styled(Icon)`
+  color: ${({theme}) => theme.colors.danger};
 `;
