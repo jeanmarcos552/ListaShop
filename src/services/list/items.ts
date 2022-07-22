@@ -1,5 +1,5 @@
 import {AxiosResponse} from 'axios';
-import {PayloadIndexItem, PayloadItem} from '../../types/items';
+import {PayloadIndexItem, PayloadItem, StoreItems} from '../../types/items';
 import api, {displayError, mountErro} from '../api';
 
 export async function indexItems(): Promise<AxiosResponse<PayloadIndexItem>> {
@@ -35,6 +35,21 @@ export async function searchItemsByName(
     });
 
     return response;
+  } catch (error: unknown) {
+    return displayError(error);
+  }
+}
+
+export async function storeItem(
+  body: StoreItems,
+): Promise<AxiosResponse<string>> {
+  try {
+    const response = await api.post('/itens', body).catch(erro => {
+      throw Error(mountErro(erro));
+    });
+
+    console.log(response.data);
+    return response.data;
   } catch (error: unknown) {
     return displayError(error);
   }

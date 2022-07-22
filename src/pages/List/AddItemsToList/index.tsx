@@ -1,19 +1,11 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {KeyboardAvoidingView, Platform} from 'react-native';
+import {KeyboardAvoidingView, Platform, View} from 'react-native';
 
 import {NavigationScreenProp} from 'react-navigation';
 
 import Icon from 'react-native-vector-icons/Feather';
 
-import {
-  Container,
-  ListResult,
-  Item,
-  ItemText,
-  HeaderList,
-  HeaderListTitle,
-  TitleBold,
-} from './style';
+import {Container, ListResult, Item, ItemText} from './style';
 
 import {useAuth} from '../../../hooks/auth';
 import {ItemsRequest} from '../../../types/list';
@@ -25,6 +17,8 @@ import {
 import {showList} from '../../../services/list';
 import {indexItems, searchItemsByName} from '../../../services/list/items';
 import {PayloadItem} from '../../../types/items';
+import {CreateNewItem} from './CreadNewItem';
+import {GlobalStyles} from '../../../styles/global';
 
 interface PropsComponente {
   route: {
@@ -40,10 +34,13 @@ interface PropsComponente {
 
 const AddItemsToList: React.FC<PropsComponente> = ({route, ...rest}) => {
   const searchRef = useRef<any>(null);
-  let {id, title} = route.params.item;
-  let [lista, setLista] = useState<PayloadItem[]>();
-  let [allItems, setAllItems] = useState<PayloadItem[]>();
-  let [ItemsOfList, setItemsOfList] = useState<ItemsRequest[]>([]);
+  const {id, title} = route.params.item;
+  const [lista, setLista] = useState<PayloadItem[]>();
+  const [allItems, setAllItems] = useState<PayloadItem[]>();
+  const [ItemsOfList, setItemsOfList] = useState<ItemsRequest[]>([]);
+  const [currentSearch, setcurrentSearch] = useState<string>();
+  const [loading, setLoading] = useState(true);
+
   const {user} = useAuth();
 
   const getItemByList = useCallback(async () => {
@@ -56,15 +53,17 @@ const AddItemsToList: React.FC<PropsComponente> = ({route, ...rest}) => {
   useEffect(() => {
     (async () => {
       try {
-        searchRef.current.focus();
         const {data, status} = await indexItems();
         if (status === 200) {
           setLista(data.data);
           setAllItems(data.data);
           getItemByList();
         }
+        setLoading(false);
+        searchRef.current.focus();
       } catch (erro) {
         console.error(erro);
+        setLoading(false);
       }
     })();
   }, [searchRef, id, getItemByList]);
@@ -106,69 +105,82 @@ const AddItemsToList: React.FC<PropsComponente> = ({route, ...rest}) => {
     [ItemsOfList, id, user.id, getItemByList],
   );
 
+  const handleSearch = useCallback(async (text: string) => {
+    const {data, status} = await searchItemsByName(text);
+    if (status === 200) {
+      setLista(data);
+
+      if (!data.length) {
+        setcurrentSearch(_ => text);
+      }
+    }
+  }, []);
   const handleSearchItens = useCallback(
-    async (text: string) => {
-      try {
-        if (text.length > 2) {
-          const {data, status} = await searchItemsByName(text);
-
-          if (status !== 200) {
-            throw Error(String('Erro'));
-          }
-
-          setLista(data);
+    async (text: string): Promise<void> => {
+      if (text.length > 2) {
+        if (currentSearch) {
+          // se a palavra nao existe, nao faz mais requisicoes quando o cara digita
+          setcurrentSearch(_ => text);
         } else {
-          setLista(allItems);
+          // fluxo normal
+          handleSearch(text);
         }
-      } catch (erro) {
-        console.error(erro);
+      } else {
+        // inicia o rolê
+        setLista(allItems);
+        setcurrentSearch(_ => '');
       }
     },
-    [allItems],
+    [allItems, currentSearch, handleSearch],
   );
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'android' ? 'height' : 'padding'}
-      style={{flex: 1}}
-      enabled>
-      <SearchItems
-        searchRef={searchRef}
-        handleSearchItens={handleSearchItens}
-        isConclude={ItemsOfList && ItemsOfList.length > 0}
-        {...rest}
-      />
-
-      <Container>
-        <ListResult
-          data={lista ?? []}
-          keyExtractor={(provider: any) => provider.id.toString()}
-          ListHeaderComponent={() => (
-            <HeaderList>
-              <HeaderListTitle>
-                Adicionar Itens a lista: <TitleBold>{title}</TitleBold>
-              </HeaderListTitle>
-            </HeaderList>
-          )}
-          renderItem={({item: provider}: any) => (
-            <Item onPress={() => handleAddItemToList(provider)}>
-              <ItemText>{provider.name}</ItemText>
-              {ItemsOfList &&
-                ItemsOfList.map((item: any) => {
-                  return item.id === provider.id ? (
-                    <Icon
-                      key={provider.id}
-                      name="check"
-                      size={20}
-                      color="#01ac73"
-                    />
-                  ) : null;
-                })}
-            </Item>
-          )}
+    <GlobalStyles>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'android' ? 'height' : 'padding'}
+        style={{flex: 1}}
+        enabled>
+        <SearchItems
+          label={title}
+          searchRef={searchRef}
+          handleSearchItens={handleSearchItens}
+          isConclude={ItemsOfList && ItemsOfList.length > 0}
+          {...rest}
         />
-      </Container>
-    </KeyboardAvoidingView>
+
+        <Container>
+          {loading ? (
+            <View />
+          ) : (
+            <ListResult
+              data={lista}
+              ListEmptyComponent={
+                <CreateNewItem
+                  value={currentSearch || ''}
+                  callback={handleSearch}
+                />
+              }
+              keyExtractor={(provider: any) => provider.id.toString()}
+              renderItem={({item: provider}: any) => (
+                <Item onPress={() => handleAddItemToList(provider)}>
+                  <ItemText>{provider.name}</ItemText>
+                  {ItemsOfList?.map((item: any) => {
+                    return item.id === provider.id ? (
+                      <Icon
+                        key={provider.id}
+                        name="check"
+                        size={20}
+                        color="#01ac73"
+                      />
+                    ) : null;
+                  })}
+                </Item>
+              )}
+            />
+          )}
+        </Container>
+      </KeyboardAvoidingView>
+    </GlobalStyles>
   );
 };
 

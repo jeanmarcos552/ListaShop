@@ -253,7 +253,11 @@ const ItemsList: React.FC<PropsComponente> = ({route, navigation}) => {
                         defaultValue={provider.pivot.value.toString()}
                         keyboardType="numeric"
                         placeholder="0,00"
-                        value={provider.pivot.value.toString()}
+                        value={
+                          +provider.pivot.value === 0
+                            ? ''
+                            : String(provider.pivot.value)
+                        }
                         onBlur={() => updateItem(provider)}
                         onChangeText={(value: string) =>
                           handleChange(value, provider.pivot, 'value')

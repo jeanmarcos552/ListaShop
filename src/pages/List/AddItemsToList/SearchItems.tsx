@@ -1,19 +1,27 @@
 import React, {useCallback, useState} from 'react';
 import {TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
-import {HeaderSearch, InputText, TextButton, TextInputSugest} from './style';
+import {
+  HeaderSearch,
+  InputText,
+  LabelText,
+  TextButton,
+  TextInputSugest,
+} from './style';
 
 type PropsSearchItems = {
   searchRef: React.RefObject<any>;
   handleSearchItens: Function;
   navigation: any;
   isConclude: boolean;
+  label?: string;
 };
 export function SearchItems({
   searchRef,
   handleSearchItens,
   navigation,
   isConclude,
+  label,
 }: PropsSearchItems) {
   const [value, setValue] = useState<string>();
   const [isFocus, setIsFocus] = useState(true);
@@ -28,6 +36,7 @@ export function SearchItems({
 
   return (
     <HeaderSearch>
+      {label && <LabelText>{label}</LabelText>}
       <TextInputSugest isFocus={isFocus} isErrored={false}>
         <Icon name="search" size={15} color={isFocus ? '#01ac73' : '#ff9000'} />
         <InputText

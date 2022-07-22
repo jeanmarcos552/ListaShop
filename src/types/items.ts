@@ -12,3 +12,10 @@ export type PayloadItem = {
 export interface PayloadIndexItem extends ApiResponseWithPaginate {
   data: PayloadItem[];
 }
+
+export interface StoreItems {
+  name: string;
+  un: UnidadeStoreItem;
+}
+
+export type UnidadeStoreItem = 'UN' | 'KG' | 'PAR';

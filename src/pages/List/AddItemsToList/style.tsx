@@ -9,7 +9,6 @@ interface PropsInput {
 
 export const Container = styled.View`
   flex: 1;
-  background: #fff;
 `;
 
 export const HeaderSearch = styled.View`
@@ -26,7 +25,7 @@ interface PropTextInputSugest {
 export const TextInputSugest = styled.View<PropsInput>`
   height: 50px;
   padding: 0 16px;
-  background: #fff;
+  background: ${({theme}) => theme.colors.background};
   border-radius: 10px;
   margin-bottom: 15px;
   border-width: 2px;
@@ -95,4 +94,13 @@ export const TitleBold = styled.Text`
 export const TextButton = styled.Text`
   color: #7a7878;
   font-family: 'Exo-SemiBold';
+`;
+
+export const LabelText = styled.Text`
+  justify-content: center;
+  align-items: center;
+  font-family: 'Exo-SemiBold';
+  color: #fff;
+  text-align: center;
+  padding: 0 0 5px;
 `;
