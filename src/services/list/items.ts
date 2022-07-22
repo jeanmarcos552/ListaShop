@@ -1,10 +1,10 @@
 import {AxiosResponse} from 'axios';
-import {PayloadItem} from '../../types/items';
+import {PayloadIndexItem, PayloadItem} from '../../types/items';
 import api, {displayError, mountErro} from '../api';
 
-export async function indexItems(): Promise<AxiosResponse<any>> {
+export async function indexItems(): Promise<AxiosResponse<PayloadIndexItem>> {
   try {
-    const response = await api.get('/items').catch(erro => {
+    const response = await api.get('/itens').catch(erro => {
       throw Error(mountErro(erro));
     });
 
@@ -26,7 +26,7 @@ export async function showItems(id: number): Promise<AxiosResponse<any>> {
   }
 }
 
-export async function searchItems(
+export async function searchItemsByName(
   word: string,
 ): Promise<AxiosResponse<PayloadItem[]>> {
   try {

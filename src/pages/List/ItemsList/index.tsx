@@ -20,6 +20,7 @@ import {removeItemToList, updateItems} from '../../../services/list/list-itens';
 import {CenterView, TextJ} from '../../../styles/global';
 import {RenderFooter} from './Footer';
 import {RenderHeader} from './RenderHeader';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 interface PropsComponente {
   route: any;
@@ -50,8 +51,9 @@ function checkItemsSelected(items: ProviderItemsList[]): number {
   const totalSelected = items?.filter(item => item.pivot.status);
   return totalSelected.length;
 }
+
 function createRefsInput(setElRefs: Function, size: number) {
-  setElRefs(el =>
+  setElRefs((el: any) =>
     Array(size)
       .fill(size)
       .map((_, i) => el[i] || createRef()),
@@ -195,7 +197,17 @@ const ItemsList: React.FC<PropsComponente> = ({route, navigation}) => {
 
   return (
     <TemplateDefault
-      header={<HeaderSingle title={title} navigation={navigation} />}
+      header={
+        <HeaderSingle
+          title={title}
+          navigation={navigation}
+          right={
+            <TouchableOpacity>
+              <Icon name="ios-settings-outline" size={20} color="#fff" />
+            </TouchableOpacity>
+          }
+        />
+      }
       loadingComponent={<SkeletonListItem />}
       loading={false}>
       <KeyboardAvoidingView

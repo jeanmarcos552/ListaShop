@@ -11,7 +11,7 @@ export async function removeItemToList({
 }: PropDestroyItem): Promise<AxiosResponse<number>> {
   try {
     const response = await api
-      .delete(`/removeItem/${lista_id}/${itens_id}`)
+      .delete(`/itemsListRemove/${lista_id}/${itens_id}`)
       .catch(erro => {
         throw Error(mountErro(erro));
       });
@@ -37,6 +37,29 @@ export async function updateItems({
       .catch(erro => {
         throw Error(mountErro(erro));
       });
+    return response;
+  } catch (error: unknown) {
+    return displayError(error);
+  }
+}
+
+interface StoreItemToList {
+  body: {
+    lista: number;
+    itens: {
+      itens_id: number;
+      qty: number;
+    };
+    user: number;
+  };
+}
+export async function addItemToList({
+  body,
+}: StoreItemToList): Promise<AxiosResponse<number>> {
+  try {
+    const response = await api.post('/itemsListAdd', {...body}).catch(erro => {
+      throw Error(mountErro(erro));
+    });
     return response;
   } catch (error: unknown) {
     return displayError(error);

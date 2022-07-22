@@ -1,5 +1,5 @@
-import {FlatList} from 'react-native';
-import {getStatusBarHeight} from 'react-native-iphone-x-helper';
+import {FlatList, Platform} from 'react-native';
+import {getStatusBarHeight, isIphoneX} from 'react-native-iphone-x-helper';
 import styled, {css} from 'styled-components/native';
 
 interface PropsInput {
@@ -13,7 +13,10 @@ export const Container = styled.View`
 `;
 
 export const HeaderSearch = styled.View`
-  padding: ${getStatusBarHeight() + 25}px 15px 0px;
+  padding: ${Platform.OS === 'ios' && isIphoneX()
+      ? 15 + getStatusBarHeight()
+      : 10}px
+    15px 0;
   background-color: #01ac73;
 `;
 

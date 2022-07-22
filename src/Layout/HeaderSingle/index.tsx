@@ -5,12 +5,13 @@ import {Header, HeaderText, Username} from './style';
 interface PropsHeader {
   title: string;
   navigation: NavigationProp<ParamListBase>;
+  right?: React.ComponentProps<any>;
 }
 import Icon from 'react-native-vector-icons/Feather';
 import {ParamListBase} from '@react-navigation/routers';
 import {NavigationProp} from '@react-navigation/native';
 
-const HeaderSingle: React.FC<PropsHeader> = ({title, navigation}) => {
+const HeaderSingle: React.FC<PropsHeader> = ({title, navigation, right}) => {
   return (
     <Header>
       <Icon
@@ -22,6 +23,7 @@ const HeaderSingle: React.FC<PropsHeader> = ({title, navigation}) => {
       <HeaderText onPress={() => navigation.goBack()}>
         <Username>{title}</Username>
       </HeaderText>
+      {right && right}
     </Header>
   );
 };

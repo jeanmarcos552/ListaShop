@@ -15,11 +15,16 @@ import {
   TitleBold,
 } from './style';
 
-import api from '../../../services/api';
 import {useAuth} from '../../../hooks/auth';
-import {ProviderItemsList} from '../../../types/list';
+import {ItemsRequest} from '../../../types/list';
 import {SearchItems} from './SearchItems';
-import {removeItemToList} from '../../../services/list/list-itens';
+import {
+  addItemToList,
+  removeItemToList,
+} from '../../../services/list/list-itens';
+import {showList} from '../../../services/list';
+import {indexItems, searchItemsByName} from '../../../services/list/items';
+import {PayloadItem} from '../../../types/items';
 
 interface PropsComponente {
   route: {
@@ -32,50 +37,45 @@ interface PropsComponente {
   };
   navigation: NavigationScreenProp<any, any>;
 }
-interface Provider {
-  data: Array<ProviderItemsList>;
-  pivot: {
-    qty: number;
-    value: string;
-    status: boolean;
-    lista_id: number;
-    itens_id: number;
-  };
-}
 
 const AddItemsToList: React.FC<PropsComponente> = ({route, ...rest}) => {
   const searchRef = useRef<any>(null);
   let {id, title} = route.params.item;
-  let [lista, setLista] = useState<Provider[]>();
-  let [allItems, setAllItems] = useState<Provider[]>();
-  let [ItemsOfItens, setItemsOfItens] = useState<Provider[]>([]);
+  let [lista, setLista] = useState<PayloadItem[]>();
+  let [allItems, setAllItems] = useState<PayloadItem[]>();
+  let [ItemsOfList, setItemsOfList] = useState<ItemsRequest[]>([]);
   const {user} = useAuth();
 
   const getItemByList = useCallback(async () => {
-    api.get(`lista/${id}`).then(res => {
-      if (res.data) {
-        setItemsOfItens(res.data.itens);
-      }
-    });
+    const {data, status} = await showList(id);
+    if (status === 200) {
+      setItemsOfList(data?.itens || []);
+    }
   }, [id]);
 
   useEffect(() => {
-    searchRef.current.focus();
-    api.get('/itens').then(res => {
-      setLista(res.data.data);
-      setAllItems(res.data.data);
-    });
-
-    getItemByList();
+    (async () => {
+      try {
+        searchRef.current.focus();
+        const {data, status} = await indexItems();
+        if (status === 200) {
+          setLista(data.data);
+          setAllItems(data.data);
+          getItemByList();
+        }
+      } catch (erro) {
+        console.error(erro);
+      }
+    })();
   }, [searchRef, id, getItemByList]);
 
-  const handleAddItemToLista = useCallback(
+  const handleAddItemToList = useCallback(
     async (data: any) => {
-      let newLista = [...ItemsOfItens, {...data}];
+      let newLista = [...ItemsOfList, {...data}];
 
-      let hasItem: any = ItemsOfItens.find((item: any) => item.id === data.id);
+      let hasItem: any = ItemsOfList.find((item: any) => item.id === data.id);
       if (!hasItem) {
-        let {id: itens_id} = data;
+        const {id: itens_id} = data;
         const body = {
           lista: id,
           itens: {
@@ -84,12 +84,8 @@ const AddItemsToList: React.FC<PropsComponente> = ({route, ...rest}) => {
           },
           user: user.id,
         };
-        api
-          .post('/addItem', {...body})
-          .then(_ => {
-            setItemsOfItens(newLista);
-          })
-          .catch(err => console.log(err));
+        await addItemToList({body});
+        setItemsOfList(newLista);
       } else {
         let body: any = {};
         if (hasItem.pivot) {
@@ -107,63 +103,72 @@ const AddItemsToList: React.FC<PropsComponente> = ({route, ...rest}) => {
         getItemByList();
       }
     },
-    [ItemsOfItens, id, user.id, getItemByList],
+    [ItemsOfList, id, user.id, getItemByList],
   );
 
   const handleSearchItens = useCallback(
-    (text: string) => {
-      if (text.length > 2) {
-        api.get(`/itens-search?name=${text}`).then(res => setLista(res.data));
-      } else {
-        setLista(allItems);
+    async (text: string) => {
+      try {
+        if (text.length > 2) {
+          const {data, status} = await searchItemsByName(text);
+
+          if (status !== 200) {
+            throw Error(String('Erro'));
+          }
+
+          setLista(data);
+        } else {
+          setLista(allItems);
+        }
+      } catch (erro) {
+        console.error(erro);
       }
     },
     [allItems],
   );
 
   return (
-    <>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'android' ? 'height' : 'padding'}
+      style={{flex: 1}}
+      enabled>
       <SearchItems
         searchRef={searchRef}
         handleSearchItens={handleSearchItens}
-        isConclude={ItemsOfItens && ItemsOfItens.length > 0}
+        isConclude={ItemsOfList && ItemsOfList.length > 0}
         {...rest}
       />
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'android' ? 'height' : 'padding'}
-        style={{flex: 1}}
-        enabled>
-        <Container>
-          <ListResult
-            data={lista ?? []}
-            keyExtractor={(provider: any) => provider.id.toString()}
-            ListHeaderComponent={() => (
-              <HeaderList>
-                <HeaderListTitle>
-                  Adicionar Itens a lista: <TitleBold>{title}</TitleBold>
-                </HeaderListTitle>
-              </HeaderList>
-            )}
-            renderItem={({item: provider}: any) => (
-              <Item onPress={() => handleAddItemToLista(provider)}>
-                <ItemText>{provider.name}</ItemText>
-                {ItemsOfItens &&
-                  ItemsOfItens.map((item: any) => {
-                    return item.id === provider.id ? (
-                      <Icon
-                        key={provider.id}
-                        name="check"
-                        size={20}
-                        color="#01ac73"
-                      />
-                    ) : null;
-                  })}
-              </Item>
-            )}
-          />
-        </Container>
-      </KeyboardAvoidingView>
-    </>
+
+      <Container>
+        <ListResult
+          data={lista ?? []}
+          keyExtractor={(provider: any) => provider.id.toString()}
+          ListHeaderComponent={() => (
+            <HeaderList>
+              <HeaderListTitle>
+                Adicionar Itens a lista: <TitleBold>{title}</TitleBold>
+              </HeaderListTitle>
+            </HeaderList>
+          )}
+          renderItem={({item: provider}: any) => (
+            <Item onPress={() => handleAddItemToList(provider)}>
+              <ItemText>{provider.name}</ItemText>
+              {ItemsOfList &&
+                ItemsOfList.map((item: any) => {
+                  return item.id === provider.id ? (
+                    <Icon
+                      key={provider.id}
+                      name="check"
+                      size={20}
+                      color="#01ac73"
+                    />
+                  ) : null;
+                })}
+            </Item>
+          )}
+        />
+      </Container>
+    </KeyboardAvoidingView>
   );
 };
 

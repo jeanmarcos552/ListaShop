@@ -1,3 +1,5 @@
+import {ApiResponseWithPaginate} from './api';
+
 export type PayloadItem = {
   id: number;
   name: string;
@@ -6,3 +8,7 @@ export type PayloadItem = {
   updated_at: string;
   un: string;
 };
+
+export interface PayloadIndexItem extends ApiResponseWithPaginate {
+  data: PayloadItem[];
+}
