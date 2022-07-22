@@ -1,5 +1,5 @@
 import React, {createRef, useCallback, useEffect, useState} from 'react';
-import {KeyboardAvoidingView, Platform, View} from 'react-native';
+import {TouchableOpacity, View} from 'react-native';
 
 import {
   Container,
@@ -9,7 +9,7 @@ import {
   TextValues,
   IconTrash,
 } from './style';
-import {Swipeable, TouchableOpacity} from 'react-native-gesture-handler';
+import {Swipeable} from 'react-native-gesture-handler';
 import {useFocusEffect} from '@react-navigation/native';
 import SkeletonListItem from './skeleton';
 import HeaderSingle from '../../../Layout/HeaderSingle';
@@ -77,6 +77,10 @@ const ItemsList: React.FC<PropsComponente> = ({route, navigation}) => {
           if (itens) {
             SetItems(itens);
             createRefsInput(setElRefs, itens.length);
+            if (itens) {
+              setSomaItens(somaValoresItens(itens));
+              setTotalSelected(checkItemsSelected(itens));
+            }
           }
         }
       }
@@ -85,12 +89,20 @@ const ItemsList: React.FC<PropsComponente> = ({route, navigation}) => {
     }
   }, [id]);
 
-  const handleDeleteItem = useCallback(async ({pivot}) => {
-    const {data, status} = await removeItemToList({...pivot});
-    SetItems(state => state?.filter(item => item.id !== pivot.itens_id));
+  const handleDeleteItem = useCallback(
+    async ({pivot}) => {
+      const {data, status} = await removeItemToList({...pivot});
+      SetItems(state => state?.filter(item => item.id !== pivot.itens_id));
 
-    console.log(data, status);
-  }, []);
+      if (items) {
+        setSomaItens(somaValoresItens(items));
+        setTotalSelected(checkItemsSelected(items));
+      }
+
+      console.log(data, status);
+    },
+    [items],
+  );
 
   const changeItem = useCallback(
     async pivot => {
@@ -102,6 +114,10 @@ const ItemsList: React.FC<PropsComponente> = ({route, navigation}) => {
       });
       await updateItems({body: pivot, ...pivot});
       SetItems(_ => copyItems);
+      if (copyItems) {
+        setSomaItens(somaValoresItens(copyItems));
+        setTotalSelected(checkItemsSelected(copyItems));
+      }
     },
     [items],
   );
@@ -182,13 +198,6 @@ const ItemsList: React.FC<PropsComponente> = ({route, navigation}) => {
     getDados();
   }, [getDados]);
 
-  useEffect(() => {
-    if (items) {
-      setSomaItens(somaValoresItens(items));
-      setTotalSelected(checkItemsSelected(items));
-    }
-  }, [items]);
-
   useFocusEffect(
     useCallback(() => {
       getDados();
@@ -210,76 +219,73 @@ const ItemsList: React.FC<PropsComponente> = ({route, navigation}) => {
       }
       loadingComponent={<SkeletonListItem />}
       loading={false}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'android' ? 'height' : 'padding'}
-        enabled
-        style={{flex: 1}}>
-        <Container>
-          <ListItens
-            data={items || []}
-            keyExtractor={(provider: any) => provider.id.toString()}
-            style={{backgroundColor: '#fff'}}
-            renderItem={({item: provider, index}: any) => {
-              return (
-                <Swipeable
-                  renderLeftActions={_ => leftSwipe(provider)}
-                  renderRightActions={_ => rightSwipe(provider)}
-                  useNativeAnimations={true}>
-                  <GridItens>
-                    <InputCheckbox
-                      size={25}
-                      fillColor="#01ac73"
-                      unfillColor="#FFFFFF"
-                      text={provider.name}
-                      iconStyle={{borderColor: '#01ac73'}}
-                      textStyle={{
-                        fontSize: 20,
-                        fontFamily: 'Exo-Regular',
-                      }}
-                      isChecked={provider.pivot.status}
-                      onPress={() => handleCheckItem(provider, index)}
-                    />
+      <Container>
+        <ListItens
+          showsVerticalScrollIndicator={false}
+          data={items || []}
+          keyExtractor={(provider: any) => provider.id.toString()}
+          removeClippedSubviews={false}
+          ListFooterComponent={<View style={{marginBottom: 50}} />}
+          renderItem={({item: provider, index}: any) => {
+            return (
+              <Swipeable
+                renderLeftActions={_ => leftSwipe(provider)}
+                renderRightActions={_ => rightSwipe(provider)}
+                useNativeAnimations={true}>
+                <GridItens>
+                  <InputCheckbox
+                    size={25}
+                    fillColor="#01ac73"
+                    unfillColor="#FFFFFF"
+                    text={provider.name}
+                    iconStyle={{borderColor: '#01ac73'}}
+                    textStyle={{
+                      fontSize: 20,
+                      fontFamily: 'Exo-Regular',
+                    }}
+                    isChecked={provider.pivot.status}
+                    onPress={() => handleCheckItem(provider, index)}
+                  />
 
-                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                      <TextJ color="#808080" direction="row">
-                        {provider.pivot.qty}
-                      </TextJ>
-                      <TextJ ml={2} fontSize={10} color="#808080">
-                        ({provider.un}) x{' '}
-                      </TextJ>
-                      <TextValues
-                        ref={elRefs[index]}
-                        key={provider.id}
-                        defaultValue={provider.pivot.value.toString()}
-                        keyboardType="numeric"
-                        placeholder="0,00"
-                        value={
-                          +provider.pivot.value === 0
-                            ? ''
-                            : String(provider.pivot.value)
-                        }
-                        onBlur={() => updateItem(provider)}
-                        onChangeText={(value: string) =>
-                          handleChange(value, provider.pivot, 'value')
-                        }
-                      />
-                    </View>
-                  </GridItens>
-                </Swipeable>
-              );
-            }}
-            ListHeaderComponent={<RenderHeader totalSelected={totalSelected} />}
-          />
-          <RenderFooter
-            sumItems={somaItens}
-            action={() =>
-              navigation.navigate('AddItemsToList', {
-                item: {id, title},
-              })
-            }
-          />
-        </Container>
-      </KeyboardAvoidingView>
+                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                    <TextJ color="#808080" direction="row">
+                      {provider.pivot.qty}
+                    </TextJ>
+                    <TextJ ml={2} fontSize={10} color="#808080">
+                      ({provider.un}) x{' '}
+                    </TextJ>
+                    <TextValues
+                      ref={elRefs[index]}
+                      key={provider.id}
+                      defaultValue={provider.pivot.value.toString()}
+                      keyboardType="numeric"
+                      placeholder="0,00"
+                      value={
+                        +provider.pivot.value === 0
+                          ? ''
+                          : String(provider.pivot.value)
+                      }
+                      onBlur={() => updateItem(provider)}
+                      onChangeText={(value: string) =>
+                        handleChange(value, provider.pivot, 'value')
+                      }
+                    />
+                  </View>
+                </GridItens>
+              </Swipeable>
+            );
+          }}
+          ListHeaderComponent={<RenderHeader totalSelected={totalSelected} />}
+        />
+        <RenderFooter
+          sumItems={somaItens}
+          action={() =>
+            navigation.navigate('AddItemsToList', {
+              item: {id, title},
+            })
+          }
+        />
+      </Container>
     </TemplateDefault>
   );
 };

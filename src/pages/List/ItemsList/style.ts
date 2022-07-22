@@ -18,6 +18,7 @@ export const Container = styled.View`
   padding: 0 10px;
   background-color: #fff;
   flex: 1;
+  height: 100%;
 `;
 
 export const HeaderText = styled.Text`
