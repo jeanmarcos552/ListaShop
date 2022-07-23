@@ -1,4 +1,4 @@
-import React, {useCallback, useRef} from 'react';
+import React, {useCallback, useRef, useState} from 'react';
 import {
   KeyboardAvoidingView,
   Platform,
@@ -6,6 +6,7 @@ import {
   View,
   TextInput,
   Alert,
+  Text,
 } from 'react-native';
 
 import * as Yup from 'yup';
@@ -13,7 +14,6 @@ import {Form} from '@unform/mobile';
 import {FormHandles} from '@unform/core';
 
 import Input from '../../Components/Input';
-import Button from '../../Components/Button';
 
 import {Title, Container, BackToLogin, BackToLoginText} from './style';
 import Logo from '../../assets/img/logo.png';
@@ -27,6 +27,8 @@ import {
 import IconBack from 'react-native-vector-icons/Feather';
 import getValidationErrors from '../../../Utils/getValidation';
 import api from '../../services/api';
+import {Button} from 'react-native-paper';
+import {useTheme} from 'styled-components';
 
 interface SignUpFormData {
   name: string;
@@ -38,7 +40,8 @@ interface SignUpFormData {
 const SignUp: React.FC = () => {
   const navigate = useNavigation<NavigationProp<ParamListBase>>();
   const formRef = useRef<FormHandles>(null);
-
+  const theme = useTheme();
+  const [loading, setLoading] = useState(false);
   const emailInputRef = useRef<TextInput>(null);
   const passwordlInputRef = useRef<TextInput>(null);
 
@@ -63,8 +66,9 @@ const SignUp: React.FC = () => {
           abortEarly: false,
         });
 
+        setLoading(true);
         await api.post('/register', data);
-
+        setLoading(false);
         return navigate.navigate('SignIn');
       } catch (err: any) {
         if (err instanceof Yup.ValidationError) {
@@ -74,6 +78,7 @@ const SignUp: React.FC = () => {
           return;
         }
 
+        console.log(err.response);
         if (err.response) {
           let msg = '';
           if (err.response.status === 422) {
@@ -81,6 +86,7 @@ const SignUp: React.FC = () => {
           }
 
           Alert.alert('Erro na validação', msg);
+          setLoading(false);
         }
       }
     },
@@ -137,8 +143,11 @@ const SignUp: React.FC = () => {
               icon="lock"
               onSubmitEditing={() => formRef.current?.submitForm()}
             />
-
-            <Button onPress={() => formRef.current?.submitForm()}>
+            <Button
+              loading={loading}
+              buttonColor={theme.colors.secondary}
+              mode="contained"
+              onPress={() => formRef.current?.submitForm()}>
               Criar conta
             </Button>
           </Form>
@@ -146,9 +155,9 @@ const SignUp: React.FC = () => {
       </ScrollView>
 
       <BackToLogin>
+        <IconBack name="arrow-left" color="#fff" size={20} />
         <BackToLoginText onPress={() => navigate.navigate('SignIn')}>
-          <IconBack name="arrow-left" color="#fff" size={20} />
-          Voltar para o Login
+          <Text style={{marginRight: 15}}>Voltar para o Login</Text>
         </BackToLoginText>
       </BackToLogin>
     </KeyboardAvoidingView>

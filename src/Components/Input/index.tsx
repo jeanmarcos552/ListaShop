@@ -11,6 +11,7 @@ import {TextInputProps} from 'react-native';
 import {useField} from '@unform/core';
 
 import {Container, InputText, IconText} from './style';
+import {useTheme} from 'styled-components';
 
 interface InputProps extends TextInputProps {
   name: string;
@@ -31,6 +32,7 @@ const Input: React.ForwardRefRenderFunction<inputRef, InputProps> = (
   ref,
 ) => {
   const inputElementRef = useRef<any>(null);
+  const theme = useTheme();
 
   useImperativeHandle(ref, () => ({
     focus: () => {
@@ -59,7 +61,7 @@ const Input: React.ForwardRefRenderFunction<inputRef, InputProps> = (
       name: fieldName,
       ref: inputValueRef.current,
       path: 'value',
-      setValue(ref: any, value) {
+      setValue(_ref: any, value) {
         inputValueRef.current.value = value;
         inputElementRef.current.setNativeProps({text: value});
       },
@@ -74,20 +76,30 @@ const Input: React.ForwardRefRenderFunction<inputRef, InputProps> = (
     <Container isFocus={isFocus} isErrored={!!error} size={size ? size : 100}>
       <IconText
         name={icon}
-        size={20}
-        color={error ? '#c53030' : isFocus || isFilled ? '#ff9000' : '#73be7f'}
+        size={15}
+        color={
+          error
+            ? theme.colors.danger
+            : isFocus || isFilled
+            ? '#ff9000'
+            : theme.colors.primary
+        }
       />
 
       <InputText
         ref={inputElementRef}
         keyboardAppearance="dark"
         placeholderTextColor={
-          error ? '#c53030' : isFocus || isFilled ? '#ff9000' : '#73be7f'
+          error
+            ? theme.colors.danger
+            : isFocus || isFilled
+            ? '#ff9000'
+            : theme.colors.primary
         }
         defaultValue={defaultValue}
         onFocus={handleIsFocus}
         onBlur={handleIsFilled}
-        onChangeText={(value) => {
+        onChangeText={(value: string) => {
           inputValueRef.current.value = value;
         }}
         {...rest}

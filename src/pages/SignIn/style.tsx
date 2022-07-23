@@ -21,7 +21,7 @@ export const Title = styled.Text`
 `;
 
 export const Image = styled.Image`
-  width: 80%;
+  width: 60%;
   height: 45px;
 `;
 
@@ -52,7 +52,7 @@ export const CreatAccount = styled.TouchableOpacity`
 
 export const CreatAccountText = styled.Text`
   color: #fff;
-  font-size: 20px;
+  font-size: 18px;
   font-family: 'Exo-SemiBold';
 `;
 

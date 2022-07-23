@@ -35,9 +35,10 @@ import {
 } from './style';
 
 import Input from '../../Components/Input';
-import Button from '../../Components/Button';
 
 import {useAuth} from '../../hooks/auth';
+import {Button} from 'react-native-paper';
+import {useTheme} from 'styled-components';
 
 interface SignInFormData {
   email: string;
@@ -48,8 +49,9 @@ const SignIn: React.FC = () => {
   const navigate = useNavigation<NavigationProp<ParamListBase>>();
   const formRef = useRef<FormHandles>(null);
   const passwordRef = useRef<TextInput>(null);
+  const theme = useTheme();
 
-  const {signIn} = useAuth();
+  const {signIn, loading} = useAuth();
 
   const handleSignIn = useCallback(
     async (data: SignInFormData) => {
@@ -119,7 +121,11 @@ const SignIn: React.FC = () => {
                 onSubmitEditing={() => formRef.current?.submitForm()}
               />
 
-              <Button onPress={() => formRef.current?.submitForm()}>
+              <Button
+                loading={loading}
+                buttonColor={theme.colors.secondary}
+                mode="contained"
+                onPress={() => formRef.current?.submitForm()}>
                 Entrar
               </Button>
             </Form>

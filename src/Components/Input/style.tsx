@@ -1,5 +1,6 @@
 import styled, {css} from 'styled-components/native';
 import Icon from 'react-native-vector-icons/Feather';
+import {MainTheme} from '../../styles/global';
 
 interface PropsInput {
   isFocus: boolean;
@@ -7,32 +8,32 @@ interface PropsInput {
   size: number;
 }
 
-export const Container = styled.View<PropsInput>`
-  ${props =>
+export const Container = styled.View`
+  ${(props: PropsInput) =>
     props.size &&
     css`
       width: ${props.size}%;
       margin-right: 5px;
     `};
 
-  height: 60px;
-  padding: 0 16px;
+  height: 50px;
+  padding: 0 10px;
   background: #fff;
   border-radius: 10px;
   margin-bottom: 15px;
-  border-width: 2px;
+  border-width: 1px;
   border-color: #fff;
 
   align-items: center;
   flex-direction: row;
 
-  ${props =>
+  ${(props: PropsInput) =>
     props.isErrored &&
     css`
-      border-color: #c53030;
+      border-color: ${({theme}: MainTheme) => theme.colors.danger};
     `}
 
-  ${props =>
+  ${(props: PropsInput) =>
     props.isFocus &&
     css`
       border-color: #ff9000;
@@ -43,10 +44,10 @@ export const InputText = styled.TextInput`
   flex: 1;
   color: #ff9000;
   width: 100%;
-  font-size: 16px;
-  font-family: 'Exo-SemiBold';
+  font-size: 14px;
+  font-family: 'Exo-Regular';
 `;
 
 export const IconText = styled(Icon)`
-  margin-right: 16px;
+  margin-right: 8px;
 `;

@@ -1,7 +1,14 @@
 import styled from 'styled-components/native';
 
+import light from './themes/light';
+type Theme = typeof light;
+
+export interface MainTheme {
+  theme: Theme;
+}
+
 export const GlobalStyles = styled.View`
-  background-color: ${({theme}) => theme.colors.background};
+  background-color: ${({theme}: MainTheme) => theme.colors.background};
   flex: 1;
   height: 100%;
 `;
@@ -26,7 +33,7 @@ interface PropCenter {
   alignItems?: 'center' | 'flex-start' | 'flex-end';
 }
 export const ViewJ = styled.View<PropCenter>`
-  justify-content: ${props =>
+  justify-content: ${(props: any) =>
     props.justifyContent ? props.justifyContent : 'center'};
   align-items: center;
   flex-direction: ${props => (props.direction ? props.direction : 'column')};

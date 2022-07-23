@@ -34,5 +34,6 @@ export const BackToLogin = styled.TouchableOpacity`
 export const BackToLoginText = styled.Text`
   color: #fff;
   font-family: 'Exo-SemiBold';
-  font-size: 20px;
+  font-size: 15px;
+  margin-left: 8px;
 `;
