@@ -1,7 +1,9 @@
 import React, {useCallback, useState} from 'react';
 import {TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
+
 import {
+  ButtonAddNewCategory,
   HeaderSearch,
   InputText,
   LabelText,
@@ -11,19 +13,20 @@ import {
 
 type PropsSearchItems = {
   searchRef: React.RefObject<any>;
-  handleSearchItens: Function;
+  setValue: Function;
+  value: string;
   navigation: any;
   isConclude: boolean;
   label?: string;
 };
 export function SearchItems({
   searchRef,
-  handleSearchItens,
   navigation,
   isConclude,
   label,
+  value,
+  setValue,
 }: PropsSearchItems) {
-  const [value, setValue] = useState<string>();
   const [isFocus, setIsFocus] = useState(true);
 
   const handleIsFocus = useCallback(() => {
@@ -46,17 +49,20 @@ export function SearchItems({
           placeholder="pesquisar..."
           value={value}
           placeholderTextColor={isFocus ? '#01ac73' : '#ff9000'}
-          onChangeText={(text: string) => {
-            handleSearchItens(text);
-            setValue(text);
-          }}
+          onChangeText={(text: string) => setValue(text)}
           autoCapitalize="none"
           onFocus={handleIsFocus}
           onBlur={handleIsFilled}
         />
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <TextButton>{isConclude ? 'Concluir' : 'Voltar'}</TextButton>
-        </TouchableOpacity>
+        {value ? (
+          <ButtonAddNewCategory onPress={() => setValue('')}>
+            <TextButton>Limpar</TextButton>
+          </ButtonAddNewCategory>
+        ) : (
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <TextButton>{isConclude ? 'Concluir' : 'Voltar'}</TextButton>
+          </TouchableOpacity>
+        )}
       </TextInputSugest>
     </HeaderSearch>
   );

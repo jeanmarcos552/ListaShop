@@ -34,12 +34,14 @@ export function CreateNewItem({value, callback}: PropCreateNewItem) {
 
   return (
     <>
-      <Container onPress={() => setShowModal(true)}>
-        <Text>
-          Adicionar: <TextBold> {value} </TextBold>á lista?
-        </Text>
-        <IconPlus name="plus" size={20} />
-      </Container>
+      {value && (
+        <Container onPress={() => setShowModal(true)}>
+          <Text>
+            Adicionar: <TextBold> {value} </TextBold>á lista?
+          </Text>
+          <IconPlus name="plus" size={20} />
+        </Container>
+      )}
 
       <DialogComponent
         visible={showModal}

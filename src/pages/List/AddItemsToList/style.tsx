@@ -24,7 +24,7 @@ interface PropTextInputSugest {
 }
 export const TextInputSugest = styled.View<PropsInput>`
   height: 50px;
-  padding: 0 16px;
+  padding: 0 10px;
   background: ${({theme}) => theme.colors.background};
   border-radius: 10px;
   margin-bottom: 15px;
@@ -44,16 +44,16 @@ export const TextInputSugest = styled.View<PropsInput>`
 
 export const InputText = styled.TextInput<PropsInput>`
   padding-left: 10px;
-  width: 80%;
+  width: 100%;
   font-family: 'Exo-Regular';
   font-size: 15px;
   color: #01ac73;
-
+  flex: 1;
   ${(props: PropTextInputSugest) =>
     !props.isFocus &&
     css`
       color: #ff9000;
-    `}
+    `};
 `;
 
 export const ListResult = styled(FlatList)``;
@@ -94,6 +94,7 @@ export const TitleBold = styled.Text`
 export const TextButton = styled.Text`
   color: #7a7878;
   font-family: 'Exo-SemiBold';
+  font-size: 13px;
 `;
 
 export const LabelText = styled.Text`
@@ -103,4 +104,10 @@ export const LabelText = styled.Text`
   color: #fff;
   text-align: center;
   padding: 0 0 5px;
+`;
+
+export const ButtonAddNewCategory = styled.TouchableOpacity`
+  background-color: #f0f0f0;
+  padding: 3px 10px;
+  border-radius: 50px;
 `;

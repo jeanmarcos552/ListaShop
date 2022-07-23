@@ -22,7 +22,7 @@ import {RenderFooter} from './Footer';
 import {RenderHeader} from './RenderHeader';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-interface PropsComponente {
+export interface PropsComponente {
   route: any;
   navigation: any;
 }
@@ -84,13 +84,13 @@ const ItemsList: React.FC<PropsComponente> = ({route, navigation}) => {
           }
         }
       }
-    } catch (erro) {
+    } catch (erro: any) {
       console.error(erro.message);
     }
   }, [id]);
 
   const handleDeleteItem = useCallback(
-    async ({pivot}) => {
+    async ({pivot}: any) => {
       const {data, status} = await removeItemToList({...pivot});
       SetItems(state => state?.filter(item => item.id !== pivot.itens_id));
 
@@ -105,7 +105,7 @@ const ItemsList: React.FC<PropsComponente> = ({route, navigation}) => {
   );
 
   const changeItem = useCallback(
-    async pivot => {
+    async (pivot: any) => {
       const copyItems = items?.map(item => {
         if (item.id === pivot.itens_id) {
           item.pivot = pivot;
@@ -224,7 +224,7 @@ const ItemsList: React.FC<PropsComponente> = ({route, navigation}) => {
           showsVerticalScrollIndicator={false}
           data={items || []}
           keyExtractor={(provider: any) => provider.id.toString()}
-          removeClippedSubviews={false}
+          removeClippedSubviews={true}
           ListFooterComponent={<View style={{marginBottom: 50}} />}
           renderItem={({item: provider, index}: any) => {
             return (

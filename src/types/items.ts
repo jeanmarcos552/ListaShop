@@ -1,3 +1,4 @@
+import {NavigationScreenProp} from 'react-navigation';
 import {ApiResponseWithPaginate} from './api';
 
 export type PayloadItem = {
@@ -19,3 +20,15 @@ export interface StoreItems {
 }
 
 export type UnidadeStoreItem = 'UN' | 'KG' | 'PAR';
+
+export interface PropsComponente {
+  route: {
+    params: {
+      item: {
+        id: number;
+        title: string;
+      };
+    };
+  };
+  navigation: NavigationScreenProp<any, any>;
+}
