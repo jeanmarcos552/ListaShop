@@ -29,7 +29,9 @@ export function CreateNewItem({value, callback}: PropCreateNewItem) {
 
     setShowModal(false);
     callback(value);
-    setTimeout(() => Alert.alert('Atenção', String(resp)), 1000);
+    setTimeout(() => {
+      Alert.alert('Atenção', String(resp));
+    }, 1000);
   }, [callback, unidade, value]);
 
   return (

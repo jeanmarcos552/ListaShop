@@ -1,6 +1,8 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {KeyboardAvoidingView, Platform, View} from 'react-native';
 
+import {NavigationScreenProp} from 'react-navigation';
+
 import Icon from 'react-native-vector-icons/Feather';
 
 import {Container, ListResult, Item, ItemText} from './style';
@@ -14,18 +16,31 @@ import {
 } from '../../../services/list/list-itens';
 import {showList} from '../../../services/list';
 import {indexItems, searchItemsByName} from '../../../services/list/items';
-import {PayloadItem, PropsComponente} from '../../../types/items';
+import {PayloadItem} from '../../../types/items';
 import {CreateNewItem} from './CreadNewItem';
 import {GlobalStyles} from '../../../styles/global';
+
+interface PropsComponente {
+  route: {
+    params: {
+      item: {
+        id: number;
+        title: string;
+      };
+    };
+  };
+  navigation: NavigationScreenProp<any, any>;
+}
 
 const AddItemsToList: React.FC<PropsComponente> = ({route, ...rest}) => {
   const searchRef = useRef<any>(null);
   const {id, title} = route.params.item;
   const [lista, setLista] = useState<PayloadItem[]>();
+  const [allItems, setAllItems] = useState<PayloadItem[]>();
   const [ItemsOfList, setItemsOfList] = useState<ItemsRequest[]>([]);
-  const [currentSearch, setcurrentSearch] = useState<string>('');
-  const [loading, setLoading] = useState(true);
+  const [currentSearch, setcurrentSearch] = useState<string>();
 
+  const [loading, setLoading] = useState(true);
   const {user} = useAuth();
 
   const getItemByList = useCallback(async () => {
@@ -35,18 +50,20 @@ const AddItemsToList: React.FC<PropsComponente> = ({route, ...rest}) => {
     }
   }, [id]);
 
-  const handleInit = useCallback(async () => {
+  const init = useCallback(async () => {
     const {data, status} = await indexItems();
     if (status === 200) {
       setLista(data.data);
+      setAllItems(data.data);
       getItemByList();
+      setcurrentSearch('');
     }
   }, [getItemByList]);
 
   useEffect(() => {
     (async () => {
       try {
-        handleInit();
+        init();
         setLoading(false);
         searchRef.current.focus();
       } catch (erro) {
@@ -54,7 +71,7 @@ const AddItemsToList: React.FC<PropsComponente> = ({route, ...rest}) => {
         setLoading(false);
       }
     })();
-  }, [handleInit]);
+  }, [init]);
 
   const handleAddItemToList = useCallback(
     async (data: any) => {
@@ -89,24 +106,39 @@ const AddItemsToList: React.FC<PropsComponente> = ({route, ...rest}) => {
         await removeItemToList(body);
         getItemByList();
       }
+      init();
     },
-    [ItemsOfList, id, user.id, getItemByList],
+    [ItemsOfList, init, id, user.id, getItemByList],
   );
 
-  const handleSearch = useCallback(async () => {
-    const {data, status} = await searchItemsByName(currentSearch);
+  const handleSearch = useCallback(async (text: string) => {
+    const {data, status} = await searchItemsByName(text);
     if (status === 200) {
       setLista(data);
-    }
-  }, [currentSearch]);
 
-  useEffect(() => {
-    if (currentSearch) {
-      handleSearch();
-    } else {
-      handleInit();
+      if (!data.length) {
+        setcurrentSearch(_ => text);
+      }
     }
-  }, [currentSearch, handleInit, handleSearch]);
+  }, []);
+  const handleSearchItens = useCallback(
+    async (text: string): Promise<void> => {
+      if (text.length > 2) {
+        if (lista?.length === 0) {
+          // se a palavra nao existe, nao faz mais requisicoes quando o cara digita
+          setcurrentSearch(_ => text);
+        } else {
+          // fluxo normal
+          handleSearch(text);
+        }
+      } else {
+        // inicia o rolê
+        setLista(_ => allItems);
+        setcurrentSearch(_ => '');
+      }
+    },
+    [allItems, handleSearch, lista?.length],
+  );
 
   return (
     <GlobalStyles>
@@ -117,8 +149,7 @@ const AddItemsToList: React.FC<PropsComponente> = ({route, ...rest}) => {
         <SearchItems
           label={title}
           searchRef={searchRef}
-          setValue={setcurrentSearch}
-          value={currentSearch}
+          handleSearchItens={handleSearchItens}
           isConclude={ItemsOfList && ItemsOfList.length > 0}
           {...rest}
         />
@@ -128,7 +159,6 @@ const AddItemsToList: React.FC<PropsComponente> = ({route, ...rest}) => {
             <View />
           ) : (
             <ListResult
-              removeClippedSubviews={true}
               data={lista}
               ListEmptyComponent={
                 <CreateNewItem

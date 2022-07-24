@@ -224,7 +224,7 @@ const ItemsList: React.FC<PropsComponente> = ({route, navigation}) => {
           showsVerticalScrollIndicator={false}
           data={items || []}
           keyExtractor={(provider: any) => provider.id.toString()}
-          removeClippedSubviews={true}
+          removeClippedSubviews={false}
           ListFooterComponent={<View style={{marginBottom: 50}} />}
           renderItem={({item: provider, index}: any) => {
             return (

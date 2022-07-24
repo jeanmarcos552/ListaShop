@@ -1,7 +1,6 @@
 import React, {useCallback, useState} from 'react';
 import {TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
-
 import {
   ButtonAddNewCategory,
   HeaderSearch,
@@ -13,20 +12,19 @@ import {
 
 type PropsSearchItems = {
   searchRef: React.RefObject<any>;
-  setValue: Function;
-  value: string;
+  handleSearchItens: Function;
   navigation: any;
   isConclude: boolean;
   label?: string;
 };
 export function SearchItems({
   searchRef,
+  handleSearchItens,
   navigation,
   isConclude,
   label,
-  value,
-  setValue,
 }: PropsSearchItems) {
+  const [value, setValue] = useState<string>();
   const [isFocus, setIsFocus] = useState(true);
 
   const handleIsFocus = useCallback(() => {
@@ -49,13 +47,19 @@ export function SearchItems({
           placeholder="pesquisar..."
           value={value}
           placeholderTextColor={isFocus ? '#01ac73' : '#ff9000'}
-          onChangeText={(text: string) => setValue(text)}
-          autoCapitalize="none"
+          onChangeText={(text: string) => {
+            handleSearchItens(text);
+            setValue(text);
+          }}
           onFocus={handleIsFocus}
           onBlur={handleIsFilled}
         />
         {value ? (
-          <ButtonAddNewCategory onPress={() => setValue('')}>
+          <ButtonAddNewCategory
+            onPress={() => {
+              setValue('');
+              handleSearchItens('');
+            }}>
             <TextButton>Limpar</TextButton>
           </ButtonAddNewCategory>
         ) : (

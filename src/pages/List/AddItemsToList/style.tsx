@@ -25,7 +25,7 @@ interface PropTextInputSugest {
 export const TextInputSugest = styled.View<PropsInput>`
   height: 50px;
   padding: 0 10px;
-  background: ${({theme}) => theme.colors.background};
+  background: ${({theme}: any) => theme.colors.background};
   border-radius: 10px;
   margin-bottom: 15px;
   border-width: 2px;
