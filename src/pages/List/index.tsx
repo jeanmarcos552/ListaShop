@@ -68,7 +68,7 @@ function calcItensCheckt(provider: ProviderItems) {
   return itensChecked.length / provider?.itens?.length || 0;
 }
 
-const List = ({theme}) => {
+const List = ({theme}: any) => {
   const [modalVisible, setModalVisible] = useState(false);
   const navigate = useNavigation<NavigationProp<ParamListBase>>();
   const [{data, refreshing, itemToDelete}, dispatch] = useReducer(
@@ -76,7 +76,6 @@ const List = ({theme}) => {
     initalList,
   );
   const [dialogo, setDialogo] = useState(false);
-  const [bottom, setBottom] = useState(new Animated.Value(-150));
 
   useEffect(() => {
     fetchData(dispatch);
@@ -115,97 +114,92 @@ const List = ({theme}) => {
   useFocusEffect(
     useCallback(() => {
       fetchData(dispatch);
-      setBottom(new Animated.Value(-150));
     }, []),
   );
 
   return (
-    <>
-      <HeaderLayout />
-      <TemplateDefault
-        loadingComponent={<SkeletonListitem />}
-        loading={!data.data}>
-        <>
-          <DialogComponent
-            setVisible={setDialogo}
-            visible={dialogo}
-            title="Deletar essa lista?">
-            <ContainerDialog>
-              <Button
-                mode="outlined"
-                onPress={() => dispatch({type: 'DELETE_LIST', payload: null})}>
-                Não
-              </Button>
-              <Button
-                mode="contained"
-                buttonColor={theme.colors.danger}
-                onPress={handleDelete}>
-                Sim
-              </Button>
-            </ContainerDialog>
-          </DialogComponent>
+    <TemplateDefault
+      header={<HeaderLayout />}
+      loadingComponent={<SkeletonListitem />}
+      loading={!data.data}>
+      <>
+        <DialogComponent
+          setVisible={setDialogo}
+          visible={dialogo}
+          title="Deletar essa lista?">
+          <ContainerDialog>
+            <Button
+              mode="outlined"
+              onPress={() => dispatch({type: 'DELETE_LIST', payload: null})}>
+              Não
+            </Button>
+            <Button
+              mode="contained"
+              buttonColor={theme.colors.danger}
+              onPress={handleDelete}>
+              Sim
+            </Button>
+          </ContainerDialog>
+        </DialogComponent>
 
-          <ShoppingList
-            showsVerticalScrollIndicator={false}
-            refreshControl={<RefreshControl refreshing={refreshing} />}
-            data={data?.data}
-            ListEmptyComponent={
-              <Empty
-                text="Você ainda não tem nenhuma lista :("
-                action={() => setModalVisible(true)}
-              />
-            }
-            ListFooterComponent={<View style={{marginBottom: 80}} />}
-            ListHeaderComponent={
-              <ViewHeader>
-                <TextHeader>Listas</TextHeader>
-              </ViewHeader>
-            }
-            renderItem={({item: provider}: any) => (
-              <ContainerList>
-                <ItemList onPress={() => handleSeeItem(provider)}>
-                  <ContainerText>
-                    <ItemListText>{provider.name}</ItemListText>
-                    <DisplayIconsByStatus {...provider} theme={theme} />
-                  </ContainerText>
-                  <ValueText>R$ {somaValoresItens(provider)}</ValueText>
-                </ItemList>
-                <ProgressBarView>
-                  <ProgressBar
-                    style={{height: 7, borderRadius: 5}}
-                    progress={calcItensCheckt(provider)}
-                    color={theme.colors.primary}
-                  />
-                </ProgressBarView>
-                <FooterLoop>
-                  <TextRightFooter>
-                    {moment(provider.created_at).format('DD/MM')}
-                  </TextRightFooter>
-                  <ViewAction>
-                    <ViewDeleteItem
-                      onPress={() =>
-                        dispatch({type: 'DELETE_LIST', payload: provider.id})
-                      }>
-                      <TextDeleteItem name="trash" size={18} />
-                    </ViewDeleteItem>
+        <ShoppingList
+          showsVerticalScrollIndicator={false}
+          refreshControl={<RefreshControl refreshing={refreshing} />}
+          data={data?.data}
+          ListEmptyComponent={
+            <Empty
+              text="Você ainda não tem nenhuma lista :("
+              action={() => setModalVisible(true)}
+            />
+          }
+          ListFooterComponent={<View style={{marginBottom: 80}} />}
+          ListHeaderComponent={
+            <ViewHeader>
+              <TextHeader>Listas</TextHeader>
+            </ViewHeader>
+          }
+          renderItem={({item: provider}: any) => (
+            <ContainerList>
+              <ItemList onPress={() => handleSeeItem(provider)}>
+                <ContainerText>
+                  <ItemListText>{provider.name}</ItemListText>
+                  <DisplayIconsByStatus {...provider} theme={theme} />
+                </ContainerText>
+                <ValueText>R$ {somaValoresItens(provider)}</ValueText>
+              </ItemList>
+              <ProgressBarView>
+                <ProgressBar
+                  style={{height: 7, borderRadius: 5}}
+                  progress={calcItensCheckt(provider)}
+                  color={theme.colors.primary}
+                />
+              </ProgressBarView>
+              <FooterLoop>
+                <TextRightFooter>
+                  {moment(provider.created_at).format('DD/MM')}
+                </TextRightFooter>
+                <ViewAction>
+                  <ViewDeleteItem
+                    onPress={() =>
+                      dispatch({type: 'DELETE_LIST', payload: provider.id})
+                    }>
+                    <TextDeleteItem name="trash" size={18} />
+                  </ViewDeleteItem>
 
-                    <ShareList key={provider.id} provider={provider} />
-                  </ViewAction>
-                </FooterLoop>
-              </ContainerList>
-            )}
-            keyExtractor={(provider: any) => provider.id.toString()}
-          />
-          <FormList
-            dispatch={dispatch}
-            modalVisible={modalVisible}
-            setModalVisible={setModalVisible}
-            bottom={bottom}
-            setBottom={setBottom}
-          />
-        </>
-      </TemplateDefault>
-    </>
+                  <ShareList key={provider.id} provider={provider} />
+                </ViewAction>
+              </FooterLoop>
+            </ContainerList>
+          )}
+          keyExtractor={(provider: any) => provider.id.toString()}
+        />
+        <FormList
+          dispatch={dispatch}
+          modalVisible={modalVisible}
+          setModalVisible={setModalVisible}
+        />
+      </>
+    </TemplateDefault>
   );
 };
 

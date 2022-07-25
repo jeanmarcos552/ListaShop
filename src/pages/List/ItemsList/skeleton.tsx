@@ -12,7 +12,7 @@ const SkeletonListItem: React.FC<PropsComponent> = () => {
 
   return (
     <View style={{marginBottom: 20, flex: 1}}>
-      <SkeletonPlaceholder speed={3}>
+      <SkeletonPlaceholder speed={4}>
         <SkeletonPlaceholder.Item
           marginTop={30}
           marginBottom={20}

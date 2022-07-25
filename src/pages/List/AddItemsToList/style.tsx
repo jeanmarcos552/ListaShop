@@ -74,6 +74,7 @@ export const Item = styled.TouchableOpacity`
 export const ItemText = styled.Text`
   font-size: 18px;
   font-family: 'Exo-Regular';
+  color: #7a7878;
 `;
 
 export const HeaderList = styled.View`

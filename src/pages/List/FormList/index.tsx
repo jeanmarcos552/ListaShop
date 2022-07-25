@@ -1,6 +1,6 @@
 import {Form} from '@unform/mobile';
 import {FormHandles} from '@unform/core';
-import React, {useEffect, useRef} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   KeyboardAvoidingView,
   Platform,
@@ -27,19 +27,16 @@ interface ComponentProps {
   dispatch: any;
   setModalVisible: Function;
   modalVisible: boolean;
-  setBottom: Function;
-  bottom: any;
 }
 
 const FormList: React.FC<ComponentProps> = ({
   dispatch,
   modalVisible,
   setModalVisible,
-  setBottom,
-  bottom,
 }) => {
   const formRef = useRef<FormHandles>(null);
   const inputRef = useRef<any>(null);
+  const [bottom, setBottom] = useState(new Animated.Value(-150));
 
   function handleSubmit(data) {
     createNewList(dispatch, data);

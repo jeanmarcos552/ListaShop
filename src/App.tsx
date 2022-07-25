@@ -7,26 +7,26 @@ import AppProvider from './hooks';
 import Routes from './routes';
 
 import {ThemeProvider} from 'styled-components/native';
-import light from './styles/themes/light';
+import light from './styles/theme/light';
 import {Provider} from 'react-native-paper';
 
 const App: React.FC = () => {
   return (
-    <Provider>
-      <ThemeProvider theme={light}>
-        <NavigationContainer>
-          <StatusBar
-            animated={true}
-            backgroundColor={light.colors.primary}
-            barStyle="default"
-            showHideTransition="slide"
-          />
-          <AppProvider>
+    <ThemeProvider theme={light}>
+      <NavigationContainer>
+        <StatusBar
+          animated={true}
+          backgroundColor={light.colors.primary}
+          barStyle="default"
+          showHideTransition="slide"
+        />
+        <AppProvider>
+          <Provider>
             <Routes />
-          </AppProvider>
-        </NavigationContainer>
-      </ThemeProvider>
-    </Provider>
+          </Provider>
+        </AppProvider>
+      </NavigationContainer>
+    </ThemeProvider>
   );
 };
 

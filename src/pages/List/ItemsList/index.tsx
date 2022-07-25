@@ -66,12 +66,15 @@ const ItemsList: React.FC<PropsComponente> = ({route, navigation}) => {
   const [elRefs, setElRefs] = useState<Array<any>>([]);
   const [somaItens, setSomaItens] = useState('0');
   const [totalSelected, setTotalSelected] = useState(0);
+  const [loading, setLoading] = useState(true);
 
   const getDados = useCallback(async () => {
     try {
       const {data, status} = await showList(id);
 
       if (status === 200) {
+        setLoading(false);
+
         if (data.itens) {
           const {itens} = data;
           if (itens) {
@@ -86,6 +89,7 @@ const ItemsList: React.FC<PropsComponente> = ({route, navigation}) => {
       }
     } catch (erro: any) {
       console.error(erro.message);
+      setLoading(false);
     }
   }, [id]);
 
@@ -218,7 +222,7 @@ const ItemsList: React.FC<PropsComponente> = ({route, navigation}) => {
         />
       }
       loadingComponent={<SkeletonListItem />}
-      loading={false}>
+      loading={loading}>
       <Container>
         <ListItens
           showsVerticalScrollIndicator={false}
@@ -240,7 +244,7 @@ const ItemsList: React.FC<PropsComponente> = ({route, navigation}) => {
                     text={provider.name}
                     iconStyle={{borderColor: '#01ac73'}}
                     textStyle={{
-                      fontSize: 20,
+                      fontSize: 17,
                       fontFamily: 'Exo-Regular',
                     }}
                     isChecked={provider.pivot.status}

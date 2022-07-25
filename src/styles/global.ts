@@ -1,14 +1,7 @@
 import styled from 'styled-components/native';
 
-import light from './themes/light';
-type Theme = typeof light;
-
-export interface MainTheme {
-  theme: Theme;
-}
-
 export const GlobalStyles = styled.View`
-  background-color: ${({theme}: MainTheme) => theme.colors.background};
+  background-color: ${({theme}) => theme.colors.background};
   flex: 1;
   height: 100%;
 `;

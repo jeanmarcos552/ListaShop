@@ -121,6 +121,7 @@ const AddItemsToList: React.FC<PropsComponente> = ({route, ...rest}) => {
       }
     }
   }, []);
+
   const handleSearchItens = useCallback(
     async (text: string): Promise<void> => {
       if (text.length > 2) {

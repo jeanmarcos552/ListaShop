@@ -72,7 +72,6 @@ export const InputCheckbox = styled(BouncyCheckbox)`
   margin-bottom: 10px;
   padding: 2px;
   align-items: flex-end;
-  background-color: #fff;
   height: 45px;
   align-items: center;
 `;
@@ -92,7 +91,6 @@ export const GridItens = styled.View`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  background-color: #fff;
 `;
 
 export const TextValues = styled.TextInput`
