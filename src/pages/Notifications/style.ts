@@ -129,3 +129,13 @@ export const ButtomAlowText = styled.Text`
   font-family: 'Exo-SemiBold';
   font-size: 15px;
 `;
+
+export const ViewHeader = styled.View`
+  padding: 10px;
+`;
+
+export const TextHeader = styled.Text`
+  font-size: 30px;
+  font-family: 'Exo-SemiBold';
+  color: ${({theme}) => theme.colors.secondary};
+`;

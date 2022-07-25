@@ -10,13 +10,10 @@ import {
   Container,
   InfoNotification,
   TextRightFooter,
-  EmptyListText,
-  HeaderText,
-  Layout,
   Bold,
   Description,
-  ButtomAlow,
-  ButtomAlowText,
+  ViewHeader,
+  TextHeader,
 } from './style';
 import {
   NavigationProp,
@@ -24,15 +21,18 @@ import {
   useFocusEffect,
   useNavigation,
 } from '@react-navigation/native';
-import {View} from 'react-native';
 import {Swipeable} from 'react-native-gesture-handler';
 import SkeletonListagem from './skeleton';
 
-import Icons from 'react-native-vector-icons/Ionicons';
 import HeaderSingle from '../../Layout/HeaderSingle';
 import {indexNotification} from '../../services/notification';
 import {INotification} from '../../types/notifications';
 import {storeUserList} from '../../services/list/list-user';
+import TemplateDefault from '../../Layout/Default';
+import Empty from '../../Components/Empty';
+import {Alert, RefreshControl} from 'react-native';
+import {Button} from 'react-native-paper';
+import {useTheme} from 'styled-components';
 
 export interface ProviderRequest {
   current_page: number;
@@ -68,17 +68,18 @@ export interface User {
 const Notifications = () => {
   const navigate = useNavigation<NavigationProp<ParamListBase>>();
   const [notifications, setNotifications] = useState<INotification[]>();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const theme = useTheme();
 
   const getDados = useCallback(async () => {
     try {
       const {status, data} = await indexNotification();
+
       if (status !== 200) {
         throw new Error(String(data));
       }
       setNotifications(data.data);
-      setLoading(false);
-    } catch (erro) {
+    } catch (erro: any) {
       console.log(erro.message);
     }
   }, []);
@@ -97,75 +98,84 @@ const Notifications = () => {
   //   console.log(data);
   // }, []);
 
-  const handleAccept = useCallback(async (data: ProviderItems) => {
-    const res = await storeUserList({
-      body: {
-        lista: data.lista.id,
-        user: data.user_receiver.email,
-        notification_id: data.id,
-      },
-    });
-    console.log(res);
-  }, []);
+  const handleAccept = useCallback(
+    async (data: ProviderItems) => {
+      try {
+        setLoading(true);
+
+        const {data: res, status} = await storeUserList({
+          body: {
+            lista: data.lista.id,
+            user: data.user_receiver.email,
+            notification_id: data.id,
+          },
+        }).finally(() => setLoading(false));
+
+        if (status !== 200) {
+          throw Error(`${res} (${status})`);
+        }
+
+        getDados();
+        Alert.alert('Atenção', String(res));
+      } catch (error: any) {
+        Alert.alert('Atenção', error.message);
+      }
+    },
+    [getDados],
+  );
 
   return (
-    <>
-      <HeaderSingle title="Listas" navigation={navigate} />
-
-      <Layout>
-        {loading ? (
-          [0, 1, 2, 3].map(item => <SkeletonListagem key={item} />)
-        ) : notifications && notifications.length > 0 ? (
-          <Container>
-            <List
-              // refreshControl={
-              //   <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-              // }
-              data={notifications}
-              renderItem={({item: provider}: any) => (
-                <Swipeable>
-                  <ContainerList>
-                    <ItemList>
-                      <ContainerText>
-                        <ItemListText>{provider.lista.name}</ItemListText>
-                      </ContainerText>
-                    </ItemList>
-                    <Description>{provider.description}</Description>
-                    <InfoNotification>
-                      <TextRightFooter>
-                        Enviado por: <Bold>{provider.user_send.name}</Bold>
-                      </TextRightFooter>
-                      <TextRightFooter>
-                        {`${moment(provider.created_at).format(
-                          'DD/MM',
-                        )} às ${moment(provider.created_at).format('H:s')}`}
-                      </TextRightFooter>
-                    </InfoNotification>
-                    <ButtomAlow onPress={() => handleAccept(provider)}>
-                      <ButtomAlowText>Aceitar</ButtomAlowText>
-                    </ButtomAlow>
-                  </ContainerList>
-                </Swipeable>
-              )}
-              ListHeaderComponent={() => (
-                <HeaderText>Notificações Recebidas</HeaderText>
-              )}
-              keyExtractor={(provider: any) => provider.id.toString()}
-            />
-          </Container>
-        ) : (
-          <View
-            style={{
-              flex: 1,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-            <Icons name="notifications-off-sharp" size={80} color="#6d6d6ddd" />
-            <EmptyListText>Ainda não existe nenhuma notificação</EmptyListText>
-          </View>
-        )}
-      </Layout>
-    </>
+    <TemplateDefault
+      header={<HeaderSingle title="Listas" navigation={navigate} />}
+      loading={!notifications}
+      loadingComponent={<SkeletonListagem />}>
+      <Container>
+        <List
+          refreshControl={
+            <RefreshControl refreshing={!notifications} onRefresh={getDados} />
+          }
+          ListEmptyComponent={
+            <Empty text="Você ainda não tem nenhuma lista :(" />
+          }
+          data={notifications}
+          renderItem={({item: provider}: any) => (
+            <Swipeable>
+              <ContainerList>
+                <ItemList>
+                  <ContainerText>
+                    <ItemListText>{provider.lista.name}</ItemListText>
+                  </ContainerText>
+                </ItemList>
+                <Description>{provider.description}</Description>
+                <InfoNotification>
+                  <TextRightFooter>
+                    Enviado por: <Bold>{provider.user_send.name}</Bold>
+                  </TextRightFooter>
+                  <TextRightFooter>
+                    {`${moment(provider.created_at).format(
+                      'DD/MM',
+                    )} às ${moment(provider.created_at).format('H:s')}`}
+                  </TextRightFooter>
+                </InfoNotification>
+                <Button
+                  mode="contained"
+                  loading={loading}
+                  buttonColor={theme.colors.secondary}
+                  onPress={() => handleAccept(provider)}>
+                  Aceitar
+                </Button>
+              </ContainerList>
+            </Swipeable>
+          )}
+          ListHeaderComponent={
+            <ViewHeader>
+              <TextHeader>Notificações</TextHeader>
+            </ViewHeader>
+          }
+          keyExtractor={(provider: any) => provider.id.toString()}
+        />
+      </Container>
+    </TemplateDefault>
   );
 };
 

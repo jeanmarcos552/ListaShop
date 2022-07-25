@@ -4,7 +4,7 @@ import api, {displayError, mountErro} from '../api';
 
 export async function storeUserList({
   body,
-}: StoreUserToList): Promise<AxiosResponse<number>> {
+}: StoreUserToList): Promise<AxiosResponse<string>> {
   try {
     const response = await api.post('/addUserToList', {...body}).catch(erro => {
       throw Error(mountErro(erro));

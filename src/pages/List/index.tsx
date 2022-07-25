@@ -6,7 +6,7 @@ import {
   useFocusEffect,
   useNavigation,
 } from '@react-navigation/native';
-import {Alert, Animated, RefreshControl, View} from 'react-native';
+import {Alert, RefreshControl, View} from 'react-native';
 
 import moment from 'moment';
 
@@ -48,6 +48,7 @@ import {fetchData} from '../../store/actions/list/fetchData';
 import {initalList, reducerList} from '../../store/reducers/list';
 import DialogComponent from '../../Components/Dialog';
 import {removeList} from '../../store/actions/list/removeList';
+import {useAuth} from '../../hooks/auth';
 
 function somaValoresItens(pivot: ProviderItems) {
   if (!pivot) {
@@ -76,6 +77,7 @@ const List = ({theme}: any) => {
     initalList,
   );
   const [dialogo, setDialogo] = useState(false);
+  const {user} = useAuth();
 
   useEffect(() => {
     fetchData(dispatch);
@@ -178,16 +180,18 @@ const List = ({theme}: any) => {
                 <TextRightFooter>
                   {moment(provider.created_at).format('DD/MM')}
                 </TextRightFooter>
-                <ViewAction>
-                  <ViewDeleteItem
-                    onPress={() =>
-                      dispatch({type: 'DELETE_LIST', payload: provider.id})
-                    }>
-                    <TextDeleteItem name="trash" size={18} />
-                  </ViewDeleteItem>
+                {user.id === provider.created_by && (
+                  <ViewAction>
+                    <ViewDeleteItem
+                      onPress={() =>
+                        dispatch({type: 'DELETE_LIST', payload: provider.id})
+                      }>
+                      <TextDeleteItem name="trash" size={18} />
+                    </ViewDeleteItem>
 
-                  <ShareList key={provider.id} provider={provider} />
-                </ViewAction>
+                    <ShareList key={provider.id} provider={provider} />
+                  </ViewAction>
+                )}
               </FooterLoop>
             </ContainerList>
           )}
