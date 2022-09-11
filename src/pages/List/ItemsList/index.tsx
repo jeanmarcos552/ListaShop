@@ -1,4 +1,4 @@
-import React, {createRef, useCallback, useEffect, useState} from 'react';
+import React, {createRef, useCallback, useState} from 'react';
 import {TouchableOpacity, View} from 'react-native';
 
 import {
@@ -68,6 +68,8 @@ const ItemsList: React.FC<PropsComponente> = ({route, navigation}) => {
   const [totalSelected, setTotalSelected] = useState(0);
   const [loading, setLoading] = useState(true);
 
+  const copyItemsList = items;
+
   const getDados = useCallback(async () => {
     try {
       const {data, status} = await showList(id);
@@ -98,32 +100,32 @@ const ItemsList: React.FC<PropsComponente> = ({route, navigation}) => {
       const {data, status} = await removeItemToList({...pivot});
       SetItems(state => state?.filter(item => item.id !== pivot.itens_id));
 
-      if (items) {
-        setSomaItens(somaValoresItens(items));
-        setTotalSelected(checkItemsSelected(items));
+      if (copyItemsList) {
+        setSomaItens(somaValoresItens(copyItemsList));
+        setTotalSelected(checkItemsSelected(copyItemsList));
       }
 
       console.log(data, status);
     },
-    [items],
+    [copyItemsList],
   );
 
   const changeItem = useCallback(
     async (pivot: any) => {
-      const copyItems = items?.map(item => {
+      const copyItems = copyItemsList?.map(item => {
         if (item.id === pivot.itens_id) {
           item.pivot = pivot;
         }
         return item;
       });
       await updateItems({body: pivot, ...pivot});
-      SetItems(_ => copyItems);
+      // SetItems(_ => copyItems);
       if (copyItems) {
         setSomaItens(somaValoresItens(copyItems));
         setTotalSelected(checkItemsSelected(copyItems));
       }
     },
-    [items],
+    [copyItemsList],
   );
 
   const handleCheckItem = useCallback(
@@ -154,7 +156,7 @@ const ItemsList: React.FC<PropsComponente> = ({route, navigation}) => {
 
   const handleChange = useCallback(
     (value: string, pivot: any, key = '') => {
-      const copyItem = [...(items || [])];
+      const copyItem = [...(copyItemsList || [])];
       pivot[key] = value;
 
       copyItem?.map(provider => {
@@ -164,7 +166,7 @@ const ItemsList: React.FC<PropsComponente> = ({route, navigation}) => {
       });
       SetItems(copyItem);
     },
-    [items],
+    [copyItemsList],
   );
 
   const leftSwipe = useCallback(
@@ -198,10 +200,6 @@ const ItemsList: React.FC<PropsComponente> = ({route, navigation}) => {
     [handleDeleteItem],
   );
 
-  useEffect(() => {
-    getDados();
-  }, [getDados]);
-
   useFocusEffect(
     useCallback(() => {
       getDados();
@@ -224,9 +222,10 @@ const ItemsList: React.FC<PropsComponente> = ({route, navigation}) => {
       loadingComponent={<SkeletonListItem />}
       loading={loading}>
       <Container>
+        <RenderHeader totalSelected={totalSelected} />
         <ListItens
           showsVerticalScrollIndicator={false}
-          data={items || []}
+          data={copyItemsList || []}
           keyExtractor={(provider: any) => provider.id.toString()}
           removeClippedSubviews={false}
           ListFooterComponent={<View style={{marginBottom: 50}} />}
@@ -279,7 +278,6 @@ const ItemsList: React.FC<PropsComponente> = ({route, navigation}) => {
               </Swipeable>
             );
           }}
-          ListHeaderComponent={<RenderHeader totalSelected={totalSelected} />}
         />
         <RenderFooter
           sumItems={somaItens}

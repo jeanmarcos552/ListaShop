@@ -117,3 +117,11 @@ export const ButtonDelete = styled.View`
 export const IconTrash = styled(Icon)`
   color: ${({theme}) => theme.colors.danger};
 `;
+
+export const ButtonSalvarLista = styled.TouchableOpacity`
+  display: flex;
+  flex-direction: row;
+  background: #01ac73;
+  border-radius: 50px;
+  padding: 2px 20px;
+`;
