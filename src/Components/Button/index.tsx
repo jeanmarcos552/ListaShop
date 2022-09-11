@@ -1,18 +1,26 @@
 import React from 'react';
 import {RectButtonProperties} from 'react-native-gesture-handler';
-
-import {ButtonText, Container} from './style';
+import {Button} from 'react-native-paper';
+import {useTheme} from 'styled-components';
 
 interface ButtonProps extends RectButtonProperties {
   children: string;
+  onPress: (() => void) | undefined;
+  loading?: boolean;
 }
 
-const Button: React.FC<ButtonProps> = ({children, ...rest}) => {
+const ButtonDefault: React.FC<ButtonProps> = ({children, onPress, loading}) => {
+  const theme = useTheme();
   return (
-    <Container {...rest}>
-      <ButtonText>{children}</ButtonText>
-    </Container>
+    <Button
+      loading={loading}
+      mode="contained"
+      buttonColor={theme.colors.secondary}
+      textColor="#fff"
+      onPress={onPress}>
+      {children}
+    </Button>
   );
 };
 
-export default Button;
+export default ButtonDefault;

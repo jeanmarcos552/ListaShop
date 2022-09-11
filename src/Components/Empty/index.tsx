@@ -1,19 +1,15 @@
 import React from 'react';
-import {Button} from 'react-native-paper';
 import {CenterView, Container, Text} from './style';
 import {withTheme} from 'styled-components/native';
 import {ImageBackground} from 'react-native';
+import ButtonDefault from '../Button';
 
 interface PropEmpty {
   theme: any;
   text: string;
   action?: Function;
 }
-function Empty({
-  theme,
-  action,
-  text = 'Ainda não existe nada por aqui!',
-}: PropEmpty) {
+function Empty({action, text = 'Ainda não existe nada por aqui!'}: PropEmpty) {
   return (
     <Container>
       <Text>{text}</Text>
@@ -25,12 +21,7 @@ function Empty({
         />
       </CenterView>
       {action && (
-        <Button
-          mode="contained"
-          buttonColor={theme.colors.secondary}
-          onPress={() => action()}>
-          Criar uma lista
-        </Button>
+        <ButtonDefault onPress={() => action()}>Criar conta</ButtonDefault>
       )}
     </Container>
   );
