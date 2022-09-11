@@ -18,24 +18,26 @@ export const Title = styled.Text`
 
 export const BackToLogin = styled.TouchableOpacity`
   position: absolute;
+  bottom: 0;
   left: 0;
   right: 0;
-  bottom: 0;
   padding: 16px 0 ${16 + getBottomSpace()}px;
 
-  align-items: center;
-  justify-content: center;
   border-top-width: 1px;
-  border-color: #fff;
+  border-color: #029e6a;
+  background: #029e6a;
+  align-items: center;
+  flex-direction: row;
+  justify-content: center;
 `;
 
 export const BackToLoginText = styled.Text`
   color: #fff;
-  font-family: 'Exo-semiBold';
-  font-size: 20px;
+  font-size: 16px;
+  font-family: 'Exo-SemiBold';
 `;
 
-export const Image = styled.Image`
-  width: 100%;
-  height: 75px;
+export const Image = styled.BackgroundImage`
+  width: 60%;
+  height: 45px;
 `;

@@ -65,13 +65,18 @@ const AddItemsToList: React.FC<PropsComponente> = ({route, ...rest}) => {
       try {
         init();
         setLoading(false);
-        searchRef.current.focus();
       } catch (erro) {
         console.error(erro);
         setLoading(false);
       }
     })();
   }, [init]);
+
+  useEffect(() => {
+    if (!loading && lista?.length) {
+      searchRef.current.focus();
+    }
+  }, [lista?.length, loading]);
 
   const handleAddItemToList = useCallback(
     async (data: any) => {

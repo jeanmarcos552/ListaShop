@@ -1,6 +1,6 @@
 import React, {useCallback, useState} from 'react';
 import {Alert, View} from 'react-native';
-import {Button} from 'react-native-paper';
+import ButtonDefault from '../../../../Components/Button';
 import DialogComponent from '../../../../Components/Dialog';
 import {storeItem} from '../../../../services/list/items';
 import {UnidadeStoreItem} from '../../../../types/items';
@@ -56,12 +56,9 @@ export function CreateNewItem({value, callback}: PropCreateNewItem) {
             </ContainerUnidade>
           ))}
           <View style={{height: 10}} />
-          <Button
-            mode="contained"
-            buttonColor="#013DB4"
-            onPress={handleCreateNewItem}>
+          <ButtonDefault onPress={handleCreateNewItem}>
             Salvar Item
-          </Button>
+          </ButtonDefault>
         </>
       </DialogComponent>
     </>

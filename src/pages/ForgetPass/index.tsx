@@ -28,28 +28,25 @@ const ForgetPass = () => {
   const formRef = useRef<FormHandles>(null);
 
   return (
-    <>
-      <KeyboardAvoidingView
-        style={{flex: 1}}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        enabled>
-        <ScrollView
-          contentContainerStyle={{flex: 1}}
-          keyboardShouldPersistTaps="handled">
-          <Container>
-            <Image source={Logo} />
-            <Title>Recuperar senha</Title>
-            <Form ref={formRef} onSubmit={handleRecoverPass}>
-              <Input name="email" icon="mail" placeholder="email" />
+    <KeyboardAvoidingView
+      style={{flex: 1}}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      enabled>
+      <ScrollView
+        contentContainerStyle={{flex: 1}}
+        keyboardShouldPersistTaps="handled">
+        <Container>
+          <Image source={Logo} />
+          <Title>Recuperar senha</Title>
+          <Form ref={formRef} onSubmit={handleRecoverPass}>
+            <Input name="email" icon="mail" placeholder="email" />
 
-              <Button onPress={() => formRef.current?.submitForm()}>
-                Recuperar senha
-              </Button>
-            </Form>
-          </Container>
-        </ScrollView>
-      </KeyboardAvoidingView>
-
+            <Button onPress={() => formRef.current?.submitForm()}>
+              Recuperar senha
+            </Button>
+          </Form>
+        </Container>
+      </ScrollView>
       <BackToLogin
         onPress={() => {
           navigate.navigate('SignIn');
@@ -59,7 +56,7 @@ const ForgetPass = () => {
           Voltar para o Login
         </BackToLoginText>
       </BackToLogin>
-    </>
+    </KeyboardAvoidingView>
   );
 };
 

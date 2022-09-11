@@ -31,8 +31,8 @@ import {storeUserList} from '../../services/list/list-user';
 import TemplateDefault from '../../Layout/Default';
 import Empty from '../../Components/Empty';
 import {Alert, RefreshControl} from 'react-native';
-import {Button} from 'react-native-paper';
-import {useTheme} from 'styled-components';
+
+import ButtonDefault from '../../Components/Button';
 
 export interface ProviderRequest {
   current_page: number;
@@ -69,7 +69,6 @@ const Notifications = () => {
   const navigate = useNavigation<NavigationProp<ParamListBase>>();
   const [notifications, setNotifications] = useState<INotification[]>();
   const [loading, setLoading] = useState(false);
-  const theme = useTheme();
 
   const getDados = useCallback(async () => {
     try {
@@ -157,13 +156,11 @@ const Notifications = () => {
                     )} às ${moment(provider.created_at).format('H:s')}`}
                   </TextRightFooter>
                 </InfoNotification>
-                <Button
-                  mode="contained"
+                <ButtonDefault
                   loading={loading}
-                  buttonColor={theme.colors.secondary}
                   onPress={() => handleAccept(provider)}>
                   Aceitar
-                </Button>
+                </ButtonDefault>
               </ContainerList>
             </Swipeable>
           )}

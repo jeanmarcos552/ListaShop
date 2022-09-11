@@ -131,13 +131,15 @@ const List = ({theme}: any) => {
           title="Deletar essa lista?">
           <ContainerDialog>
             <Button
-              mode="outlined"
+              mode="elevated"
+              textColor={theme.colors.secondary}
               onPress={() => dispatch({type: 'DELETE_LIST', payload: null})}>
               Não
             </Button>
             <Button
               mode="contained"
               buttonColor={theme.colors.danger}
+              textColor="#fff"
               onPress={handleDelete}>
               Sim
             </Button>

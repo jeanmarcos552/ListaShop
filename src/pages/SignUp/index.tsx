@@ -15,9 +15,8 @@ import {FormHandles} from '@unform/core';
 
 import Input from '../../Components/Input';
 
-import {Title, Container, BackToLogin, BackToLoginText} from './style';
+import {Title, Container, BackToLogin, BackToLoginText, Image} from './style';
 import Logo from '../../assets/img/logo.png';
-import {Image} from '../SignIn/style';
 import {
   NavigationProp,
   ParamListBase,
@@ -27,8 +26,7 @@ import {
 import IconBack from 'react-native-vector-icons/Feather';
 import getValidationErrors from '../../../Utils/getValidation';
 import api from '../../services/api';
-import {Button} from 'react-native-paper';
-import {useTheme} from 'styled-components';
+import ButtonDefault from '../../Components/Button';
 
 interface SignUpFormData {
   name: string;
@@ -40,7 +38,6 @@ interface SignUpFormData {
 const SignUp: React.FC = () => {
   const navigate = useNavigation<NavigationProp<ParamListBase>>();
   const formRef = useRef<FormHandles>(null);
-  const theme = useTheme();
   const [loading, setLoading] = useState(false);
   const emailInputRef = useRef<TextInput>(null);
   const passwordlInputRef = useRef<TextInput>(null);
@@ -102,7 +99,7 @@ const SignUp: React.FC = () => {
         contentContainerStyle={{flex: 1}}
         keyboardShouldPersistTaps="handled">
         <Container>
-          <Image source={Logo} />
+          <Image resizeMode="contain" source={Logo} />
           <View>
             <Title>Cadastre-se</Title>
           </View>
@@ -143,13 +140,11 @@ const SignUp: React.FC = () => {
               icon="lock"
               onSubmitEditing={() => formRef.current?.submitForm()}
             />
-            <Button
+            <ButtonDefault
               loading={loading}
-              buttonColor={theme.colors.secondary}
-              mode="contained"
               onPress={() => formRef.current?.submitForm()}>
               Criar conta
-            </Button>
+            </ButtonDefault>
           </Form>
         </Container>
       </ScrollView>

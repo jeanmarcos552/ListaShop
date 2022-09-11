@@ -16,6 +16,11 @@ export const Title = styled.Text`
   margin: 60px 0 20px;
 `;
 
+export const Image = styled.ImageBackground`
+  width: 100%;
+  height: 45px;
+`;
+
 export const BackToLogin = styled.TouchableOpacity`
   position: absolute;
   bottom: 0;
@@ -24,8 +29,8 @@ export const BackToLogin = styled.TouchableOpacity`
   padding: 16px 0 ${16 + getBottomSpace()}px;
 
   border-top-width: 1px;
-  border-color: #01ac73;
-  background: #01ac73;
+  border-color: #029e6a;
+  background: #029e6a;
   align-items: center;
   flex-direction: row;
   justify-content: center;

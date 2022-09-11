@@ -38,7 +38,7 @@ const FormList: React.FC<ComponentProps> = ({
   const inputRef = useRef<any>(null);
   const [bottom, setBottom] = useState(new Animated.Value(-150));
 
-  function handleSubmit(data) {
+  function handleSubmit(data: any) {
     createNewList(dispatch, data);
     setModalVisible(!modalVisible);
   }
@@ -105,7 +105,7 @@ const FormList: React.FC<ComponentProps> = ({
           bottom: bottom,
         }}>
         <FabButtom onPress={() => setModalVisible(true)}>
-          <IconsStyle name="add" size={25} />
+          <IconsStyle name="add" size={25} color="#fff" />
         </FabButtom>
       </Animated.View>
     </>
