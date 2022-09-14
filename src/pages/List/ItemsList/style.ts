@@ -87,7 +87,7 @@ export const ListItens = styled.FlatList`
   padding: 16px 0px;
 ` as unknown as FlatList;
 
-export const GridItens = styled.View`
+export const GridItens = styled.TouchableOpacity`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
@@ -115,7 +115,7 @@ export const ButtonDelete = styled.View`
 `;
 
 export const IconTrash = styled(Icon)`
-  color: ${({theme}) => theme.colors.danger};
+  color: ${({theme}: any) => theme.colors.danger};
 `;
 
 export const ButtonSalvarLista = styled.TouchableOpacity`
@@ -124,4 +124,14 @@ export const ButtonSalvarLista = styled.TouchableOpacity`
   background: #01ac73;
   border-radius: 50px;
   padding: 2px 20px;
+`;
+
+interface PropTextNameItems {
+  checked: boolean;
+}
+export const TextNameItems = styled.Text<PropTextNameItems>`
+  color: '#808080';
+  text-decoration-line: ${(prop: PropTextNameItems) =>
+    prop.checked ? 'line-through' : 'none'};
+  font-size: 16px;
 `;

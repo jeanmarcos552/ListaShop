@@ -72,6 +72,10 @@ export interface ItemsRequest {
     itens_id: number;
   };
   total: number;
+  ativo: boolean;
+  created_at?: string;
+  un: string;
+  updated_at: string;
 }
 
 export interface ProviderItemsList {

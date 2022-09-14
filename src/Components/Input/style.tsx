@@ -51,3 +51,18 @@ export const InputText = styled.TextInput`
 export const IconText = styled(Icon)`
   margin-right: 8px;
 `;
+
+// INPUT NUMBER
+
+export const TextValues = styled.TextInput`
+  font-family: 'Exo-SemiBold';
+  height: 35px;
+  background-color: #f5f5f5;
+  padding: 2px;
+  margin: 5px 1px;
+  border-radius: 3px;
+  width: 40px;
+  text-align: center;
+  color: #585858;
+  font-size: 13px;
+`;

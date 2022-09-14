@@ -1,23 +1,22 @@
-import React, {createRef, useCallback, useState} from 'react';
-import {TouchableOpacity, View} from 'react-native';
+import React, {createRef, useCallback, useEffect, useState} from 'react';
+import {Text, TouchableOpacity, View} from 'react-native';
 
 import {
   Container,
-  InputCheckbox,
   ListItens,
   GridItens,
   TextValues,
   IconTrash,
+  TextNameItems,
 } from './style';
-import {Swipeable} from 'react-native-gesture-handler';
 import {useFocusEffect} from '@react-navigation/native';
 import SkeletonListItem from './skeleton';
 import HeaderSingle from '../../../Layout/HeaderSingle';
 import {ItemsRequest, ProviderItemsList} from '../../../types/list';
 import TemplateDefault from '../../../Layout/Default';
 import {showList} from '../../../services/list';
-import {removeItemToList, updateItems} from '../../../services/list/list-itens';
-import {CenterView, TextJ} from '../../../styles/global';
+// import {removeItemToList, updateItems} from '../../../services/list/list-itens';
+import {CenterView, ViewJ} from '../../../styles/global';
 import {RenderFooter} from './Footer';
 import {RenderHeader} from './RenderHeader';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -25,6 +24,9 @@ import Icon from 'react-native-vector-icons/Ionicons';
 export interface PropsComponente {
   route: any;
   navigation: any;
+}
+function itemIsChecked(obj: ItemsRequest, checkedList: ItemsRequest[]) {
+  return checkedList.map(item => item.id).includes(obj.id);
 }
 
 function somaValoresItens(items: ProviderItemsList[]): string {
@@ -34,7 +36,6 @@ function somaValoresItens(items: ProviderItemsList[]): string {
 
   const total = items
     .map(item => item.pivot)
-    .filter(item => item.status === true)
     .map((prev: any) => +prev.qty * +prev.value)
     .reduce((prev, current) => prev + current, 0)
     .toFixed(2)
@@ -43,13 +44,9 @@ function somaValoresItens(items: ProviderItemsList[]): string {
   return total;
 }
 
-function checkItemsSelected(items: ProviderItemsList[]): number {
-  if (!items) {
-    return 0;
-  }
-
+function checkItemsSelected(items: ItemsRequest[]): ItemsRequest[] {
   const totalSelected = items?.filter(item => item.pivot.status);
-  return totalSelected.length;
+  return totalSelected;
 }
 
 function createRefsInput(setElRefs: Function, size: number) {
@@ -59,146 +56,50 @@ function createRefsInput(setElRefs: Function, size: number) {
       .map((_, i) => el[i] || createRef()),
   );
 }
-
 const ItemsList: React.FC<PropsComponente> = ({route, navigation}) => {
   const {id, title} = route.params;
-  const [items, SetItems] = useState<ItemsRequest[]>();
+  const [itemsChecked, setItemsChecked] = useState<ItemsRequest[]>([]);
+  const [items, setItems] = useState<ItemsRequest[]>([]);
+
   const [elRefs, setElRefs] = useState<Array<any>>([]);
   const [somaItens, setSomaItens] = useState('0');
-  const [totalSelected, setTotalSelected] = useState(0);
-  const [loading, setLoading] = useState(true);
-
-  const copyItemsList = items;
+  const [trashedItem, setTrashedItem] = useState(false);
 
   const getDados = useCallback(async () => {
     try {
       const {data, status} = await showList(id);
 
       if (status === 200) {
-        setLoading(false);
-
         if (data.itens) {
           const {itens} = data;
           if (itens) {
-            SetItems(itens);
             createRefsInput(setElRefs, itens.length);
-            if (itens) {
-              setSomaItens(somaValoresItens(itens));
-              setTotalSelected(checkItemsSelected(itens));
-            }
+            setItems(itens);
+            setItemsChecked(checkItemsSelected(itens));
           }
         }
       }
     } catch (erro: any) {
       console.error(erro.message);
-      setLoading(false);
     }
   }, [id]);
 
-  const handleDeleteItem = useCallback(
-    async ({pivot}: any) => {
-      const {data, status} = await removeItemToList({...pivot});
-      SetItems(state => state?.filter(item => item.id !== pivot.itens_id));
-
-      if (copyItemsList) {
-        setSomaItens(somaValoresItens(copyItemsList));
-        setTotalSelected(checkItemsSelected(copyItemsList));
+  const handleCheckedItems = (provider: ItemsRequest) => {
+    setItemsChecked(state => {
+      const exists = state.find(item => item.id === provider.id);
+      if (!exists) {
+        return [...state, provider];
       }
+      return [...state.filter(item => item.id !== provider.id)];
+    });
+  };
 
-      console.log(data, status);
-    },
-    [copyItemsList],
-  );
-
-  const changeItem = useCallback(
-    async (pivot: any) => {
-      const copyItems = copyItemsList?.map(item => {
-        if (item.id === pivot.itens_id) {
-          item.pivot = pivot;
-        }
-        return item;
-      });
-      await updateItems({body: pivot, ...pivot});
-      // SetItems(_ => copyItems);
-      if (copyItems) {
-        setSomaItens(somaValoresItens(copyItems));
-        setTotalSelected(checkItemsSelected(copyItems));
-      }
-    },
-    [copyItemsList],
-  );
-
-  const handleCheckItem = useCallback(
-    async (provider: ItemsRequest, index: number) => {
-      try {
-        let {pivot} = provider;
-        !pivot.status ? elRefs[index].current.focus() : '';
-        pivot.status = !pivot.status;
-
-        changeItem(pivot);
-      } catch (erro) {
-        console.error(erro);
-      }
-    },
-    [changeItem, elRefs],
-  );
-
-  const updateItem = useCallback(
-    async (provider: ProviderItemsList) => {
-      let {pivot} = provider;
-      pivot.value = pivot.value.replace(',', '.');
-      await updateItems({body: pivot, ...pivot});
-
-      changeItem(pivot);
-    },
-    [changeItem],
-  );
-
-  const handleChange = useCallback(
-    (value: string, pivot: any, key = '') => {
-      const copyItem = [...(copyItemsList || [])];
-      pivot[key] = value;
-
-      copyItem?.map(provider => {
-        if (provider.id === pivot) {
-          return (provider.pivot = pivot);
-        }
-      });
-      SetItems(copyItem);
-    },
-    [copyItemsList],
-  );
-
-  const leftSwipe = useCallback(
-    (provider: any) => {
-      const {pivot} = provider;
-      return (
-        <TextValues
-          key={pivot.lista_id.toString()}
-          defaultValue={pivot.qty.toString()}
-          keyboardType="numeric"
-          placeholder="0"
-          value={pivot.qty.toString()}
-          onBlur={() => updateItem(provider)}
-          onChangeText={(value: string) => handleChange(value, pivot, 'qty')}
-        />
-      );
-    },
-    [handleChange, updateItem],
-  );
-
-  const rightSwipe = useCallback(
-    (provider: any) => {
-      return (
-        <CenterView>
-          <TouchableOpacity onPress={() => handleDeleteItem(provider)}>
-            <IconTrash name="trash" size={18} style={{paddingLeft: 4}} />
-          </TouchableOpacity>
-        </CenterView>
-      );
-    },
-    [handleDeleteItem],
-  );
+  useEffect(() => {
+    if (itemsChecked) {
+      const soma = somaValoresItens(itemsChecked);
+      setSomaItens(soma);
+    }
+  }, [itemsChecked]);
 
   useFocusEffect(
     useCallback(() => {
@@ -213,69 +114,69 @@ const ItemsList: React.FC<PropsComponente> = ({route, navigation}) => {
           title={title}
           navigation={navigation}
           right={
-            <TouchableOpacity>
-              <Icon name="ios-settings-outline" size={20} color="#fff" />
-            </TouchableOpacity>
+            <>
+              <TouchableOpacity onPress={() => setTrashedItem(!trashedItem)}>
+                <Icon name="md-trash-outline" size={20} color="#fff" />
+              </TouchableOpacity>
+              <TouchableOpacity style={{marginLeft: 5}}>
+                <Icon name="ios-settings-outline" size={20} color="#fff" />
+              </TouchableOpacity>
+            </>
           }
         />
       }
       loadingComponent={<SkeletonListItem />}
-      loading={loading}>
+      loading={!items}>
       <Container>
-        <RenderHeader totalSelected={totalSelected} />
+        <RenderHeader totalSelected={itemsChecked} total={items.length} />
         <ListItens
           showsVerticalScrollIndicator={false}
-          data={copyItemsList || []}
+          data={items}
           keyExtractor={(provider: any) => provider.id.toString()}
           removeClippedSubviews={false}
           ListFooterComponent={<View style={{marginBottom: 50}} />}
           renderItem={({item: provider, index}: any) => {
             return (
-              <Swipeable
-                renderLeftActions={_ => leftSwipe(provider)}
-                renderRightActions={_ => rightSwipe(provider)}
-                useNativeAnimations={true}>
-                <GridItens>
-                  <InputCheckbox
-                    size={25}
-                    fillColor="#01ac73"
-                    unfillColor="#FFFFFF"
-                    text={provider.name}
-                    iconStyle={{borderColor: '#01ac73'}}
-                    textStyle={{
-                      fontSize: 17,
-                      fontFamily: 'Exo-Regular',
-                    }}
-                    isChecked={provider.pivot.status}
-                    onPress={() => handleCheckItem(provider, index)}
+              <GridItens onPress={() => handleCheckedItems(provider)}>
+                <ViewJ direction="row" alignItems="center">
+                  <TextValues
+                    ref={elRefs[index]}
+                    key={provider.id}
+                    defaultValue={provider.pivot.qty.toString()}
+                    keyboardType="numeric"
+                    placeholder="0"
                   />
+                  <TextNameItems
+                    checked={itemIsChecked(provider, itemsChecked)}>
+                    {provider.name}{' '}
+                    <Text
+                      style={{
+                        fontSize: 10,
+                      }}>
+                      {provider.un}
+                    </Text>
+                  </TextNameItems>
+                </ViewJ>
 
-                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                    <TextJ color="#808080" direction="row">
-                      {provider.pivot.qty}
-                    </TextJ>
-                    <TextJ ml={2} fontSize={10} color="#808080">
-                      ({provider.un}) x{' '}
-                    </TextJ>
-                    <TextValues
-                      ref={elRefs[index]}
-                      key={provider.id}
-                      defaultValue={provider.pivot.value.toString()}
-                      keyboardType="numeric"
-                      placeholder="0,00"
-                      value={
-                        +provider.pivot.value === 0
-                          ? ''
-                          : String(provider.pivot.value)
-                      }
-                      onBlur={() => updateItem(provider)}
-                      onChangeText={(value: string) =>
-                        handleChange(value, provider.pivot, 'value')
-                      }
-                    />
-                  </View>
-                </GridItens>
-              </Swipeable>
+                {trashedItem ? (
+                  <CenterView>
+                    <TouchableOpacity onPress={() => null}>
+                      <IconTrash
+                        name="trash"
+                        size={18}
+                        style={{paddingLeft: 4}}
+                      />
+                    </TouchableOpacity>
+                  </CenterView>
+                ) : (
+                  <TextValues
+                    ref={elRefs[index]}
+                    defaultValue={provider.pivot.value.toString()}
+                    keyboardType="numeric"
+                    placeholder="0"
+                  />
+                )}
+              </GridItens>
             );
           }}
         />
