@@ -36,7 +36,6 @@ export const ViewJ = styled.View<PropCenter>`
   margin-bottom: ${props => (props.mb ? props.mb : 0)}px;
   margin-top: ${props => (props.mt ? props.mt : 0)}px;
   align-items: ${props => (props.alignItems ? props.alignItems : 'flex-start')};
-
   padding: ${props => (props.p ? props.p : 0)}px;
 `;
 

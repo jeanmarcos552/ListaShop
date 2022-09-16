@@ -51,7 +51,7 @@ export const FabButtom = styled.TouchableOpacity`
 
 export const TitleContainer = styled.View`
   flex-direction: row;
-  margin: 0 0 15px;
+  margin: 5px 0 15px;
   justify-content: center;
   align-content: center;
   align-items: center;
@@ -91,6 +91,8 @@ export const GridItens = styled.TouchableOpacity`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+
+  margin: 10px 0;
 `;
 
 export const TextValues = styled.TextInput`
@@ -133,5 +135,44 @@ export const TextNameItems = styled.Text<PropTextNameItems>`
   color: '#808080';
   text-decoration-line: ${(prop: PropTextNameItems) =>
     prop.checked ? 'line-through' : 'none'};
+  opacity: ${(prop: PropTextNameItems) => (prop.checked ? 0.6 : 0.9)};
+  font-family: 'Exo-Regular';
+
+  font-size: 18px;
+`;
+
+export const TextQuantidadeItemsText = styled.Text<PropTextNameItems>`
   font-size: 16px;
+  font-family: 'Exo-SemiBold';
+  text-align: center;
+  color: ${(prop: PropTextNameItems) => (prop.checked ? '#fff' : '#808080')};
+`;
+
+export const TextQuantidadeItemsView = styled.TouchableOpacity`
+  width: 30px;
+  height: 30px;
+  border-radius: 50px;
+  margin-right: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: ${(prop: PropTextNameItems) =>
+    prop.checked ? '#01ac73' : '#eeeeee'};
+`;
+
+export const TextValorItemsView = styled.TouchableOpacity`
+  background-color: #eeeeee;
+  border-radius: 50px;
+  margin-right: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+export const TextValorItemsText = styled.Text`
+  color: '#808080';
+  padding: 3px 10px;
+  font-size: 16px;
+  font-family: 'Exo-SemiBold';
+  text-align: center;
 `;

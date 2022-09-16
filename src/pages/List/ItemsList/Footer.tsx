@@ -2,16 +2,36 @@ import React, {RefObject, useState} from 'react';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {FabButtom, TitleContainer, TotalFooter} from './style';
 import Icon from 'react-native-vector-icons/Feather';
-import {FiltroItensList} from '../../../types/list';
+import {
+  FiltroItensList,
+  ItemsRequest,
+  ProviderItemsList,
+} from '../../../types/list';
 import {Text} from 'react-native';
 import {FormHandles} from '@unform/core';
 
 export interface PropsRenderFooter {
-  sumItems: string;
+  items: ItemsRequest[];
   action: Function;
   form?: RefObject<FormHandles>;
 }
-export function RenderFooter({sumItems, action, form}: PropsRenderFooter) {
+
+function somaValoresItens(items: ProviderItemsList[]) {
+  if (!items) {
+    return 0;
+  }
+
+  return parseFloat(
+    items
+      .map(item => item.pivot)
+      .map((prev: any) => +prev.qty * +prev.value)
+      .reduce((prev, current) => prev + current, 0)
+      .toFixed(2)
+      .replace('.', ','),
+  );
+}
+
+export function RenderFooter({items, action, form}: PropsRenderFooter) {
   const [filter, setFilter] = useState<FiltroItensList>();
 
   return (
@@ -33,7 +53,7 @@ export function RenderFooter({sumItems, action, form}: PropsRenderFooter) {
       </TouchableOpacity>
       <TotalFooter>
         R$
-        {sumItems}
+        {somaValoresItens(items)}
       </TotalFooter>
       <FabButtom onPress={() => action()}>
         <Icon name="plus" size={30} color="#fff" />

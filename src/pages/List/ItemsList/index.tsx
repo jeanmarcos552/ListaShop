@@ -1,25 +1,29 @@
-import React, {createRef, useCallback, useEffect, useState} from 'react';
-import {Text, TouchableOpacity, View} from 'react-native';
+import React, {useCallback, useEffect, useState} from 'react';
+import {Animated, Text, TouchableOpacity, View} from 'react-native';
 
 import {
   Container,
   ListItens,
   GridItens,
-  TextValues,
-  IconTrash,
   TextNameItems,
+  TextQuantidadeItemsText,
+  TextQuantidadeItemsView,
+  TextValorItemsView,
+  TextValorItemsText,
 } from './style';
 import {useFocusEffect} from '@react-navigation/native';
 import SkeletonListItem from './skeleton';
 import HeaderSingle from '../../../Layout/HeaderSingle';
-import {ItemsRequest, ProviderItemsList} from '../../../types/list';
+import {ItemsRequest} from '../../../types/list';
 import TemplateDefault from '../../../Layout/Default';
 import {showList} from '../../../services/list';
 // import {removeItemToList, updateItems} from '../../../services/list/list-itens';
-import {CenterView, ViewJ} from '../../../styles/global';
+import {ViewJ} from '../../../styles/global';
 import {RenderFooter} from './Footer';
 import {RenderHeader} from './RenderHeader';
 import Icon from 'react-native-vector-icons/Ionicons';
+import {UpdateItem} from './UpdateItem';
+import {Money} from '../../../../Utils/Mask';
 
 export interface PropsComponente {
   route: any;
@@ -29,41 +33,36 @@ function itemIsChecked(obj: ItemsRequest, checkedList: ItemsRequest[]) {
   return checkedList.map(item => item.id).includes(obj.id);
 }
 
-function somaValoresItens(items: ProviderItemsList[]): string {
-  if (!items) {
-    return '0';
-  }
-
-  const total = items
-    .map(item => item.pivot)
-    .map((prev: any) => +prev.qty * +prev.value)
-    .reduce((prev, current) => prev + current, 0)
-    .toFixed(2)
-    .replace('.', ',');
-
-  return total;
-}
-
 function checkItemsSelected(items: ItemsRequest[]): ItemsRequest[] {
   const totalSelected = items?.filter(item => item.pivot.status);
   return totalSelected;
 }
 
-function createRefsInput(setElRefs: Function, size: number) {
-  setElRefs((el: any) =>
-    Array(size)
-      .fill(size)
-      .map((_, i) => el[i] || createRef()),
-  );
-}
 const ItemsList: React.FC<PropsComponente> = ({route, navigation}) => {
   const {id, title} = route.params;
   const [itemsChecked, setItemsChecked] = useState<ItemsRequest[]>([]);
   const [items, setItems] = useState<ItemsRequest[]>([]);
-
-  const [elRefs, setElRefs] = useState<Array<any>>([]);
-  const [somaItens, setSomaItens] = useState('0');
   const [trashedItem, setTrashedItem] = useState(false);
+  const [clicked, setClicked] = useState<ItemsRequest | null>();
+  const [height] = useState(new Animated.Value(0));
+
+  const handleShow = useCallback(() => {
+    Animated.timing(height, {
+      toValue: 250,
+      duration: 500,
+      useNativeDriver: false,
+    }).start();
+  }, [height]);
+
+  const handleOff = useCallback(() => {
+    Animated.timing(height, {
+      toValue: 0,
+      duration: 500,
+      useNativeDriver: false,
+    }).start();
+
+    setTimeout(() => setClicked(null), 1000);
+  }, [height]);
 
   const getDados = useCallback(async () => {
     try {
@@ -73,7 +72,6 @@ const ItemsList: React.FC<PropsComponente> = ({route, navigation}) => {
         if (data.itens) {
           const {itens} = data;
           if (itens) {
-            createRefsInput(setElRefs, itens.length);
             setItems(itens);
             setItemsChecked(checkItemsSelected(itens));
           }
@@ -94,19 +92,19 @@ const ItemsList: React.FC<PropsComponente> = ({route, navigation}) => {
     });
   };
 
-  useEffect(() => {
-    if (itemsChecked) {
-      const soma = somaValoresItens(itemsChecked);
-      setSomaItens(soma);
-    }
-  }, [itemsChecked]);
-
   useFocusEffect(
     useCallback(() => {
       getDados();
     }, [getDados]),
   );
 
+  useEffect(() => {
+    if (clicked) {
+      handleShow();
+    }
+  }, [clicked, handleShow]);
+
+  console.log('renderizou');
   return (
     <TemplateDefault
       header={
@@ -135,17 +133,18 @@ const ItemsList: React.FC<PropsComponente> = ({route, navigation}) => {
           keyExtractor={(provider: any) => provider.id.toString()}
           removeClippedSubviews={false}
           ListFooterComponent={<View style={{marginBottom: 50}} />}
-          renderItem={({item: provider, index}: any) => {
+          renderItem={({item: provider}) => {
             return (
               <GridItens onPress={() => handleCheckedItems(provider)}>
                 <ViewJ direction="row" alignItems="center">
-                  <TextValues
-                    ref={elRefs[index]}
-                    key={provider.id}
-                    defaultValue={provider.pivot.qty.toString()}
-                    keyboardType="numeric"
-                    placeholder="0"
-                  />
+                  <TextQuantidadeItemsView
+                    onPress={() => setClicked(provider)}
+                    checked={itemIsChecked(provider, itemsChecked)}>
+                    <TextQuantidadeItemsText
+                      checked={itemIsChecked(provider, itemsChecked)}>
+                      {provider.pivot.qty}
+                    </TextQuantidadeItemsText>
+                  </TextQuantidadeItemsView>
                   <TextNameItems
                     checked={itemIsChecked(provider, itemsChecked)}>
                     {provider.name}{' '}
@@ -157,31 +156,18 @@ const ItemsList: React.FC<PropsComponente> = ({route, navigation}) => {
                     </Text>
                   </TextNameItems>
                 </ViewJ>
-
-                {trashedItem ? (
-                  <CenterView>
-                    <TouchableOpacity onPress={() => null}>
-                      <IconTrash
-                        name="trash"
-                        size={18}
-                        style={{paddingLeft: 4}}
-                      />
-                    </TouchableOpacity>
-                  </CenterView>
-                ) : (
-                  <TextValues
-                    ref={elRefs[index]}
-                    defaultValue={provider.pivot.value.toString()}
-                    keyboardType="numeric"
-                    placeholder="0"
-                  />
-                )}
+                <TextValorItemsView onPress={() => setClicked(provider)}>
+                  <TextValorItemsText>
+                    {Money(provider.pivot.value)}
+                  </TextValorItemsText>
+                </TextValorItemsView>
               </GridItens>
             );
           }}
         />
+
         <RenderFooter
-          sumItems={somaItens}
+          items={itemsChecked}
           action={() =>
             navigation.navigate('AddItemsToList', {
               item: {id, title},
@@ -189,6 +175,9 @@ const ItemsList: React.FC<PropsComponente> = ({route, navigation}) => {
           }
         />
       </Container>
+      {clicked && (
+        <UpdateItem height={height} dados={clicked} handleOff={handleOff} />
+      )}
     </TemplateDefault>
   );
 };
