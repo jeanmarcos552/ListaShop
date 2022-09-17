@@ -32,7 +32,7 @@ export function UpdateItem({
   const handleUpdateQuantidade = useCallback(() => {
     console.log(itemsChecked, setItemsChecked);
   }, [itemsChecked, setItemsChecked]);
-  console.log(height);
+
   return (
     <UpdateItemContainer style={{height}}>
       <TextTitle>{dados?.name}</TextTitle>

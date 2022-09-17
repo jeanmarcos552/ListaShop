@@ -19,6 +19,7 @@
     "@unform/core": "^2.1.6",
     "@unform/mobile": "^2.1.6",
     "axios": "^0.27.2",
+    "intl": "^1.2.5",
     "laravel-echo": "^1.12.1",
     "moment": "^2.29.4",
     "pusher-js": "^7.2.0",

@@ -1,41 +1,36 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {Animated, Text, TouchableOpacity, View} from 'react-native';
+import {Animated, TouchableOpacity, View} from 'react-native';
 
-import {
-  Container,
-  ListItens,
-  GridItens,
-  TextNameItems,
-  TextQuantidadeItemsText,
-  TextQuantidadeItemsView,
-  TextValorItemsView,
-  TextValorItemsText,
-} from './style';
+import {Container, ListItens, TextValorItemsText, InputCheckbox} from './style';
 import {useFocusEffect} from '@react-navigation/native';
 import SkeletonListItem from './skeleton';
 import HeaderSingle from '../../../Layout/HeaderSingle';
 import {ItemsRequest} from '../../../types/list';
 import TemplateDefault from '../../../Layout/Default';
 import {showList} from '../../../services/list';
-// import {removeItemToList, updateItems} from '../../../services/list/list-itens';
-import {ViewJ} from '../../../styles/global';
+import {updateItems} from '../../../services/list/list-itens';
 import {RenderFooter} from './Footer';
 import {RenderHeader} from './RenderHeader';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {UpdateItem} from './UpdateItem';
-import {Money} from '../../../../Utils/Mask';
+import {money} from '../../../../Utils/Mask';
+import {List} from 'react-native-paper';
 
 export interface PropsComponente {
   route: any;
   navigation: any;
 }
-function itemIsChecked(obj: ItemsRequest, checkedList: ItemsRequest[]) {
-  return checkedList.map(item => item.id).includes(obj.id);
-}
 
-function checkItemsSelected(items: ItemsRequest[]): ItemsRequest[] {
-  const totalSelected = items?.filter(item => item.pivot.status);
-  return totalSelected;
+function somaItemsSelected(arrItems: ItemsRequest[]) {
+  return parseFloat(
+    arrItems
+      .filter(item => item.pivot.status)
+      .map(item => item.pivot)
+      .map((prev: any) => +prev.qty * +prev.value)
+      .reduce((prev, current) => prev + current, 0)
+      .toFixed(2)
+      .replace('.', ','),
+  );
 }
 
 const ItemsList: React.FC<PropsComponente> = ({route, navigation}) => {
@@ -45,6 +40,7 @@ const ItemsList: React.FC<PropsComponente> = ({route, navigation}) => {
   const [trashedItem, setTrashedItem] = useState(false);
   const [clicked, setClicked] = useState<ItemsRequest | null>();
   const [height] = useState(new Animated.Value(0));
+  const [somaItemsChecked, setSomaItemsChecked] = useState(0);
 
   const handleShow = useCallback(() => {
     Animated.timing(height, {
@@ -73,7 +69,7 @@ const ItemsList: React.FC<PropsComponente> = ({route, navigation}) => {
           const {itens} = data;
           if (itens) {
             setItems(itens);
-            setItemsChecked(checkItemsSelected(itens));
+            setSomaItemsChecked(somaItemsSelected(itens));
           }
         }
       }
@@ -82,15 +78,22 @@ const ItemsList: React.FC<PropsComponente> = ({route, navigation}) => {
     }
   }, [id]);
 
-  const handleCheckedItems = (provider: ItemsRequest) => {
-    setItemsChecked(state => {
-      const exists = state.find(item => item.id === provider.id);
-      if (!exists) {
-        return [...state, provider];
+  const handleCheckedItems = useCallback(async (provider: ItemsRequest) => {
+    provider.pivot.status = !provider.pivot.status;
+
+    await updateItems({body: provider.pivot, ...provider.pivot});
+
+    setSomaItemsChecked(total => {
+      if (provider.pivot.status) {
+        return parseFloat(
+          (total += provider.pivot.qty * +provider.pivot.value).toFixed(2),
+        );
       }
-      return [...state.filter(item => item.id !== provider.id)];
+      return parseFloat(
+        (total -= provider.pivot.qty * +provider.pivot.value).toFixed(2),
+      );
     });
-  };
+  }, []);
 
   useFocusEffect(
     useCallback(() => {
@@ -104,7 +107,6 @@ const ItemsList: React.FC<PropsComponente> = ({route, navigation}) => {
     }
   }, [clicked, handleShow]);
 
-  console.log('renderizou');
   return (
     <TemplateDefault
       header={
@@ -135,39 +137,35 @@ const ItemsList: React.FC<PropsComponente> = ({route, navigation}) => {
           ListFooterComponent={<View style={{marginBottom: 50}} />}
           renderItem={({item: provider}) => {
             return (
-              <GridItens onPress={() => handleCheckedItems(provider)}>
-                <ViewJ direction="row" alignItems="center">
-                  <TextQuantidadeItemsView
-                    onPress={() => setClicked(provider)}
-                    checked={itemIsChecked(provider, itemsChecked)}>
-                    <TextQuantidadeItemsText
-                      checked={itemIsChecked(provider, itemsChecked)}>
-                      {provider.pivot.qty}
-                    </TextQuantidadeItemsText>
-                  </TextQuantidadeItemsView>
-                  <TextNameItems
-                    checked={itemIsChecked(provider, itemsChecked)}>
-                    {provider.name}{' '}
-                    <Text
-                      style={{
-                        fontSize: 10,
-                      }}>
-                      {provider.un}
-                    </Text>
-                  </TextNameItems>
-                </ViewJ>
-                <TextValorItemsView onPress={() => setClicked(provider)}>
+              <List.Item
+                title={provider.name}
+                description={`${provider.pivot.qty} - ${provider.un}`}
+                left={() => (
+                  <InputCheckbox
+                    size={25}
+                    fillColor="#01ac73"
+                    unfillColor="#FFFFFF"
+                    iconStyle={{borderColor: '#01ac73'}}
+                    textStyle={{
+                      fontSize: 17,
+                      fontFamily: 'Exo-Regular',
+                    }}
+                    isChecked={provider.pivot.status}
+                    onPress={() => handleCheckedItems(provider)}
+                  />
+                )}
+                right={() => (
                   <TextValorItemsText>
-                    {Money(provider.pivot.value)}
+                    {money(provider.pivot.value, true)}
                   </TextValorItemsText>
-                </TextValorItemsView>
-              </GridItens>
+                )}
+              />
             );
           }}
         />
 
         <RenderFooter
-          items={itemsChecked}
+          total={somaItemsChecked}
           action={() =>
             navigation.navigate('AddItemsToList', {
               item: {id, title},
@@ -175,9 +173,14 @@ const ItemsList: React.FC<PropsComponente> = ({route, navigation}) => {
           }
         />
       </Container>
-      {clicked && (
-        <UpdateItem height={height} dados={clicked} handleOff={handleOff} />
-      )}
+
+      <UpdateItem
+        height={height}
+        dados={clicked}
+        handleOff={handleOff}
+        itemsChecked={itemsChecked}
+        setItemsChecked={setItemsChecked}
+      />
     </TemplateDefault>
   );
 };
