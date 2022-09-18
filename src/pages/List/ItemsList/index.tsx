@@ -28,8 +28,7 @@ function somaItemsSelected(arrItems: ItemsRequest[]) {
       .map(item => item.pivot)
       .map((prev: any) => +prev.qty * +prev.value)
       .reduce((prev, current) => prev + current, 0)
-      .toFixed(2)
-      .replace('.', ','),
+      .toFixed(2),
   );
 }
 

@@ -4,6 +4,7 @@ import {FabButtom, TitleContainer, TotalFooter} from './style';
 import Icon from 'react-native-vector-icons/Feather';
 import {FiltroItensList} from '../../../types/list';
 import {FormHandles} from '@unform/core';
+import {Money} from '../../../../Utils/Mask';
 
 export interface PropsRenderFooter {
   total: number;
@@ -32,7 +33,7 @@ export function RenderFooter({total, action}: PropsRenderFooter) {
       </TouchableOpacity>
       <TotalFooter>
         R$
-        {total}
+        {Money(total.toString())}
       </TotalFooter>
       <FabButtom onPress={() => action()}>
         <Icon name="plus" size={30} color="#fff" />
