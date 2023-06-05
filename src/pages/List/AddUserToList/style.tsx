@@ -1,7 +1,6 @@
 import {Platform, Pressable} from 'react-native';
 import {getBottomSpace} from 'react-native-iphone-x-helper';
 import styled, {css} from 'styled-components/native';
-import Icons from 'react-native-vector-icons/Feather';
 
 interface PropsGrid {
   xs: number;
@@ -107,6 +106,6 @@ export const CompartilharListaText = styled.Text`
   color: red;
 `;
 
-export const IconsShare = styled(Icons)`
+export const IconsShare = styled.Text`
   color: ${({theme}) => theme.colors.textSecondary};
 `;

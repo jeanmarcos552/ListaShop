@@ -1,6 +1,5 @@
 import React, {useCallback, useState} from 'react';
 import {TouchableOpacity} from 'react-native';
-import Icon from 'react-native-vector-icons/Feather';
 import {
   ButtonAddNewCategory,
   HeaderSearch,
@@ -39,7 +38,7 @@ export function SearchItems({
     <HeaderSearch>
       {label && <LabelText>{label}</LabelText>}
       <TextInputSugest isFocus={isFocus} isErrored={false}>
-        <Icon name="search" size={15} color={isFocus ? '#01ac73' : '#ff9000'} />
+        {/* <Icon name="search" size={15} color={isFocus ? '#01ac73' : '#ff9000'} /> */}
         <InputText
           isErrored={false}
           isFocus={isFocus}

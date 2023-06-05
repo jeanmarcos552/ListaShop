@@ -1,6 +1,4 @@
 import styled, {css} from 'styled-components/native';
-import Icon from 'react-native-vector-icons/Feather';
-import {MainTheme} from '../../styles/global';
 
 interface PropsInput {
   isFocus: boolean;
@@ -30,7 +28,7 @@ export const Container = styled.View`
   ${(props: PropsInput) =>
     props.isErrored &&
     css`
-      border-color: ${({theme}: MainTheme) => theme.colors.danger};
+      border-color: ${({theme}: any) => theme.colors.danger};
     `}
 
   ${(props: PropsInput) =>
@@ -48,7 +46,7 @@ export const InputText = styled.TextInput`
   font-family: 'Exo-Regular';
 `;
 
-export const IconText = styled(Icon)`
+export const IconText = styled.View`
   margin-right: 8px;
 `;
 

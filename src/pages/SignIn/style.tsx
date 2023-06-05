@@ -3,8 +3,6 @@ import styled from 'styled-components/native';
 
 import {getBottomSpace} from 'react-native-iphone-x-helper';
 
-import Icon from 'react-native-vector-icons/Feather';
-
 export const Container = styled.View`
   flex: 1;
   align-items: center;
@@ -56,6 +54,6 @@ export const CreatAccountText = styled.Text`
   font-family: 'Exo-SemiBold';
 `;
 
-export const IconText = styled(Icon)`
+export const IconText = styled.View`
   margin-right: 10px;
 `;

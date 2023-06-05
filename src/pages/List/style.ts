@@ -2,7 +2,6 @@ import {FlatList} from 'react-native';
 import styled from 'styled-components/native';
 import {getStatusBarHeight} from 'react-native-iphone-x-helper';
 import LinearGradient from 'react-native-linear-gradient';
-import Icon from 'react-native-vector-icons/Feather';
 
 export const Container = styled.SafeAreaView`
   flex: 1;
@@ -80,7 +79,7 @@ export const ValueText = styled.Text`
   color: ${({theme}) => theme.colors.text};
 `;
 
-export const IconText = styled(Icon)`
+export const IconText = styled.View`
   border-radius: 100px;
   padding: 0px 10px;
   align-items: center;
@@ -110,7 +109,7 @@ export const ViewDeleteItem = styled.TouchableOpacity`
   height: 20px;
 `;
 
-export const TextDeleteItem = styled(Icon)`
+export const TextDeleteItem = styled.View`
   color: ${({theme}) => theme.colors.danger};
   padding: 0px 10px;
 `;

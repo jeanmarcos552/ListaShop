@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
 import {useAuth} from '../../hooks/auth';
-import Icon from 'react-native-vector-icons/Feather';
 
 import {
   Header,
@@ -15,7 +14,7 @@ import {
   ParamListBase,
   useNavigation,
 } from '@react-navigation/native';
-import {TouchableOpacity} from 'react-native';
+import {Text, TouchableOpacity} from 'react-native';
 
 interface PropsComponent {
   title?: string;
@@ -36,10 +35,12 @@ const HeaderLayout: React.FC<PropsComponent> = ({title}) => {
           {notifications && notifications?.length > 0 && (
             <NotificacaoTotal>{3}</NotificacaoTotal>
           )}
-          <Icon name="bell" size={20} color="#fff" />
+          {/* <View name="bell" size={20} color="#fff" /> */}
+          <Text> icon</Text>
         </Notificacao>
         <TouchableOpacity onPress={signOut}>
-          <Icon name="log-out" size={20} color="#fff" />
+          {/* <Icon name="log-out" size={20} color="#fff" /> */}
+          <Text> icon</Text>
         </TouchableOpacity>
       </ViewLeft>
     </Header>

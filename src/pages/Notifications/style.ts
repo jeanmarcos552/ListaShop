@@ -1,6 +1,5 @@
 import {FlatList} from 'react-native';
 import styled from 'styled-components/native';
-import Icon from 'react-native-vector-icons/Feather';
 import {MD2Colors as Colors} from 'react-native-paper';
 import {RectButton} from 'react-native-gesture-handler';
 
@@ -62,7 +61,7 @@ export const ValueText = styled.Text`
   margin-bottom: 10px;
 `;
 
-export const IconText = styled(Icon)`
+export const IconText = styled.View`
   border-radius: 100px;
   padding: 3px;
   align-items: center;

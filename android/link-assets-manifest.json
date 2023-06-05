@@ -1,0 +1,13 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "assets/fonts/Exo-Regular.ttf",
+      "sha1": "1cbf135973dab922f713e9f88beefb3295ac73c8"
+    },
+    {
+      "path": "assets/fonts/Exo-SemiBold.ttf",
+      "sha1": "8d8248e5226475a69ae036349ecbebefe86c9662"
+    }
+  ]
+}

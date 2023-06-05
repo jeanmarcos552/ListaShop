@@ -1,9 +1,7 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {KeyboardAvoidingView, Platform, View} from 'react-native';
+import {KeyboardAvoidingView, Platform, Text, View} from 'react-native';
 
 import {NavigationScreenProp} from 'react-navigation';
-
-import Icon from 'react-native-vector-icons/Feather';
 
 import {Container, ListResult, Item, ItemText} from './style';
 
@@ -178,12 +176,13 @@ const AddItemsToList: React.FC<PropsComponente> = ({route, ...rest}) => {
                   <ItemText>{provider.name}</ItemText>
                   {ItemsOfList?.map((item: any) => {
                     return item.id === provider.id ? (
-                      <Icon
-                        key={provider.id}
-                        name="check"
-                        size={20}
-                        color="#01ac73"
-                      />
+                      // <View
+                      //   key={provider.id}
+                      //   name="check"
+                      //   size={20}
+                      //   color="#01ac73"
+                      // />
+                      <Text>icon</Text>
                     ) : null;
                   })}
                 </Item>

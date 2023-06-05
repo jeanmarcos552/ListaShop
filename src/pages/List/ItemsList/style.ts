@@ -5,7 +5,6 @@ import {Form} from '@unform/mobile';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import {FlatList} from 'react-native-gesture-handler';
 import {MD2Colors as Colors} from 'react-native-paper';
-import Icon from 'react-native-vector-icons/Feather';
 
 export const Header = styled(LinearGradient)`
   flex-direction: row;
@@ -102,7 +101,7 @@ export const ButtonDelete = styled.View`
   height: 30px;
 `;
 
-export const IconTrash = styled(Icon)`
+export const IconTrash = styled.View`
   color: ${({theme}: any) => theme.colors.danger};
 `;
 

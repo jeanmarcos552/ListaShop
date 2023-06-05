@@ -23,7 +23,6 @@ import {
   useNavigation,
 } from '@react-navigation/native';
 
-import IconBack from 'react-native-vector-icons/Feather';
 import getValidationErrors from '../../../Utils/getValidation';
 import api from '../../services/api';
 import ButtonDefault from '../../Components/Button';
@@ -150,7 +149,7 @@ const SignUp: React.FC = () => {
       </ScrollView>
 
       <BackToLogin>
-        <IconBack name="arrow-left" color="#fff" size={20} />
+        {/* <IconBack name="arrow-left" color="#fff" size={20} /> */}
         <BackToLoginText onPress={() => navigate.navigate('SignIn')}>
           <Text style={{marginRight: 15}}>Voltar para o Login</Text>
         </BackToLoginText>

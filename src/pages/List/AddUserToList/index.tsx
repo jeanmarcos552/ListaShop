@@ -9,7 +9,6 @@ import {
   View,
 } from 'react-native';
 
-import Icon from 'react-native-vector-icons/Feather';
 import * as Yup from 'yup';
 
 import {
@@ -131,7 +130,7 @@ const ShareList: React.FC<ComponentProps> = props => {
                   </PressableButton>
                   <ButtonCreate onPress={() => formRef.current?.submitForm()}>
                     <ButtonCreateText>Enviar</ButtonCreateText>
-                    <Icon name="send" size={20} color="#fff" />
+                    {/* <Icon name="send" size={20} color="#fff" /> */}
                   </ButtonCreate>
                 </FooterButtons>
               </Form>

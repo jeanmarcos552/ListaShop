@@ -9,7 +9,6 @@ import Button from '../../Components/Button';
 
 import {BackToLogin, BackToLoginText, Container, Title, Image} from './style';
 
-import IconBack from 'react-native-vector-icons/Feather';
 import {
   NavigationProp,
   ParamListBase,
@@ -52,7 +51,7 @@ const ForgetPass = () => {
           navigate.navigate('SignIn');
         }}>
         <BackToLoginText>
-          <IconBack name="arrow-left" size={20} color="#fff" />
+          {/* <IconBack name="arrow-left" size={20} color="#fff" /> */}
           Voltar para o Login
         </BackToLoginText>
       </BackToLogin>

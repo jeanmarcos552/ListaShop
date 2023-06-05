@@ -1,4 +1,3 @@
-import Icon from 'react-native-vector-icons/Feather';
 import styled from 'styled-components/native';
 
 export const Container = styled.TouchableOpacity`
@@ -18,7 +17,7 @@ export const Text = styled.Text`
   font-family: 'Exo-Regular';
 `;
 
-export const IconPlus = styled(Icon)`
+export const IconPlus = styled.Text`
   color: #013db4;
 `;
 

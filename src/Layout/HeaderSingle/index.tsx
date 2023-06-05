@@ -7,19 +7,21 @@ interface PropsHeader {
   navigation: NavigationProp<ParamListBase>;
   right?: React.ComponentProps<any>;
 }
-import Icon from 'react-native-vector-icons/Feather';
+
 import {ParamListBase} from '@react-navigation/routers';
 import {NavigationProp} from '@react-navigation/native';
+import {Text} from 'react-native';
 
 const HeaderSingle: React.FC<PropsHeader> = ({title, navigation, right}) => {
   return (
     <Header>
-      <Icon
+      {/* <Icon
         name="arrow-left"
         size={20}
         color="#fff"
         onPress={() => navigation.goBack()}
-      />
+      /> */}
+      <Text> icon</Text>
       <HeaderText onPress={() => navigation.goBack()}>
         <Username>{title}</Username>
       </HeaderText>
