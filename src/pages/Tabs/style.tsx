@@ -1,5 +1,4 @@
 import styled from 'styled-components/native';
-import Icons from 'react-native-vector-icons/AntDesign';
 
 export const Image = styled.Image`
   width: 40px;
@@ -13,7 +12,7 @@ export const TabBarStyle = styled.View`
   background-color: ${({theme}: any) => theme.colors.primary};
 `;
 
-export const IconsStyle = styled<any>(Icons)`
+export const IconsStyle = styled.Text`
   color: ${({focus, theme}) =>
     focus ? theme.colors.primary : theme.colors.background};
   ${({focus}) => (focus ? 'background-color: white;' : null)};

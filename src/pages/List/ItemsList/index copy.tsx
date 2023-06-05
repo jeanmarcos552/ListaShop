@@ -20,7 +20,7 @@ import {removeItemToList, updateItems} from '../../../services/list/list-itens';
 import {CenterView, TextJ} from '../../../styles/global';
 import {RenderFooter} from './Footer';
 import {RenderHeader} from './RenderHeader';
-import Icon from 'react-native-vector-icons/Ionicons';
+import {Text} from 'react-native';
 
 export interface PropsComponente {
   route: any;
@@ -214,7 +214,8 @@ const ItemsList: React.FC<PropsComponente> = ({route, navigation}) => {
           navigation={navigation}
           right={
             <TouchableOpacity>
-              <Icon name="ios-settings-outline" size={20} color="#fff" />
+              {/* <Icon name="ios-settings-outline" size={20} color="#fff" /> */}
+              <Text>Icon</Text>
             </TouchableOpacity>
           }
         />

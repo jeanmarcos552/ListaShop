@@ -1,5 +1,5 @@
 import {Animated} from 'react-native';
-import IconEvilIcons from 'react-native-vector-icons/EvilIcons';
+
 import styled from 'styled-components/native';
 
 export const UpdateItemContainer = styled(Animated.View)`
@@ -31,7 +31,7 @@ export const ViewQuantidade = styled.View`
   justify-content: space-between;
 `;
 
-export const QuantidadeSymbol = styled(IconEvilIcons)``;
+export const QuantidadeSymbol = styled.Text``;
 
 export const ViewPreco = styled.View``;
 

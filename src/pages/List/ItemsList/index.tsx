@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {Animated, TouchableOpacity, View} from 'react-native';
+import {Animated, Text, TouchableOpacity, View} from 'react-native';
 
 import {Container, ListItens, TextValorItemsText, InputCheckbox} from './style';
 import {useFocusEffect} from '@react-navigation/native';
@@ -11,7 +11,7 @@ import {showList} from '../../../services/list';
 import {updateItems} from '../../../services/list/list-itens';
 import {RenderFooter} from './Footer';
 import {RenderHeader} from './RenderHeader';
-import Icon from 'react-native-vector-icons/Ionicons';
+
 import {UpdateItem} from './UpdateItem';
 import {money} from '../../../../Utils/Mask';
 import {List} from 'react-native-paper';
@@ -115,10 +115,12 @@ const ItemsList: React.FC<PropsComponente> = ({route, navigation}) => {
           right={
             <>
               <TouchableOpacity onPress={() => setTrashedItem(!trashedItem)}>
-                <Icon name="md-trash-outline" size={20} color="#fff" />
+                {/* <Icon name="md-trash-outline" size={20} color="#fff" /> */}
+                <Text>icon</Text>
               </TouchableOpacity>
               <TouchableOpacity style={{marginLeft: 5}}>
-                <Icon name="ios-settings-outline" size={20} color="#fff" />
+                <Text>icon</Text>
+                {/* <Icon name="ios-settings-outline" size={20} color="#fff" /> */}
               </TouchableOpacity>
             </>
           }

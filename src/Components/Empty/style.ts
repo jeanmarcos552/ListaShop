@@ -1,5 +1,4 @@
 import styled from 'styled-components/native';
-import Icons from 'react-native-vector-icons/AntDesign';
 
 export const Container = styled.View`
   justify-items: center;
@@ -14,7 +13,7 @@ export const CenterView = styled.View`
   width: 100%;
   min-height: 250px;
 `;
-export const Icon = styled(Icons)``;
+export const Icon = styled.Text``;
 
 export const Text = styled.Text`
   justify-content: center;

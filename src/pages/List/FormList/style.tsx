@@ -1,7 +1,6 @@
 import {Appearance, Platform} from 'react-native';
 import {getBottomSpace} from 'react-native-iphone-x-helper';
 import styled, {css} from 'styled-components/native';
-import Icons from 'react-native-vector-icons/Ionicons';
 
 const colorTheme = Appearance.getColorScheme();
 
@@ -102,10 +101,10 @@ export const PressableButtonText = styled.Text`
   font-size: 18px;
 `;
 
-export const IconsStyle = styled(Icons)`
+export const IconsStyle = styled.Text`
   color: ${({theme}) => (colorTheme === 'dark' ? theme.colors.text : '#fff')};
 `;
 
-export const IconCheck = styled(Icons)`
+export const IconCheck = styled.Text`
   color: #01ac73;
 `;
